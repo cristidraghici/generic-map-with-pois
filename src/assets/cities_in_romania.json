@@ -1,0 +1,12 @@
+[
+  { "title": "Bucharest", "latitude": 44.4268, "longitude": 26.1025 },
+  { "title": "Cluj-Napoca", "latitude": 46.7712, "longitude": 23.6236 },
+  { "title": "Iasi", "latitude": 47.1585, "longitude": 27.6014 },
+  {
+    "title": "Constanta",
+    "description": "A city by the Black Sea",
+    "latitude": 44.181,
+    "longitude": 28.6348
+  },
+  { "title": "Timisoara", "latitude": 45.7489, "longitude": 21.2087 }
+]
