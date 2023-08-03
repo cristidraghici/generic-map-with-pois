@@ -25,3 +25,7 @@ type ResponseType = Promise<
 
 - `npm i`
 - `npm run dev`
+
+## Notes
+
+If you intend to use this project as a base for a new one, please remember to update the `base` url in `vite.config.js`. It is currently used for publishing the project to Github Pages. You can also completely remove it.
