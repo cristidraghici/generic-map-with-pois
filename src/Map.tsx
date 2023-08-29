@@ -91,7 +91,18 @@ function Map() {
             <Tooltip direction="top" opacity={1} offset={[0, -50]}>
               <div className="tooltip-content">
                 <h3>{poi.title}</h3>
-                {!!poi.description && <>{poi.description}</>}
+
+                {!!poi.description && !Array.isArray(poi.description) && (
+                  <>{poi.description}</>
+                )}
+
+                {!!poi.description && Array.isArray(poi.description) && (
+                  <>
+                    {poi.description.map((descriptionItem) => (
+                      <div>{descriptionItem}</div>
+                    ))}
+                  </>
+                )}
               </div>
             </Tooltip>
           </Marker>

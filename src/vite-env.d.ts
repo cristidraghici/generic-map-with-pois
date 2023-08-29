@@ -4,5 +4,5 @@ type CustomMarker = {
   latitude: number;
   longitude: number;
   title: string;
-  description?: string;
+  description?: string | string[];
 };
