@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { MapContainer, TileLayer, Marker, Tooltip } from "react-leaflet";
 import L, { LatLngExpression, Map as MapType } from "leaflet";
+import MarkerClusterGroup from "react-leaflet-cluster";
 
 // Fix for github pages not showing the icon
 import MARKER_ICON_URL from "./assets/images/marker-icon.png";
@@ -55,8 +56,10 @@ function Map() {
       return;
     }
 
-    map.fitBounds(bounds.pad(0.5));
-    map.setMaxBounds(bounds.pad(0.5));
+    setTimeout(() => {
+      map.fitBounds(bounds.pad(0.5));
+      map.setMaxBounds(bounds.pad(0.5));
+    }, 1000);
   }, [map, bounds]);
 
   return (
@@ -86,27 +89,30 @@ function Map() {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        {data.map((poi, index) => (
-          <Marker key={index} position={[poi.latitude, poi.longitude]}>
-            <Tooltip direction="top" opacity={1} offset={[0, -50]}>
-              <div className="tooltip-content">
-                <h3>{poi.title}</h3>
 
-                {!!poi.description && !Array.isArray(poi.description) && (
-                  <>{poi.description}</>
-                )}
+        <MarkerClusterGroup chunkedLoading>
+          {data.map((poi, index) => (
+            <Marker key={index} position={[poi.latitude, poi.longitude]}>
+              <Tooltip direction="top" opacity={1} offset={[0, -50]}>
+                <div className="tooltip-content">
+                  <h3>{poi.title}</h3>
 
-                {!!poi.description && Array.isArray(poi.description) && (
-                  <>
-                    {poi.description.map((descriptionItem) => (
-                      <div>{descriptionItem}</div>
-                    ))}
-                  </>
-                )}
-              </div>
-            </Tooltip>
-          </Marker>
-        ))}
+                  {!!poi.description && !Array.isArray(poi.description) && (
+                    <>{poi.description}</>
+                  )}
+
+                  {!!poi.description && Array.isArray(poi.description) && (
+                    <>
+                      {poi.description.map((descriptionItem) => (
+                        <div>{descriptionItem}</div>
+                      ))}
+                    </>
+                  )}
+                </div>
+              </Tooltip>
+            </Marker>
+          ))}
+        </MarkerClusterGroup>
       </MapContainer>
     </>
   );
