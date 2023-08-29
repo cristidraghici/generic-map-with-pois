@@ -6,7 +6,7 @@ import citiesInRomania from "../assets/cities_in_romania.json";
  * This is a minimal security feature to prevent the most basic abuse.
  */
 const ALLOWED_API_URLS: RegExp[] = [
-  /^https:\/\/\w+\.github\.io\/[\w-]+(\/[\w-]+\/)?$/, // A regex for the Github pages
+  /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/, // A regex for the Github pages
 ];
 
 const useGetPOIs = (url?: string) => {
