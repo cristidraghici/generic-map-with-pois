@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Tooltip } from "react-leaflet";
 import L, { LatLngExpression, Map as MapType } from "leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
@@ -34,10 +34,16 @@ const MAP_CENTER: LatLngExpression = [44.4268, 26.1025];
  */
 const MAP_ZOOM = 3;
 
+/**
+ * Padding for the bounds
+ */
+const BOUNDS_PAD = 0.2;
+
 function Map() {
   const URLParams = useURLParams();
   const [map, setMap] = useState<MapType | null>(null);
   const { data, loading, error } = useGetPOIs(URLParams.api || undefined);
+  const setBoundsInterval = useRef<number>();
 
   const bounds = useMemo(
     () =>
@@ -56,9 +62,11 @@ function Map() {
       return;
     }
 
-    setTimeout(() => {
-      map.fitBounds(bounds.pad(0.5));
-      map.setMaxBounds(bounds.pad(0.5));
+    clearTimeout(setBoundsInterval.current);
+
+    setBoundsInterval.current = setTimeout(() => {
+      map.fitBounds(bounds.pad(BOUNDS_PAD));
+      map.setMaxBounds(bounds.pad(BOUNDS_PAD));
     }, 1000);
   }, [map, bounds]);
 
