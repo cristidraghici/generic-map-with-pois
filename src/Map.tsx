@@ -130,7 +130,7 @@ function Map() {
             <Marker key={index} position={[poi.latitude, poi.longitude]}>
               <Tooltip direction="top" opacity={1} offset={[0, -50]}>
                 <div className="tooltip-content">
-                  <h3>{poi.title}</h3>
+                  <h3 className="font-bold mb-2">{poi.title}</h3>
 
                   {!!poi.description && !Array.isArray(poi.description) && (
                     <>{poi.description}</>
