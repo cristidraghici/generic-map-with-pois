@@ -72,19 +72,13 @@ function Map() {
 
   return (
     <>
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          right: 0,
-          zIndex: 999,
-          background: "#fff",
-          padding: 10,
-          marginLeft: 130,
-        }}
-      >
-        {loading && <>The data for the map is loading...</>}
-        {!loading && error && <>{error}</>}
+      <div className="absolute top-0 right-0 z-[999] p-2 ml-16">
+        {loading && (
+          <div className="bg-white p-2">The data for the map is loading...</div>
+        )}
+        {!loading && error && (
+          <div className="bg-white text-red-800	 p-2">{error}</div>
+        )}
       </div>
 
       <MapContainer
