@@ -5,6 +5,9 @@ import MarkerClusterGroup from "react-leaflet-cluster";
 
 import SearchInput from "./components/SearchInput";
 import MarkerElement from "./components/MarkerElement";
+import POIDetails from "./components/POIDetails";
+
+import Modal from "./components/Modal";
 
 import useGetPOIs from "./hooks/useGetPOIs";
 import useURLParams from "./hooks/useURLParams";
@@ -36,6 +39,8 @@ function Map() {
   const [map, setMap] = useState<MapType | null>(null);
   const { data, loading, error } = useGetPOIs(URLParams.api || undefined);
   const setBoundsInterval = useRef<number>();
+
+  const [selectedPOI, setSelectedPoi] = useState<CustomMarker | null>(null);
 
   const [search, setSearch] = useState<string>("");
 
@@ -120,10 +125,20 @@ function Map() {
 
         <MarkerClusterGroup chunkedLoading>
           {filteredData.map((poi, index) => (
-            <MarkerElement key={index} {...poi} />
+            <MarkerElement
+              key={index}
+              marker={poi}
+              onClick={() => setSelectedPoi(poi)}
+            >
+              <POIDetails {...poi} />
+            </MarkerElement>
           ))}
         </MarkerClusterGroup>
       </MapContainer>
+
+      <Modal isOpen={selectedPOI !== null} onClose={() => setSelectedPoi(null)}>
+        {selectedPOI && <POIDetails {...selectedPOI} />}
+      </Modal>
     </>
   );
 }
