@@ -48,13 +48,13 @@ const Modal: FunctionComponent<PropsWithChildren<ModalProps>> = ({
           onClick={() => onClose()}
         />
         <div className="relative bg-white w-full max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
-          <div className="absolute top-0 right-0 cursor-pointer p-1">
+          <div className="absolute top-4 right-1 cursor-pointer p-1 bg-white rounded-full">
             <IconCloseSVG
               className="w-6 h-6 text-gray-600 hover:text-gray-800 transition duration-300 ease-in-out"
               onClick={onClose}
             />
           </div>
-          <div className="p-4">{children}</div>
+          <div className="p-2">{children}</div>
         </div>
       </div>
     </div>

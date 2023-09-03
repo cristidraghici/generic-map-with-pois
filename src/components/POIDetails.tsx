@@ -5,18 +5,22 @@ const POIDetails: FunctionComponent<CustomMarker> = ({
   description,
 }): JSX.Element => {
   return (
-    <>
-      <h3 className="font-bold mb-2">{title}</h3>
+    <div className="p-1">
+      <h3 className="font-bold p-2 pl-0">{title}</h3>
 
-      {!!description && !Array.isArray(description) && <div>{description}</div>}
-      {!!description && Array.isArray(description) && (
-        <>
-          {description.map((descriptionItem) => (
-            <div>{descriptionItem}</div>
-          ))}
-        </>
-      )}
-    </>
+      {!!description &&
+        (!Array.isArray(description) ? (
+          <div className="p-2 pl-0">{description}</div>
+        ) : (
+          <ul className="mt-2 [&>*:last-child]:border-0">
+            {description.map((descriptionItem, key) => (
+              <li className="p-2 pl-0 border-b-2 border-gray-100" key={key}>
+                {descriptionItem}
+              </li>
+            ))}
+          </ul>
+        ))}
+    </div>
   );
 };
 export default POIDetails;
