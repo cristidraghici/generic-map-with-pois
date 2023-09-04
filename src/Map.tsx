@@ -111,7 +111,7 @@ function Map() {
 
   return (
     <>
-      <div className="absolute top-0 right-0 z-[999] p-2 ml-16">
+      <div className="absolute top-0 right-0 z-[999] p-2 max-w-full w-[400px] pl-[50px]">
         <SearchInput
           className="mb-2"
           value={search}
