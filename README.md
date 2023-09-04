@@ -29,3 +29,7 @@ type ResponseType = Promise<
 ## Notes
 
 If you intend to use this project as a base for a new one, please remember to update the `base` url in `vite.config.js`. It is currently used for publishing the project to Github Pages. You can also completely remove it.
+
+## Icons
+
+We are using FontAwesome svg icons: [https://fontawesome.com/search](https://fontawesome.com/search)
