@@ -10,6 +10,7 @@ import MarkerElement from "./components/MarkerElement";
 import POIDetails from "./components/POIDetails";
 
 import Modal from "./components/Modal";
+import Tooltip from "./components/Tooltip";
 
 import useGetPOIs from "./hooks/useGetPOIs";
 import useURLParams from "./hooks/useURLParams";
@@ -19,6 +20,7 @@ import defaultIcon from "./utils/defaultIcon";
 import { ReactComponent as IconPlusSVG } from "./assets/icon-plus.svg";
 import { ReactComponent as IconMinusSVG } from "./assets/icon-minus.svg";
 import { ReactComponent as IconRefreshSVG } from "./assets/icon-refresh.svg";
+import { ReactComponent as IconInfoSVG } from "./assets/icon-info.svg";
 
 import "leaflet/dist/leaflet.css";
 
@@ -45,7 +47,7 @@ function Map() {
   const [map, setMap] = useState<MapType | null>(null);
   const [isZoomInDisabled, setIsZoomInDisabled] = useState(false);
   const [isZoomOutDisabled, setIsZoomOutDisabled] = useState(false);
-  const { data, loading, error, reload } = useGetPOIs(
+  const { records, metadata, loading, error, reload } = useGetPOIs(
     URLParams.api || undefined
   );
   const setBoundsInterval = useRef<number>();
@@ -54,9 +56,9 @@ function Map() {
 
   const [search, setSearch] = useState<string>("");
 
-  const filteredData = useMemo(
+  const filteredRecords = useMemo(
     () =>
-      data.filter((poi) => {
+      records.filter((poi) => {
         const allText = `${poi.title} ${
           Array.isArray(poi.description)
             ? poi.description.concat(" ")
@@ -64,18 +66,18 @@ function Map() {
         }`;
         return allText.toLowerCase().includes(search.toLowerCase());
       }),
-    [data, search]
+    [records, search]
   );
 
   const bounds = useMemo(
     () =>
       L.latLngBounds(
-        filteredData.map<LatLngExpression>((poi) => [
+        filteredRecords.map<LatLngExpression>((poi) => [
           poi.latitude,
           poi.longitude,
         ])
       ),
-    [filteredData]
+    [filteredRecords]
   );
 
   const setMapBounds = useCallback(() => {
@@ -108,6 +110,18 @@ function Map() {
       setIsZoomInDisabled(zoom === maxZoom);
     });
   }, [map, bounds, setMapBounds]);
+
+  if (!URLParams.api) {
+    return (
+      <div className="p-4 text-center">
+        It appears you have not specified an <strong>?api=</strong> param. You
+        can use the default meanwhile:
+        <div className="pt-4">
+          <a href="?api=/cities_in_romania.json">cities_in_romania.json</a>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -149,7 +163,7 @@ function Map() {
         />
 
         <MarkerClusterGroup chunkedLoading>
-          {filteredData.map((poi, index) => (
+          {filteredRecords.map((poi, index) => (
             <MarkerElement
               key={index}
               marker={poi}
@@ -161,7 +175,12 @@ function Map() {
         </MarkerClusterGroup>
       </MapContainer>
 
-      <Modal isOpen={selectedPOI !== null} onClose={() => setSelectedPoi(null)}>
+      <Modal
+        isOpen={selectedPOI !== null}
+        onClose={() => {
+          setSelectedPoi(null);
+        }}
+      >
         {selectedPOI && <POIDetails {...selectedPOI} />}
       </Modal>
 
@@ -179,6 +198,7 @@ function Map() {
           <IconMinusSVG width={15} height={15} />
         </MapButton>
       </ButtonWrapper>
+
       <ButtonWrapper className="absolute left-[10px] top-[80px]">
         <MapButton
           onClick={() => {
@@ -192,6 +212,16 @@ function Map() {
           <IconRefreshSVG width={15} height={15} />
         </MapButton>
       </ButtonWrapper>
+
+      {!!metadata && (
+        <ButtonWrapper className="absolute left-[10px] top-[120px]">
+          <Tooltip text={metadata} className="text-left w-[240px] ">
+            <MapButton>
+              <IconInfoSVG width={15} height={15} />
+            </MapButton>
+          </Tooltip>
+        </ButtonWrapper>
+      )}
     </>
   );
 }
