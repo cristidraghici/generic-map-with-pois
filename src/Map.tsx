@@ -3,6 +3,8 @@ import { MapContainer, TileLayer } from "react-leaflet";
 import L, { LatLngExpression, Map as MapType } from "leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 
+import ButtonWrapper from "./components/ButtonWrapper";
+import MapButton from "./components/MapButton";
 import SearchInput from "./components/SearchInput";
 import MarkerElement from "./components/MarkerElement";
 import POIDetails from "./components/POIDetails";
@@ -13,6 +15,9 @@ import useGetPOIs from "./hooks/useGetPOIs";
 import useURLParams from "./hooks/useURLParams";
 
 import defaultIcon from "./utils/defaultIcon";
+
+import { ReactComponent as IconPlusSVG } from "./assets/icon-plus.svg";
+import { ReactComponent as IconMinusSVG } from "./assets/icon-minus.svg";
 
 import "leaflet/dist/leaflet.css";
 
@@ -37,6 +42,8 @@ const BOUNDS_PAD = 0.2;
 function Map() {
   const URLParams = useURLParams();
   const [map, setMap] = useState<MapType | null>(null);
+  const [isZoomInDisabled, setIsZoomInDisabled] = useState(false);
+  const [isZoomOutDisabled, setIsZoomOutDisabled] = useState(false);
   const { data, loading, error } = useGetPOIs(URLParams.api || undefined);
   const setBoundsInterval = useRef<number>();
 
@@ -83,6 +90,14 @@ function Map() {
       map.fitBounds(bounds.pad(BOUNDS_PAD));
       map.setMaxBounds(bounds.pad(BOUNDS_PAD));
     }, 1000);
+
+    map.on("zoom", () => {
+      const zoom = map.getZoom();
+      const maxZoom = map.getMaxZoom();
+
+      setIsZoomOutDisabled(zoom === 0);
+      setIsZoomInDisabled(zoom === maxZoom);
+    });
   }, [map, bounds]);
 
   return (
@@ -117,6 +132,7 @@ function Map() {
         zoom={MAP_ZOOM}
         style={{ height: "100vh" }}
         ref={setMap}
+        zoomControl={false}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -139,6 +155,21 @@ function Map() {
       <Modal isOpen={selectedPOI !== null} onClose={() => setSelectedPoi(null)}>
         {selectedPOI && <POIDetails {...selectedPOI} />}
       </Modal>
+
+      <ButtonWrapper className="absolute left-[10px] top-[10px]">
+        <MapButton
+          onClick={() => map && map.zoomIn()}
+          disabled={isZoomInDisabled}
+        >
+          <IconPlusSVG width={15} height={15} />
+        </MapButton>
+        <MapButton
+          onClick={() => map && map.zoomOut()}
+          disabled={isZoomOutDisabled}
+        >
+          <IconMinusSVG width={15} height={15} />
+        </MapButton>
+      </ButtonWrapper>
     </>
   );
 }

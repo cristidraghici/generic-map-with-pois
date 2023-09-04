@@ -47,7 +47,7 @@ const SearchInput: FunctionComponent<SearchInputProps> = ({
         ref={inputRef}
         type="text"
         value={value}
-        className="w-full p-1 pl-8 pr-8 border-[2px] bg-white hover:bg-gray-50 border-gray-400 rounded-md focus:outline-none focus:border-gray-800"
+        className="w-full p-1 pl-8 pr-8 border-[2px] bg-white hover:bg-gray-100 border-gray-800 border-opacity-50 rounded-md focus:outline-none focus:border-gray-800"
         {...rest}
       />
       <div className="absolute inset-y-0 left-0 flex items-center pl-2 text-black">
