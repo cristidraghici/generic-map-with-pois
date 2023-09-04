@@ -13,6 +13,7 @@ const useGetPOIs = (url?: string) => {
   const [data, setData] = useState<CustomMarker[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [reload, setReload] = useState(0);
 
   useEffect(() => {
     setLoading(true);
@@ -50,9 +51,9 @@ const useGetPOIs = (url?: string) => {
       .finally(() => {
         setLoading(false);
       });
-  }, [url]);
+  }, [url, reload]);
 
-  return { data, loading, error };
+  return { data, loading, error, reload: () => setReload(reload + 1) };
 };
 
 export default useGetPOIs;

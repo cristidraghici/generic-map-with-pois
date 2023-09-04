@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import L, { LatLngExpression, Map as MapType } from "leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
@@ -18,6 +18,7 @@ import defaultIcon from "./utils/defaultIcon";
 
 import { ReactComponent as IconPlusSVG } from "./assets/icon-plus.svg";
 import { ReactComponent as IconMinusSVG } from "./assets/icon-minus.svg";
+import { ReactComponent as IconRefreshSVG } from "./assets/icon-refresh.svg";
 
 import "leaflet/dist/leaflet.css";
 
@@ -44,7 +45,9 @@ function Map() {
   const [map, setMap] = useState<MapType | null>(null);
   const [isZoomInDisabled, setIsZoomInDisabled] = useState(false);
   const [isZoomOutDisabled, setIsZoomOutDisabled] = useState(false);
-  const { data, loading, error } = useGetPOIs(URLParams.api || undefined);
+  const { data, loading, error, reload } = useGetPOIs(
+    URLParams.api || undefined
+  );
   const setBoundsInterval = useRef<number>();
 
   const [selectedPOI, setSelectedPoi] = useState<CustomMarker | null>(null);
@@ -75,6 +78,15 @@ function Map() {
     [filteredData]
   );
 
+  const setMapBounds = useCallback(() => {
+    if (!map) {
+      return;
+    }
+
+    map.fitBounds(bounds.pad(BOUNDS_PAD));
+    map.setMaxBounds(bounds.pad(BOUNDS_PAD));
+  }, [map, bounds]);
+
   useEffect(() => {
     if (!map) {
       return;
@@ -86,10 +98,7 @@ function Map() {
 
     clearTimeout(setBoundsInterval.current);
 
-    setBoundsInterval.current = setTimeout(() => {
-      map.fitBounds(bounds.pad(BOUNDS_PAD));
-      map.setMaxBounds(bounds.pad(BOUNDS_PAD));
-    }, 1000);
+    setBoundsInterval.current = setTimeout(() => setMapBounds(), 1000);
 
     map.on("zoom", () => {
       const zoom = map.getZoom();
@@ -98,7 +107,7 @@ function Map() {
       setIsZoomOutDisabled(zoom === 0);
       setIsZoomInDisabled(zoom === maxZoom);
     });
-  }, [map, bounds]);
+  }, [map, bounds, setMapBounds]);
 
   return (
     <>
@@ -115,13 +124,13 @@ function Map() {
         />
 
         {loading && (
-          <div className="bg-white p-2 border-2 text-gray-800 rounded-md">
+          <div className="bg-white text-gray-800 p-2 rounded-md">
             The data for the map is loading...
           </div>
         )}
 
         {!loading && error && (
-          <div className="bg-white border-2 border-red-500 text-red-800 p-2 rounded-md">
+          <div className="bg-white border-red-500 text-red-800 p-2 rounded-md">
             {error}
           </div>
         )}
@@ -168,6 +177,19 @@ function Map() {
           disabled={isZoomOutDisabled}
         >
           <IconMinusSVG width={15} height={15} />
+        </MapButton>
+      </ButtonWrapper>
+      <ButtonWrapper className="absolute left-[10px] top-[80px]">
+        <MapButton
+          onClick={() => {
+            setSearch("");
+            reload();
+            // fallback for when the data is locally loaded
+            setMapBounds();
+          }}
+          disabled={loading}
+        >
+          <IconRefreshSVG width={15} height={15} />
         </MapButton>
       </ButtonWrapper>
     </>
