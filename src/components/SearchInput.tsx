@@ -4,8 +4,8 @@ import {
   useEffect,
   useRef,
 } from "react";
-import { ReactComponent as IconSearchSVG } from "../assets/icon-search.svg";
-import { ReactComponent as IconCloseSVG } from "../assets/icon-close.svg";
+import { ReactComponent as IconSearchSVG } from "../assets/icons/search.svg";
+import { ReactComponent as IconCloseSVG } from "../assets/icons/close.svg";
 
 interface SearchInputProps extends InputHTMLAttributes<HTMLInputElement> {
   onCancel?: () => void;

@@ -17,10 +17,10 @@ import useURLParams from "./hooks/useURLParams";
 
 import defaultIcon from "./utils/defaultIcon";
 
-import { ReactComponent as IconPlusSVG } from "./assets/icon-plus.svg";
-import { ReactComponent as IconMinusSVG } from "./assets/icon-minus.svg";
-import { ReactComponent as IconRefreshSVG } from "./assets/icon-refresh.svg";
-import { ReactComponent as IconInfoSVG } from "./assets/icon-info.svg";
+import { ReactComponent as IconPlusSVG } from "./assets/icons/plus.svg";
+import { ReactComponent as IconMinusSVG } from "./assets/icons/minus.svg";
+import { ReactComponent as IconRefreshSVG } from "./assets/icons/refresh.svg";
+import { ReactComponent as IconInfoSVG } from "./assets/icons/info.svg";
 
 import "leaflet/dist/leaflet.css";
 

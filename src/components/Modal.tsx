@@ -1,5 +1,5 @@
 import { FunctionComponent, PropsWithChildren, useEffect, useRef } from "react";
-import { ReactComponent as IconCloseSVG } from "../assets/icon-close.svg";
+import { ReactComponent as IconCloseSVG } from "../assets/icons/close.svg";
 
 interface ModalProps {
   isOpen: boolean;
