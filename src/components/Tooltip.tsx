@@ -1,7 +1,7 @@
-import { FunctionComponent, HTMLProps, PropsWithChildren } from "react";
+import { FunctionComponent, HTMLProps, PropsWithChildren } from 'react'
 
 interface TooltipProps extends HTMLProps<HTMLButtonElement> {
-  text: string | string[];
+  text: string | string[]
 }
 
 const Tooltip: FunctionComponent<PropsWithChildren<TooltipProps>> = ({
@@ -10,10 +10,10 @@ const Tooltip: FunctionComponent<PropsWithChildren<TooltipProps>> = ({
   text,
 }) => {
   return (
-    <div className="relative inline-block group duration-300">
+    <div className="group relative inline-block duration-300">
       {children}
       <div
-        className={`tooltip hidden group-hover:block absolute -top-2 -right-3 translate-x-full bg-gray-800 text-white text-sm py-1 px-2 opacity-90 rounded-md cursor-pointer before:content-[''] before:absolute before:top-1/2  before:right-[100%] before:-translate-y-1/2 before:border-8 before:border-y-transparent before:border-l-transparent before:border-r-gray-700 ${className}`}
+        className={`tooltip absolute -right-3 -top-2 hidden translate-x-full cursor-pointer rounded-md bg-gray-800 px-2 py-1 text-sm text-white opacity-90 before:absolute before:right-[100%] before:top-1/2 before:-translate-y-1/2  before:border-8 before:border-y-transparent before:border-l-transparent before:border-r-gray-700 before:content-[''] group-hover:block ${className}`}
       >
         {!Array.isArray(text)
           ? text
@@ -24,7 +24,7 @@ const Tooltip: FunctionComponent<PropsWithChildren<TooltipProps>> = ({
             ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Tooltip;
+export default Tooltip

@@ -1,10 +1,10 @@
-import { FunctionComponent, PropsWithChildren } from "react";
-import { Marker, Tooltip } from "react-leaflet";
+import { FunctionComponent, PropsWithChildren } from 'react'
+import { Marker, Tooltip } from 'react-leaflet'
 
 const MarkerElement: FunctionComponent<
   PropsWithChildren<{
-    marker: CustomMarker;
-    onClick?: () => void;
+    marker: CustomMarker
+    onClick?: () => void
   }>
 > = ({ marker: { latitude, longitude }, onClick, children }) => {
   return (
@@ -12,7 +12,7 @@ const MarkerElement: FunctionComponent<
       position={[latitude, longitude]}
       eventHandlers={{
         dblclick: () => {
-          onClick && onClick();
+          onClick && onClick()
         },
       }}
     >
@@ -22,7 +22,7 @@ const MarkerElement: FunctionComponent<
         </Tooltip>
       )}
     </Marker>
-  );
-};
+  )
+}
 
-export default MarkerElement;
+export default MarkerElement

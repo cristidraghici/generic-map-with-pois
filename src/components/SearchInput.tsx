@@ -3,12 +3,12 @@ import {
   FunctionComponent,
   useEffect,
   useRef,
-} from "react";
-import { ReactComponent as IconSearchSVG } from "../assets/icons/search.svg";
-import { ReactComponent as IconCloseSVG } from "../assets/icons/close.svg";
+} from 'react'
+import { ReactComponent as IconSearchSVG } from '../assets/icons/search.svg'
+import { ReactComponent as IconCloseSVG } from '../assets/icons/close.svg'
 
 interface SearchInputProps extends InputHTMLAttributes<HTMLInputElement> {
-  onCancel?: () => void;
+  onCancel?: () => void
 }
 
 const SearchInput: FunctionComponent<SearchInputProps> = ({
@@ -17,44 +17,44 @@ const SearchInput: FunctionComponent<SearchInputProps> = ({
   value,
   ...rest
 }) => {
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
-    const inputElement = inputRef.current;
+    const inputElement = inputRef.current
 
     if (!inputElement) {
-      return;
+      return
     }
 
     const handleEscapeKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && onCancel) {
-        onCancel();
+      if (e.key === 'Escape' && onCancel) {
+        onCancel()
       }
-    };
+    }
 
     // Add the event listener when the component mounts
-    inputElement.addEventListener("keydown", handleEscapeKey);
+    inputElement.addEventListener('keydown', handleEscapeKey)
 
     // Clean up the event listener when the component unmounts
     return () => {
-      inputElement.removeEventListener("keydown", handleEscapeKey);
-    };
-  }, [onCancel]);
+      inputElement.removeEventListener('keydown', handleEscapeKey)
+    }
+  }, [onCancel])
 
   return (
-    <div className={`relative ${className || ""}`}>
+    <div className={`relative ${className || ''}`}>
       <input
         ref={inputRef}
         type="text"
         value={value}
-        className="w-full p-1 pl-8 pr-8 border-[2px] bg-white hover:bg-gray-100 border-gray-800 border-opacity-50 rounded-md focus:outline-none focus:border-gray-800"
+        className="w-full rounded-md border-[2px] border-gray-800 border-opacity-50 bg-white p-1 pl-8 pr-8 hover:bg-gray-100 focus:border-gray-800 focus:outline-none"
         {...rest}
       />
       <div className="absolute inset-y-0 left-0 flex items-center pl-2 text-black">
         <IconSearchSVG className="fill-gray-800" width={20} />
       </div>
       {!!value && (
-        <div className="absolute inset-y-0 right-0 flex items-center pr-2 text-black cursor-pointer">
+        <div className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-2 text-black">
           <IconCloseSVG
             className="fill-gray-800"
             width={20}
@@ -63,7 +63,7 @@ const SearchInput: FunctionComponent<SearchInputProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default SearchInput;
+export default SearchInput

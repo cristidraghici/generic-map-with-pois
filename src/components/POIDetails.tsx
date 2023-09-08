@@ -1,4 +1,4 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent } from 'react'
 
 const POIDetails: FunctionComponent<CustomMarker> = ({
   title,
@@ -6,7 +6,7 @@ const POIDetails: FunctionComponent<CustomMarker> = ({
 }): JSX.Element => {
   return (
     <div className="p-1">
-      <h3 className="font-bold p-2 pl-0">{title}</h3>
+      <h3 className="p-2 pl-0 font-bold">{title}</h3>
 
       {!!description &&
         (!Array.isArray(description) ? (
@@ -14,13 +14,13 @@ const POIDetails: FunctionComponent<CustomMarker> = ({
         ) : (
           <ul className="mt-2 [&>*:last-child]:border-0">
             {description.map((descriptionItem, key) => (
-              <li className="p-2 pl-0 border-b-2 border-gray-100" key={key}>
+              <li className="border-b-2 border-gray-100 p-2 pl-0" key={key}>
                 {descriptionItem}
               </li>
             ))}
           </ul>
         ))}
     </div>
-  );
-};
-export default POIDetails;
+  )
+}
+export default POIDetails

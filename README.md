@@ -13,12 +13,12 @@ If you specify an address in the `?api=` url param, then it will try to use that
 ```typescript
 type ResponseType = Promise<
   {
-    latitude: number;
-    longitude: number;
-    title: string;
-    description?: string;
+    latitude: number
+    longitude: number
+    title: string
+    description?: string
   }[]
->;
+>
 ```
 
 ## Install and first run
