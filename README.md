@@ -2,6 +2,10 @@
 
 > This the a generic leaflet map with points of interest
 
+## Demo
+
+[https://cristidraghici.github.io/generic-map-with-pois/?api=/cities_in_romania.json](https://cristidraghici.github.io/generic-map-with-pois/?api=/cities_in_romania.json)
+
 ## About
 
 This project uses React, Typescript, Leaflet and OpenStreetMap to show points of interest (POIs).
@@ -16,9 +20,18 @@ type ResponseType = Promise<
     latitude: number
     longitude: number
     title: string
-    description?: string
+    description?: string | string[]
   }[]
 >
+```
+
+There is also an option to use an enveloped structure:
+
+```typescript
+interface APIEnvelope<T> {
+  metadata: string | string[]
+  records: T[]
+}
 ```
 
 ## Install and first run
