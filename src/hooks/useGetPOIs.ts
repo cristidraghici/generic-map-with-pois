@@ -45,8 +45,11 @@ const useGetPOIs = (url?: string) => {
 
     // Fetch the data
     setLoading(true)
+    setError(null)
 
-    fetch(url)
+    const controller = new AbortController()
+
+    fetch(url, { signal: controller.signal })
       .then((response) => {
         if (!response.ok) {
           throw new Error('Could not retrieve the data.')
@@ -83,11 +86,20 @@ const useGetPOIs = (url?: string) => {
         setMetadata('')
       })
       .catch((error) => {
+        // Do not show an error message if the request was cancelled
+        if (error.name === 'AbortError') {
+          return
+        }
+
         setError(error?.message || error.toString())
       })
       .finally(() => {
         setLoading(false)
       })
+
+    return () => {
+      controller.abort()
+    }
   }, [url, reload])
 
   return {
@@ -95,7 +107,9 @@ const useGetPOIs = (url?: string) => {
     metadata,
     loading,
     error,
-    reload: () => setReload(reload + 1),
+    reload: () => {
+      setReload(reload + 1)
+    },
   }
 }
 
