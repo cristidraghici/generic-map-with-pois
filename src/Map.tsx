@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { MapContainer, TileLayer } from 'react-leaflet'
 import L, { LatLngExpression, Map as MapType } from 'leaflet'
 import MarkerClusterGroup from 'react-leaflet-cluster'
@@ -50,7 +50,6 @@ function Map() {
   const { records, metadata, loading, error, reload } = useGetPOIs(
     URLParams.api || undefined,
   )
-  const setBoundsInterval = useRef<number>()
 
   const [selectedPOI, setSelectedPoi] = useState<CustomMarker | null>(null)
 
@@ -98,9 +97,7 @@ function Map() {
       return
     }
 
-    clearTimeout(setBoundsInterval.current)
-
-    setBoundsInterval.current = setTimeout(() => setMapBounds(), 1000)
+    const setBoundsInterval = setTimeout(() => setMapBounds(), 1000)
 
     map.on('zoom', () => {
       const zoom = map.getZoom()
@@ -109,6 +106,8 @@ function Map() {
       setIsZoomOutDisabled(zoom === 0)
       setIsZoomInDisabled(zoom === maxZoom)
     })
+
+    return () => clearTimeout(setBoundsInterval)
   }, [map, bounds, setMapBounds])
 
   if (!URLParams.api) {
