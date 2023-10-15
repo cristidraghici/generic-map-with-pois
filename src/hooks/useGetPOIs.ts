@@ -1,4 +1,7 @@
 import { useState, useEffect } from 'react'
+
+import { customMarkerSchema, customMarkerWithMetadataSchema } from '../schemas'
+
 import mockData from '../assets/cities_in_romania.json'
 
 /**
@@ -46,24 +49,41 @@ const useGetPOIs = (url?: string) => {
     fetch(url)
       .then((response) => {
         if (!response.ok) {
-          throw new Error(response.statusText)
+          throw new Error('Could not retrieve the data.')
         }
-        return response.json() as Promise<
-          CustomMarker[] | APIEnvelope<CustomMarker>
-        >
+
+        return response.json()
       })
-      .then((json) => {
-        if (Array.isArray(json)) {
-          setRecords(json)
-          setMetadata('')
+      .then((json: CustomMarker[] | CustomMarkerWithMetadata) => {
+        const hasMetadata = !Array.isArray(json)
+
+        // has metadata
+        if (hasMetadata) {
+          const validatedResponse =
+            customMarkerWithMetadataSchema.safeParse(json)
+
+          if (!validatedResponse.success) {
+            throw new Error('Could not parse the entities in the response.')
+          }
+
+          setRecords(validatedResponse.data.records)
+          setMetadata(validatedResponse.data.metadata)
+
           return
         }
 
-        setRecords(json.records)
-        setMetadata(json.metadata)
+        // direct markers
+        const validatedResponse = customMarkerSchema.array().safeParse(json)
+
+        if (!validatedResponse.success) {
+          throw new Error('Could not parse the entities in the response.')
+        }
+
+        setRecords(validatedResponse.data)
+        setMetadata('')
       })
       .catch((error) => {
-        setError(error as string)
+        setError(error?.message || error.toString())
       })
       .finally(() => {
         setLoading(false)
