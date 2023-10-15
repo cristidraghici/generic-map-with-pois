@@ -55,18 +55,20 @@ function Map() {
 
   const [search, setSearch] = useState<string>('')
 
-  const filteredRecords = useMemo(
-    () =>
-      records.filter((poi) => {
-        const allText = `${poi.title} ${
-          Array.isArray(poi.description)
-            ? poi.description.concat(' ')
-            : poi.description
-        }`
-        return allText.toLowerCase().includes(search.toLowerCase())
-      }),
-    [records, search],
-  )
+  const filteredRecords = useMemo(() => {
+    if (error) {
+      return []
+    }
+
+    return records.filter((poi) => {
+      const allText = `${poi.title} ${
+        Array.isArray(poi.description)
+          ? poi.description.concat(' ')
+          : poi.description
+      }`
+      return allText.toLowerCase().includes(search.toLowerCase())
+    })
+  }, [records, search, error])
 
   const bounds = useMemo(
     () =>
@@ -80,13 +82,13 @@ function Map() {
   )
 
   const setMapBounds = useCallback(() => {
-    if (!map) {
+    if (!map || error) {
       return
     }
 
     map.fitBounds(bounds.pad(BOUNDS_PAD))
     map.setMaxBounds(bounds.pad(BOUNDS_PAD))
-  }, [map, bounds])
+  }, [map, bounds, error])
 
   useEffect(() => {
     if (!map) {
