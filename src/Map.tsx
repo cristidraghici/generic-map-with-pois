@@ -216,8 +216,8 @@ function Map() {
 
       {!!metadata && (
         <ButtonWrapper className="absolute left-[10px] top-[120px]">
-          <Tooltip text={metadata} className="w-[240px] text-left ">
-            <MapButton>
+          <Tooltip text={metadata} className="w-[240px] text-left">
+            <MapButton className="!bg-transparent">
               <IconInfoSVG width={15} height={15} />
             </MapButton>
           </Tooltip>
