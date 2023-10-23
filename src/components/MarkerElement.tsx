@@ -16,11 +16,7 @@ const MarkerElement: FunctionComponent<
         },
       }}
     >
-      {children && (
-        <Tooltip direction="top" opacity={1} offset={[0, -50]}>
-          {children}
-        </Tooltip>
-      )}
+      {children && <Tooltip direction="auto">{children}</Tooltip>}
     </Marker>
   )
 }
