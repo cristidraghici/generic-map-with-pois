@@ -47,38 +47,22 @@ function Map() {
   const [map, setMap] = useState<MapType | null>(null)
   const [isZoomInDisabled, setIsZoomInDisabled] = useState(false)
   const [isZoomOutDisabled, setIsZoomOutDisabled] = useState(false)
+
+  const [search, setSearch] = useState<string>('')
+
   const { records, metadata, loading, error, reload } = useGetPOIs(
     URLParams.api || undefined,
+    search,
   )
 
   const [selectedPOI, setSelectedPoi] = useState<CustomMarker | null>(null)
 
-  const [search, setSearch] = useState<string>('')
-
-  const filteredRecords = useMemo(() => {
-    if (error) {
-      return []
-    }
-
-    return records.filter((poi) => {
-      const allText = `${poi.title} ${
-        Array.isArray(poi.description)
-          ? poi.description.concat(' ')
-          : poi.description
-      }`
-      return allText.toLowerCase().includes(search.toLowerCase())
-    })
-  }, [records, search, error])
-
   const bounds = useMemo(
     () =>
       L.latLngBounds(
-        filteredRecords.map<LatLngExpression>((poi) => [
-          poi.latitude,
-          poi.longitude,
-        ]),
+        records.map<LatLngExpression>((poi) => [poi.latitude, poi.longitude]),
       ),
-    [filteredRecords],
+    [records],
   )
 
   const setMapBounds = useCallback(() => {
@@ -164,7 +148,7 @@ function Map() {
         />
 
         <MarkerClusterGroup chunkedLoading>
-          {filteredRecords.map((poi, index) => (
+          {records.map((poi, index) => (
             <MarkerElement
               key={index}
               marker={poi}

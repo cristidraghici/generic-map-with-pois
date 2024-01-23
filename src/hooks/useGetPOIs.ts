@@ -12,7 +12,7 @@ const ALLOWED_API_URLS: RegExp[] = [
   /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/, // A regex for the Github pages
 ]
 
-const useGetPOIs = (url?: string) => {
+const useGetPOIs = (url?: string, search?: string) => {
   const [records, setRecords] = useState<CustomMarker[]>([])
   const [metadata, setMetadata] = useState<Metadata>('')
 
@@ -103,7 +103,16 @@ const useGetPOIs = (url?: string) => {
   }, [url, reload])
 
   return {
-    records,
+    records: !search
+      ? records
+      : records.filter((record) => {
+          const allText = `${record.title} ${
+            Array.isArray(record.description)
+              ? record.description.concat(' ')
+              : record.description
+          }`
+          return allText.toLowerCase().includes(search.toLowerCase())
+        }),
     metadata,
     loading,
     error,
