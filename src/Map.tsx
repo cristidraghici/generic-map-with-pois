@@ -3,6 +3,7 @@ import { MapContainer, TileLayer } from 'react-leaflet'
 import L, { LatLngExpression } from 'leaflet'
 import MarkerClusterGroup from 'react-leaflet-cluster'
 
+import ConditionalElement from './components/ConditionalElement'
 import ButtonWrapper from './components/ButtonWrapper'
 import MapButton from './components/MapButton'
 import SearchInput from './components/SearchInput'
@@ -82,17 +83,21 @@ function Map() {
           }}
         />
 
-        {loading && (
-          <div className="rounded-md bg-white p-2 text-gray-800">
-            The data for the map is loading...
-          </div>
-        )}
+        <ConditionalElement
+          as="div"
+          rcIf={loading}
+          className="rounded-md bg-white p-2 text-gray-800"
+        >
+          The data for the map is loading...
+        </ConditionalElement>
 
-        {!loading && error && (
-          <div className="rounded-md border-red-500 bg-white p-2 text-red-800">
-            {error}
-          </div>
-        )}
+        <ConditionalElement
+          as="div"
+          rcIf={!loading && !!error}
+          className="rounded-md border-red-500 bg-white p-2 text-red-800"
+        >
+          {error}
+        </ConditionalElement>
       </div>
 
       <MapContainer
@@ -158,7 +163,7 @@ function Map() {
         </MapButton>
       </ButtonWrapper>
 
-      {!!metadata && (
+      <ConditionalElement rcIf={!!metadata}>
         <ButtonWrapper className="absolute left-[10px] top-[120px]">
           <Tooltip text={metadata} className="w-[240px] text-left">
             <MapButton className="!bg-transparent">
@@ -166,7 +171,7 @@ function Map() {
             </MapButton>
           </Tooltip>
         </ButtonWrapper>
-      )}
+      </ConditionalElement>
     </>
   )
 }
