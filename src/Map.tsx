@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState } from 'react'
 import { MapContainer, TileLayer } from 'react-leaflet'
-import L, { LatLngExpression, Map as MapType } from 'leaflet'
+import L, { LatLngExpression } from 'leaflet'
 import MarkerClusterGroup from 'react-leaflet-cluster'
 
 import ButtonWrapper from './components/ButtonWrapper'
@@ -14,6 +14,7 @@ import Tooltip from './components/Tooltip'
 
 import useGetPOIs from './hooks/useGetPOIs'
 import useURLParams from './hooks/useURLParams'
+import useMap from './hooks/useMap'
 
 import defaultIcon from './utils/defaultIcon'
 
@@ -40,61 +41,20 @@ const MAP_ZOOM = 3
 /**
  * Padding for the bounds
  */
-const BOUNDS_PAD = 0.2
+const BOUNDS_PADDING = 0.2
 
 function Map() {
   const URLParams = useURLParams()
-  const [map, setMap] = useState<MapType | null>(null)
-  const [isZoomInDisabled, setIsZoomInDisabled] = useState(false)
-  const [isZoomOutDisabled, setIsZoomOutDisabled] = useState(false)
 
   const [search, setSearch] = useState<string>('')
-
   const { records, metadata, loading, error, reload } = useGetPOIs(
     URLParams.api || undefined,
     search,
   )
+  const { map, setMap, setMapBounds, isZoomInDisabled, isZoomOutDisabled } =
+    useMap(records, BOUNDS_PADDING)
 
   const [selectedPOI, setSelectedPoi] = useState<CustomMarker | null>(null)
-
-  const bounds = useMemo(
-    () =>
-      L.latLngBounds(
-        records.map<LatLngExpression>((poi) => [poi.latitude, poi.longitude]),
-      ),
-    [records],
-  )
-
-  const setMapBounds = useCallback(() => {
-    if (!map || error) {
-      return
-    }
-
-    map.fitBounds(bounds.pad(BOUNDS_PAD))
-    map.setMaxBounds(bounds.pad(BOUNDS_PAD))
-  }, [map, bounds, error])
-
-  useEffect(() => {
-    if (!map) {
-      return
-    }
-
-    if (!bounds.isValid()) {
-      return
-    }
-
-    const setBoundsInterval = setTimeout(() => setMapBounds(), 1000)
-
-    map.on('zoom', () => {
-      const zoom = map.getZoom()
-      const maxZoom = map.getMaxZoom()
-
-      setIsZoomOutDisabled(zoom === 0)
-      setIsZoomInDisabled(zoom === maxZoom)
-    })
-
-    return () => clearTimeout(setBoundsInterval)
-  }, [map, bounds, setMapBounds])
 
   if (!URLParams.api) {
     return (
