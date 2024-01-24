@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { MapContainer, TileLayer } from 'react-leaflet'
-import L, { LatLngExpression } from 'leaflet'
 import MarkerClusterGroup from 'react-leaflet-cluster'
 
 import ConditionalElement from './components/ConditionalElement'
@@ -17,32 +16,12 @@ import useGetPOIs from './hooks/useGetPOIs'
 import useURLParams from './hooks/useURLParams'
 import useMap from './hooks/useMap'
 
-import defaultIcon from './utils/defaultIcon'
-
 import { ReactComponent as IconPlusSVG } from './assets/icons/plus.svg'
 import { ReactComponent as IconMinusSVG } from './assets/icons/minus.svg'
 import { ReactComponent as IconRefreshSVG } from './assets/icons/refresh.svg'
 import { ReactComponent as IconInfoSVG } from './assets/icons/info.svg'
 
 import 'leaflet/dist/leaflet.css'
-
-// Fix for github pages not showing the icon
-L.Marker.prototype.options.icon = defaultIcon
-
-/**
- * The default center of the map (currently Bucharest :) )
- */
-const MAP_CENTER: LatLngExpression = [44.4268, 26.1025]
-
-/**
- * The initial zoom of the map
- */
-const MAP_ZOOM = 3
-
-/**
- * Padding for the bounds
- */
-const BOUNDS_PADDING = 0.2
 
 function Map() {
   const URLParams = useURLParams()
@@ -52,8 +31,14 @@ function Map() {
     URLParams.api || undefined,
     search,
   )
-  const { map, setMap, setMapBounds, isZoomInDisabled, isZoomOutDisabled } =
-    useMap(records, BOUNDS_PADDING)
+  const {
+    map,
+    setMap,
+    setMapBounds,
+    isZoomInDisabled,
+    isZoomOutDisabled,
+    config,
+  } = useMap(records)
 
   const [selectedPOI, setSelectedPoi] = useState<CustomMarker | null>(null)
 
@@ -101,8 +86,7 @@ function Map() {
       </div>
 
       <MapContainer
-        center={MAP_CENTER}
-        zoom={MAP_ZOOM}
+        {...config}
         style={{ height: '100vh' }}
         ref={setMap}
         zoomControl={false}
