@@ -138,15 +138,13 @@ function Map() {
         <MapButton
           onClick={() => map && map.zoomIn()}
           disabled={isZoomInDisabled}
-        >
-          <IconPlusSVG width={15} height={15} />
-        </MapButton>
+          icon={<IconPlusSVG width={15} height={15} />}
+        />
         <MapButton
           onClick={() => map && map.zoomOut()}
           disabled={isZoomOutDisabled}
-        >
-          <IconMinusSVG width={15} height={15} />
-        </MapButton>
+          icon={<IconMinusSVG width={15} height={15} />}
+        />
       </ButtonWrapper>
 
       <ButtonWrapper className="absolute left-[10px] top-[80px]">
@@ -158,17 +156,17 @@ function Map() {
             setMapBounds()
           }}
           disabled={loading}
-        >
-          <IconRefreshSVG width={15} height={15} />
-        </MapButton>
+          icon={<IconRefreshSVG width={15} height={15} />}
+        />
       </ButtonWrapper>
 
       <ConditionalElement rcIf={!!metadata}>
         <ButtonWrapper className="absolute left-[10px] top-[120px]">
-          <Tooltip text={metadata} className="w-[240px] text-left">
-            <MapButton className="!bg-transparent">
-              <IconInfoSVG width={15} height={15} />
-            </MapButton>
+          <Tooltip tooltip={metadata} className="w-[240px] text-left">
+            <MapButton
+              className="!bg-transparent"
+              icon={<IconInfoSVG width={15} height={15} />}
+            />
           </Tooltip>
         </ButtonWrapper>
       </ConditionalElement>
