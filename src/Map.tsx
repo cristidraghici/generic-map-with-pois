@@ -57,18 +57,6 @@ function Map() {
 
   const [selectedPOI, setSelectedPoi] = useState<CustomMarker | null>(null)
 
-  if (!URLParams.api) {
-    return (
-      <div className="p-4 text-center">
-        It appears you have not specified an <strong>?api=</strong> param. You
-        can use the default meanwhile:
-        <div className="pt-4">
-          <a href="?api=/cities_in_romania.json">cities_in_romania.json</a>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <>
       <div className="absolute right-0 top-0 z-[999] w-[400px] max-w-full p-2 pl-[50px]">
@@ -82,6 +70,18 @@ function Map() {
             setSearch('')
           }}
         />
+
+        <ConditionalElement
+          as="div"
+          rcIf={!URLParams.api}
+          className="rounded-md bg-white p-2 text-gray-800"
+        >
+          It appears you have not specified an <strong>?api=</strong> param. You
+          can use the default meanwhile:
+          <div className="pt-4">
+            <a href="?api=/cities_in_romania.json">cities_in_romania.json</a>
+          </div>
+        </ConditionalElement>
 
         <ConditionalElement
           as="div"
