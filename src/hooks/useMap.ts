@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import L, { LatLngExpression, Map as MapType, LatLngBounds } from 'leaflet'
 import defaultIcon from '../utils/defaultIcon'
+import { CustomMarker } from '../types'
 
 // Fix for github pages not showing the icon
 L.Marker.prototype.options.icon = defaultIcon

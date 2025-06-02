@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { customMarkerSchema, customMarkerWithMetadataSchema } from '../schemas'
 import mockData from '../assets/cities_in_romania.json'
+import { CustomMarker, CustomMarkerWithMetadata, Metadata } from '../types'
 
 /**
  * Regular expressions for validating API URLs

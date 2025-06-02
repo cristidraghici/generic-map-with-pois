@@ -1,5 +1,6 @@
 import { FunctionComponent, PropsWithChildren } from 'react'
 import { Marker, Tooltip } from 'react-leaflet'
+import { CustomMarker } from '../types'
 
 const MarkerElement: FunctionComponent<
   PropsWithChildren<{

@@ -22,6 +22,7 @@ import { ReactComponent as IconRefreshSVG } from './assets/icons/refresh.svg'
 import { ReactComponent as IconInfoSVG } from './assets/icons/info.svg'
 
 import 'leaflet/dist/leaflet.css'
+import { CustomMarker } from './types'
 
 function Map() {
   const URLParams = useURLParams()

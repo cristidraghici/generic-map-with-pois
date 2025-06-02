@@ -1,4 +1,5 @@
 import { FunctionComponent } from 'react'
+import { CustomMarker } from '../types'
 
 const POIDetails: FunctionComponent<CustomMarker> = ({
   title,
