@@ -1,5 +1,6 @@
-import SearchInput from './SearchInput'
-import ConditionalElement from './ConditionalElement'
+import { FunctionComponent } from 'react'
+import SearchField from '../molecules/SearchField'
+import ConditionalElement from '../atoms/ConditionalElement'
 
 interface SearchSectionProps {
   search: string
@@ -10,20 +11,20 @@ interface SearchSectionProps {
   onSearchCancel: () => void
 }
 
-const SearchSection = ({
+const SearchSection: FunctionComponent<SearchSectionProps> = ({
   search,
   loading,
   error,
   api,
   onSearchChange,
   onSearchCancel,
-}: SearchSectionProps) => {
+}) => {
   return (
-    <>
-      <SearchInput
+    <div className="absolute right-0 top-0 z-[999] w-[400px] max-w-full p-2 pl-[50px]">
+      <SearchField
         className="mb-2"
         value={search}
-        onChange={(e) => onSearchChange(e.target.value)}
+        onChange={onSearchChange}
         onCancel={onSearchCancel}
       />
 
@@ -54,7 +55,7 @@ const SearchSection = ({
       >
         {error}
       </ConditionalElement>
-    </>
+    </div>
   )
 }
 

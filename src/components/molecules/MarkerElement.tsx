@@ -1,12 +1,14 @@
 import { FunctionComponent, PropsWithChildren } from 'react'
 import { Marker, Tooltip } from 'react-leaflet'
-import { CustomMarker } from '../types'
+import { CustomMarker } from '@/types'
+
+interface MarkerElementProps {
+  marker: CustomMarker
+  onClick?: () => void
+}
 
 const MarkerElement: FunctionComponent<
-  PropsWithChildren<{
-    marker: CustomMarker
-    onClick?: () => void
-  }>
+  PropsWithChildren<MarkerElementProps>
 > = ({ marker: { latitude, longitude }, onClick, children }) => {
   return (
     <Marker

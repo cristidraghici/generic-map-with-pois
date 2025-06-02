@@ -6,6 +6,7 @@ module.exports = {
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
     "plugin:import/recommended",
+    "plugin:import/typescript",
     "plugin:jsx-a11y/recommended",
     "plugin:@typescript-eslint/recommended",
     "eslint-config-prettier"
@@ -15,6 +16,10 @@ module.exports = {
       "version": "detect"
     },
     "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": ["./tsconfig.json"]
+      },
       "node": {
         "paths": [
           "src"
@@ -44,8 +49,17 @@ module.exports = {
       { allowConstantExport: true },
     ],
     "jsx-a11y/no-static-element-interactions": "off",
-    "jsx-a11y/click-events-have-key-events": "off"
+    "jsx-a11y/click-events-have-key-events": "off",
+    "import/no-named-as-default-member": "off",
   },
+  overrides: [
+    {
+      files: ['*.tsx', '*.ts'],
+      rules: {
+        'import/default': 'off',
+      },
+    },
+  ],
   ignorePatterns: ['dist', '.eslintrc.cjs'],
   parser: '@typescript-eslint/parser',
   plugins: ['react-refresh']

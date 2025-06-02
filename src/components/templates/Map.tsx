@@ -5,19 +5,19 @@ import MarkerClusterGroup from 'react-leaflet-cluster'
 import 'leaflet/dist/leaflet.css'
 
 // Components
-import Modal from './components/Modal'
-import POIDetails from './components/POIDetails'
-import MarkerElement from './components/MarkerElement'
-import MapControls from './components/MapControls'
-import SearchSection from './components/SearchSection'
+import Modal from '@/components/atoms/Modal'
+import POIDetails from '@/components/molecules/POIDetails'
+import MarkerElement from '@/components/molecules/MarkerElement'
+import MapControls from '@/components/organisms/MapControls'
+import SearchSection from '@/components/organisms/SearchSection'
 
 // Hooks
-import useGetPOIs from './hooks/useGetPOIs'
-import useURLParams from './hooks/useURLParams'
-import useMap from './hooks/useMap'
+import useGetPOIs from '@/hooks/useGetPOIs'
+import useURLParams from '@/hooks/useURLParams'
+import useMap from '@/hooks/useMap'
 
 // Types
-import { CustomMarker } from './types'
+import { CustomMarker } from '@/types'
 
 // Constants
 const MAP_TILE_LAYER = {
@@ -65,16 +65,14 @@ function Map() {
 
   return (
     <>
-      <div className="absolute right-0 top-0 z-[999] w-[400px] max-w-full p-2 pl-[50px]">
-        <SearchSection
-          search={search}
-          loading={loading}
-          error={error}
-          api={URLParams.api}
-          onSearchChange={handleSearchChange}
-          onSearchCancel={handleSearchCancel}
-        />
-      </div>
+      <SearchSection
+        search={search}
+        loading={loading}
+        error={error}
+        api={URLParams.api}
+        onSearchChange={handleSearchChange}
+        onSearchCancel={handleSearchCancel}
+      />
 
       <MapContainer
         {...config}
@@ -84,7 +82,7 @@ function Map() {
       >
         <TileLayer {...MAP_TILE_LAYER} />
 
-        <MarkerClusterGroup chunkedLoading>
+        <MarkerClusterGroup>
           {records.map((poi, index) => (
             <MarkerElement
               key={index}

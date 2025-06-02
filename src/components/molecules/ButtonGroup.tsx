@@ -1,6 +1,6 @@
 import { FunctionComponent, PropsWithChildren, ComponentProps } from 'react'
 
-const ButtonWrapper: FunctionComponent<
+const ButtonGroup: FunctionComponent<
   PropsWithChildren<ComponentProps<'div'>>
 > = ({ children, className }) => {
   return (
@@ -12,4 +12,4 @@ const ButtonWrapper: FunctionComponent<
   )
 }
 
-export default ButtonWrapper
+export default ButtonGroup

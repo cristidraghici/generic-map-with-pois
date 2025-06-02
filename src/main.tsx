@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import Map from './Map.tsx'
+import Map from './components/templates/Map'
 
 import './index.css'
 

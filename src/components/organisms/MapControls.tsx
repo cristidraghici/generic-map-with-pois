@@ -1,11 +1,13 @@
+import { FunctionComponent } from 'react'
+import ButtonGroup from '../molecules/ButtonGroup'
+import Button from '../atoms/Button'
+import Tooltip from '../atoms/Tooltip'
 import { Map as MapType } from 'leaflet'
-import ButtonWrapper from './ButtonWrapper'
-import MapButton from './MapButton'
-import Tooltip from './Tooltip'
-import { ReactComponent as IconPlusSVG } from '../assets/icons/plus.svg'
-import { ReactComponent as IconMinusSVG } from '../assets/icons/minus.svg'
-import { ReactComponent as IconRefreshSVG } from '../assets/icons/refresh.svg'
-import { ReactComponent as IconInfoSVG } from '../assets/icons/info.svg'
+
+import { ReactComponent as IconPlusSVG } from '@/assets/icons/plus.svg'
+import { ReactComponent as IconMinusSVG } from '@/assets/icons/minus.svg'
+import { ReactComponent as IconRefreshSVG } from '@/assets/icons/refresh.svg'
+import { ReactComponent as IconInfoSVG } from '@/assets/icons/info.svg'
 
 interface MapControlsProps {
   map: MapType | null
@@ -17,7 +19,7 @@ interface MapControlsProps {
   setMapBounds: () => void
 }
 
-const MapControls = ({
+const MapControls: FunctionComponent<MapControlsProps> = ({
   map,
   isZoomInDisabled,
   isZoomOutDisabled,
@@ -25,51 +27,50 @@ const MapControls = ({
   metadata,
   onRefresh,
   setMapBounds,
-}: MapControlsProps) => {
+}) => {
   const handleRefresh = () => {
     onRefresh()
-    // fallback for when the data is locally loaded
     setMapBounds()
   }
 
   return (
     <>
-      <ButtonWrapper className="absolute left-[10px] top-[10px]">
-        <MapButton
-          onClick={() => map && map.zoomIn()}
+      <ButtonGroup className="absolute left-[10px] top-[10px]">
+        <Button
+          onClick={() => map?.zoomIn()}
           disabled={isZoomInDisabled}
           icon={<IconPlusSVG width={15} height={15} className="fill-current" />}
         />
-        <MapButton
-          onClick={() => map && map.zoomOut()}
+        <Button
+          onClick={() => map?.zoomOut()}
           disabled={isZoomOutDisabled}
           icon={
             <IconMinusSVG width={15} height={15} className="fill-current" />
           }
         />
-      </ButtonWrapper>
+      </ButtonGroup>
 
-      <ButtonWrapper className="absolute left-[10px] top-[80px]">
-        <MapButton
+      <ButtonGroup className="absolute left-[10px] top-[80px]">
+        <Button
           onClick={handleRefresh}
           disabled={loading}
           icon={
             <IconRefreshSVG width={15} height={15} className="fill-current" />
           }
         />
-      </ButtonWrapper>
+      </ButtonGroup>
 
       {metadata && (
-        <ButtonWrapper className="absolute left-[10px] top-[120px]">
+        <ButtonGroup className="absolute left-[10px] top-[120px]">
           <Tooltip tooltip={metadata} className="w-[240px] text-left">
-            <MapButton
-              className="!bg-transparent"
+            <Button
+              variant="transparent"
               icon={
                 <IconInfoSVG width={15} height={15} className="fill-current" />
               }
             />
           </Tooltip>
-        </ButtonWrapper>
+        </ButtonGroup>
       )}
     </>
   )
