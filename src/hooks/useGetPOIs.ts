@@ -1,124 +1,127 @@
-import { useState, useEffect } from 'react'
-
+import { useState, useEffect, useCallback } from 'react'
 import { customMarkerSchema, customMarkerWithMetadataSchema } from '../schemas'
-
 import mockData from '../assets/cities_in_romania.json'
 
 /**
- * List of regular expressions used to whitelist the URL given as a source of POIs.
- * This is a minimal security feature to prevent the most basic abuse.
+ * Regular expressions for validating API URLs
+ * Acts as a basic security measure against malicious URLs
  */
-const ALLOWED_API_URLS: RegExp[] = [
-  /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/, // A regex for the Github pages
+const ALLOWED_API_URL_PATTERNS: RegExp[] = [
+  /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/, // Matches Github pages URLs
 ]
+
+const DEFAULT_MOCK_DATA_PATH = '/cities_in_romania.json'
 
 const useGetPOIs = (url?: string, search?: string) => {
   const [records, setRecords] = useState<CustomMarker[]>([])
   const [metadata, setMetadata] = useState<Metadata>('')
-
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [reloadCounter, setReloadCounter] = useState(0)
 
-  const [reload, setReload] = useState(0)
+  const loadMockData = useCallback(() => {
+    const { records, metadata } = mockData
+    setRecords(records)
+    setMetadata(metadata)
+  }, [])
+
+  const isURLAllowed = useCallback((urlToTest: string): boolean => {
+    return ALLOWED_API_URL_PATTERNS.some((pattern) => pattern.test(urlToTest))
+  }, [])
+
+  const getFilteredRecords = useCallback(
+    (records: CustomMarker[], searchTerm?: string) => {
+      if (!searchTerm) return records
+
+      return records.filter((record) => {
+        const descriptionText = Array.isArray(record.description)
+          ? record.description.join(' ')
+          : record.description || ''
+
+        const searchableText =
+          `${record.title} ${descriptionText}`.toLowerCase()
+        return searchableText.includes(searchTerm.toLowerCase())
+      })
+    },
+    [],
+  )
+
+  const processAPIResponse = useCallback(
+    (data: CustomMarker[] | CustomMarkerWithMetadata) => {
+      const hasMetadata = !Array.isArray(data)
+
+      if (hasMetadata) {
+        const validatedResponse = customMarkerWithMetadataSchema.safeParse(data)
+        if (!validatedResponse.success) {
+          throw new Error(
+            'Invalid response format: Could not parse entities with metadata',
+          )
+        }
+
+        setRecords(validatedResponse.data.records)
+        setMetadata(validatedResponse.data.metadata)
+        return
+      }
+
+      const validatedResponse = customMarkerSchema.array().safeParse(data)
+      if (!validatedResponse.success) {
+        throw new Error('Invalid response format: Could not parse entities')
+      }
+
+      setRecords(validatedResponse.data)
+      setMetadata('')
+    },
+    [],
+  )
 
   useEffect(() => {
-    // No url was provided
-    if (!url) {
+    if (!url) return
+
+    if (url === DEFAULT_MOCK_DATA_PATH) {
+      loadMockData()
       return
     }
 
-    // Load the default data
-    if (url === '/cities_in_romania.json') {
-      setRecords(Array.isArray(mockData) ? mockData : mockData.records)
-      setMetadata(!mockData?.metadata ? '' : mockData?.metadata)
+    if (!isURLAllowed(url)) {
+      setError('Invalid API URL: URL does not match security requirements')
       return
     }
-
-    // The provided url does not match the regex values in the whitelist
-    if (ALLOWED_API_URLS.every((regex) => !regex.test(url))) {
-      setError(
-        "The URL provided does not match the safety rules in this project's whitelist.",
-      )
-
-      return
-    }
-
-    // Fetch the data
-    setLoading(true)
-    setError(null)
 
     const controller = new AbortController()
 
-    fetch(url, { signal: controller.signal })
-      .then((response) => {
+    const fetchData = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+
+        const response = await fetch(url, { signal: controller.signal })
         if (!response.ok) {
-          throw new Error('Could not retrieve the data.')
+          throw new Error(`HTTP error! status: ${response.status}`)
         }
 
-        return response.json()
-      })
-      .then((json: CustomMarker[] | CustomMarkerWithMetadata) => {
-        const hasMetadata = !Array.isArray(json)
-
-        // has metadata
-        if (hasMetadata) {
-          const validatedResponse =
-            customMarkerWithMetadataSchema.safeParse(json)
-
-          if (!validatedResponse.success) {
-            throw new Error('Could not parse the entities in the response.')
-          }
-
-          setRecords(validatedResponse.data.records)
-          setMetadata(validatedResponse.data.metadata)
-
-          return
-        }
-
-        // direct markers
-        const validatedResponse = customMarkerSchema.array().safeParse(json)
-
-        if (!validatedResponse.success) {
-          throw new Error('Could not parse the entities in the response.')
-        }
-
-        setRecords(validatedResponse.data)
-        setMetadata('')
-      })
-      .catch((error) => {
-        // Do not show an error message if the request was cancelled
-        if (error.name === 'AbortError') {
-          return
-        }
-
-        setError(error?.message || error.toString())
-      })
-      .finally(() => {
+        const data = await response.json()
+        processAPIResponse(data)
+      } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') return
+        setError(
+          error instanceof Error ? error.message : 'An unknown error occurred',
+        )
+      } finally {
         setLoading(false)
-      })
-
-    return () => {
-      controller.abort()
+      }
     }
-  }, [url, reload])
+
+    fetchData()
+
+    return () => controller.abort()
+  }, [url, reloadCounter, loadMockData, isURLAllowed, processAPIResponse])
 
   return {
-    records: !search
-      ? records
-      : records.filter((record) => {
-          const allText = `${record.title} ${
-            Array.isArray(record.description)
-              ? record.description.concat(' ')
-              : record.description
-          }`
-          return allText.toLowerCase().includes(search.toLowerCase())
-        }),
+    records: getFilteredRecords(records, search),
     metadata,
     loading,
     error,
-    reload: () => {
-      setReload(reload + 1)
-    },
+    reload: useCallback(() => setReloadCounter((prev) => prev + 1), []),
   }
 }
 

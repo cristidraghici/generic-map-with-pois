@@ -1,7 +1,12 @@
 {
   "metadata": "These are a few of the beautiful cities of Romania!",
   "records": [
-    { "title": "Bucharest", "latitude": 44.4268, "longitude": 26.1025 },
+    {
+      "title": "Bucharest",
+      "latitude": 44.4268,
+      "longitude": 26.1025,
+      "description": "The vibrant capital city of Romania."
+    },
     {
       "title": "Cluj-Napoca",
       "description": "The IT industry is thriving here. :)",
@@ -10,7 +15,11 @@
     },
     {
       "title": "Iasi",
-      "description": ["Region: Moldova", "Population: unknown"],
+      "description": [
+        "Region: Moldova",
+        "Population: unknown",
+        "Known for its universities."
+      ],
       "latitude": 47.1585,
       "longitude": 27.6014
     },
@@ -19,11 +28,161 @@
       "description": [
         "A city by the Black Sea",
         "with a lot to offer to",
-        "people living there and tourists alike."
+        "people living there and tourists alike.",
+        "Famous for its beaches."
       ],
       "latitude": 44.181,
       "longitude": 28.6348
     },
-    { "title": "Timisoara", "latitude": 45.7489, "longitude": 21.2087 }
+    {
+      "title": "Timisoara",
+      "latitude": 45.7489,
+      "longitude": 21.2087,
+      "description": "Known for its historical architecture."
+    },
+    {
+      "title": "Brasov",
+      "latitude": 45.6579,
+      "longitude": 25.6012,
+      "description": "A gateway to the Carpathian Mountains."
+    },
+    {
+      "title": "Sibiu",
+      "latitude": 45.7983,
+      "longitude": 24.1256,
+      "description": "Famous for its Germanic architecture."
+    },
+    {
+      "title": "Oradea",
+      "latitude": 47.0722,
+      "longitude": 21.9211,
+      "description": "A city with beautiful Art Nouveau buildings."
+    },
+    {
+      "title": "Craiova",
+      "latitude": 44.3302,
+      "longitude": 23.7949,
+      "description": "A major university city in southern Romania."
+    },
+    {
+      "title": "Arad",
+      "latitude": 46.1866,
+      "longitude": 21.3123,
+      "description": "Known for its cultural diversity."
+    },
+    {
+      "title": "Ploiesti",
+      "latitude": 44.9441,
+      "longitude": 26.0361,
+      "description": "Famous for its oil industry."
+    },
+    {
+      "title": "Galati",
+      "latitude": 45.4353,
+      "longitude": 28.0076,
+      "description": "Located on the banks of the Danube River."
+    },
+    {
+      "title": "Pitesti",
+      "latitude": 44.8565,
+      "longitude": 24.8692,
+      "description": "An important industrial center."
+    },
+    {
+      "title": "Suceava",
+      "latitude": 47.6514,
+      "longitude": 26.2556,
+      "description": "Gateway to the painted monasteries of Bukovina."
+    },
+    {
+      "title": "Baia Mare",
+      "latitude": 47.6573,
+      "longitude": 23.5681,
+      "description": "Known for its mining history."
+    },
+    {
+      "title": "Bacau",
+      "latitude": 46.5672,
+      "longitude": 26.9138,
+      "description": [
+        "Located in eastern Romania.",
+        "Home to George Bacovia.",
+        "Important industrial center."
+      ]
+    },
+    {
+      "title": "Buzau",
+      "latitude": 45.1508,
+      "longitude": 26.8231,
+      "description": [
+        "Gateway to the Carpathians.",
+        "Famous for its vineyards.",
+        "Rich in history and culture."
+      ]
+    },
+    {
+      "title": "Targu Mures",
+      "latitude": 46.5425,
+      "longitude": 24.5575,
+      "description": "A multicultural city in the heart of Transylvania."
+    },
+    {
+      "title": "Deva",
+      "latitude": 45.8769,
+      "longitude": 22.9111,
+      "description": [
+        "Known for Deva Fortress.",
+        "Located near the Mures River.",
+        "Popular with tourists."
+      ]
+    },
+    {
+      "title": "Satu Mare",
+      "latitude": 47.7928,
+      "longitude": 22.8857,
+      "description": "A city close to the Hungarian border."
+    },
+    {
+      "title": "Focsani",
+      "latitude": 45.6966,
+      "longitude": 27.1868,
+      "description": [
+        "Wine region.",
+        "Located in Vrancea County.",
+        "Known for seismic activity."
+      ]
+    },
+    {
+      "title": "Alba Iulia",
+      "latitude": 46.0748,
+      "longitude": 23.5802,
+      "description": [
+        "Historic city.",
+        "Site of the Great Union.",
+        "Famous for Alba Carolina Citadel."
+      ]
+    },
+    {
+      "title": "Tulcea",
+      "latitude": 45.1841,
+      "longitude": 28.8056,
+      "description": "Gateway to the Danube Delta."
+    },
+    {
+      "title": "Roman",
+      "latitude": 46.9257,
+      "longitude": 26.9264,
+      "description": [
+        "Located in Neamt County.",
+        "Important railway junction.",
+        "Rich in medieval history."
+      ]
+    },
+    {
+      "title": "Giurgiu",
+      "latitude": 43.9037,
+      "longitude": 25.9699,
+      "description": "Port city on the Danube, near Bulgaria."
+    }
   ]
 }
