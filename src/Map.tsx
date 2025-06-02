@@ -122,12 +122,14 @@ function Map() {
         <MapButton
           onClick={() => map && map.zoomIn()}
           disabled={isZoomInDisabled}
-          icon={<IconPlusSVG width={15} height={15} />}
+          icon={<IconPlusSVG width={15} height={15} className="fill-current" />}
         />
         <MapButton
           onClick={() => map && map.zoomOut()}
           disabled={isZoomOutDisabled}
-          icon={<IconMinusSVG width={15} height={15} />}
+          icon={
+            <IconMinusSVG width={15} height={15} className="fill-current" />
+          }
         />
       </ButtonWrapper>
 
@@ -140,7 +142,9 @@ function Map() {
             setMapBounds()
           }}
           disabled={loading}
-          icon={<IconRefreshSVG width={15} height={15} />}
+          icon={
+            <IconRefreshSVG width={15} height={15} className="fill-current" />
+          }
         />
       </ButtonWrapper>
 
@@ -149,7 +153,9 @@ function Map() {
           <Tooltip tooltip={metadata} className="w-[240px] text-left">
             <MapButton
               className="!bg-transparent"
-              icon={<IconInfoSVG width={15} height={15} />}
+              icon={
+                <IconInfoSVG width={15} height={15} className="fill-current" />
+              }
             />
           </Tooltip>
         </ButtonWrapper>
