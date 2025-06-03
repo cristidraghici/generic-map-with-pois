@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.custom-svg-marker {
+  background: none;
+  border: none;
+}
+
+.custom-svg-marker svg {
+  filter: drop-shadow(3px 5px 2px rgba(0, 0, 0, 0.4));
+}

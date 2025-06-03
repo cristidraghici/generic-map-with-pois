@@ -1,8 +1,12 @@
 // React and third-party imports
 import { useState } from 'react'
+import L from 'leaflet'
 import { MapContainer, TileLayer } from 'react-leaflet'
 import MarkerClusterGroup from 'react-leaflet-cluster'
 import 'leaflet/dist/leaflet.css'
+
+// Fix for github pages not showing the icon
+L.Marker.prototype.options.icon = createSvgIcon()
 
 // Components
 import Modal from '@/components/atoms/Modal'
@@ -18,6 +22,7 @@ import useMap from '@/hooks/useMap'
 
 // Types
 import { CustomMarker } from '@/types'
+import createSvgIcon from '@/utils/createSvgIcon'
 
 // Constants
 const MAP_TILE_LAYER = {
