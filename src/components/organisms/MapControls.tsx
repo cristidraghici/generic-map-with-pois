@@ -1,7 +1,7 @@
-import { FunctionComponent } from 'react'
+import { FunctionComponent, useState } from 'react'
 import ButtonGroup from '../molecules/ButtonGroup'
 import Button from '../atoms/Button'
-import Tooltip from '../atoms/Tooltip'
+import Modal from '../atoms/Modal'
 import { Map as MapType } from 'leaflet'
 
 import { ReactComponent as IconPlusSVG } from '@/assets/icons/plus.svg'
@@ -32,6 +32,7 @@ const MapControls: FunctionComponent<MapControlsProps> = ({
     onRefresh()
     setMapBounds()
   }
+  const [isInfoOpen, setIsInfoOpen] = useState(false)
 
   return (
     <>
@@ -62,14 +63,17 @@ const MapControls: FunctionComponent<MapControlsProps> = ({
 
       {metadata && (
         <ButtonGroup className="absolute left-[10px] top-[120px]">
-          <Tooltip tooltip={metadata} className="w-[240px] text-left">
-            <Button
-              variant="transparent"
-              icon={
-                <IconInfoSVG width={15} height={15} className="fill-current" />
-              }
-            />
-          </Tooltip>
+          <Modal isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)}>
+            {metadata}
+          </Modal>
+
+          <Button
+            variant="transparent"
+            onClick={() => setIsInfoOpen(!isInfoOpen)}
+            icon={
+              <IconInfoSVG width={15} height={15} className="fill-current" />
+            }
+          />
         </ButtonGroup>
       )}
     </>

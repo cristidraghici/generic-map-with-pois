@@ -29,7 +29,7 @@ const MarkerElement: FunctionComponent<
     <Marker
       position={[latitude, longitude]}
       eventHandlers={{
-        dblclick: () => {
+        click: () => {
           onClick && onClick()
         },
       }}

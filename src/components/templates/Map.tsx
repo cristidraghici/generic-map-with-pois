@@ -9,7 +9,7 @@ import 'leaflet/dist/leaflet.css'
 L.Marker.prototype.options.icon = createSvgIcon()
 
 // Components
-import Modal from '@/components/atoms/Modal'
+import Drawer from '@/components/atoms/Drawer'
 import POIDetails from '@/components/molecules/POIDetails'
 import MarkerElement from '@/components/molecules/MarkerElement'
 import MapControls from '@/components/organisms/MapControls'
@@ -95,7 +95,7 @@ function Map() {
               onClick={() => handlePOISelect(poi)}
               color={Array.isArray(poi.description) ? 'green' : 'blue'}
             >
-              <POIDetails className="max-w-[300px]" {...poi} />
+              <POIDetails className="max-w-[300px]" {...poi} maxLines={5} />
             </MarkerElement>
           ))}
         </MarkerClusterGroup>
@@ -111,9 +111,9 @@ function Map() {
         setMapBounds={setMapBounds}
       />
 
-      <Modal isOpen={selectedPOI !== null} onClose={handleModalClose}>
+      <Drawer isOpen={selectedPOI !== null} onClose={handleModalClose}>
         {selectedPOI && <POIDetails {...selectedPOI} />}
-      </Modal>
+      </Drawer>
     </>
   )
 }

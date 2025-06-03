@@ -1,6 +1,7 @@
-import { FunctionComponent, PropsWithChildren } from 'react'
+import { FunctionComponent, PropsWithChildren, MouseEvent } from 'react'
 import { ReactComponent as IconCloseSVG } from '@/assets/icons/close.svg'
 import Button from './Button'
+import { Backdrop } from './Backdrop'
 
 interface ModalProps {
   isOpen: boolean
@@ -12,30 +13,36 @@ const Modal: FunctionComponent<PropsWithChildren<ModalProps>> = ({
   onClose,
   children,
 }) => {
+  const handleContainerClick = (e: MouseEvent) => {
+    // Only close if clicking the container itself, not its children
+    if (e.target === e.currentTarget) {
+      onClose()
+    }
+  }
+
   return (
-    <div
-      className={`fixed inset-0 z-[99999] flex items-center justify-center overflow-y-auto p-4 ${
-        isOpen ? '' : 'hidden'
-      }`}
-    >
-      <div className="fixed inset-0 z-50">
-        <div
-          className="absolute h-full w-full bg-gray-900 opacity-50"
-          onClick={onClose}
-        />
+    <>
+      <Backdrop onClose={onClose} isOpen={isOpen} />
+
+      <div
+        className={`fixed inset-0 z-[999] flex items-center justify-center p-4 transition-opacity duration-300 ${
+          isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
+        }`}
+        onClick={handleContainerClick}
+      >
+        <div className="relative z-[999] mx-auto w-full max-w-md rounded bg-white shadow-xl">
+          <Button
+            variant="transparent"
+            className="absolute right-4 top-4"
+            onClick={onClose}
+            icon={
+              <IconCloseSVG className="h-6 w-6 text-gray-600 transition duration-300 ease-in-out" />
+            }
+          />
+          <div className="max-h-[80vh] overflow-y-auto p-4">{children}</div>
+        </div>
       </div>
-      <div className="relative z-50 mx-auto w-full max-w-md rounded bg-white shadow-lg">
-        <Button
-          variant="transparent"
-          className="absolute right-1 top-4 p-1"
-          onClick={onClose}
-          icon={
-            <IconCloseSVG className="h-6 w-6 text-gray-600 transition duration-300 ease-in-out" />
-          }
-        />
-        <div className="max-h-[80vh] overflow-y-auto p-2">{children}</div>
-      </div>
-    </div>
+    </>
   )
 }
 
