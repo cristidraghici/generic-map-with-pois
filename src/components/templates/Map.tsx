@@ -93,6 +93,7 @@ function Map() {
               key={index}
               marker={poi}
               onClick={() => handlePOISelect(poi)}
+              color={Array.isArray(poi.description) ? 'green' : 'blue'}
             >
               <POIDetails {...poi} />
             </MarkerElement>
