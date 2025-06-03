@@ -1,0 +1,135 @@
+{
+  "conventions": {
+    "componentStructure": {
+      "atoms": {
+        "description": "Basic UI components with single responsibility",
+        "examples": ["Button", "Input", "Modal", "Tooltip"],
+        "guidelines": [
+          "Keep components small and focused",
+          "Use TypeScript for props",
+          "Support proper accessibility"
+        ]
+      },
+      "molecules": {
+        "description": "Components combining multiple atoms",
+        "examples": ["SearchField", "ButtonGroup", "MarkerElement"],
+        "guidelines": [
+          "Compose from atoms",
+          "Handle component interaction",
+          "Maintain single responsibility"
+        ]
+      },
+      "organisms": {
+        "description": "Complex components with business logic",
+        "examples": ["MapControls", "SearchSection"],
+        "guidelines": [
+          "Implement complex interactions",
+          "Manage local state",
+          "Handle data flow"
+        ]
+      },
+      "templates": {
+        "description": "Page-level components",
+        "examples": ["Map"],
+        "guidelines": [
+          "Compose page layout",
+          "Manage global state",
+          "Handle routing"
+        ]
+      }
+    },
+    "naming": {
+      "components": {
+        "pattern": "PascalCase",
+        "examples": ["MapControls", "SearchField", "MarkerElement"]
+      },
+      "hooks": {
+        "pattern": "camelCase with use prefix",
+        "examples": ["useMap", "useGetPOIs", "useURLParams"]
+      },
+      "types": {
+        "pattern": "PascalCase",
+        "examples": ["CustomMarker", "MapType", "URLParams"]
+      },
+      "constants": {
+        "pattern": "UPPER_SNAKE_CASE",
+        "examples": ["MAP_CONFIG", "MAP_TILE_LAYER"]
+      }
+    },
+    "styling": {
+      "framework": "Tailwind CSS",
+      "classOrder": ["layout", "spacing", "colors", "typography"],
+      "conventions": [
+        "Use utility classes",
+        "Follow responsive design",
+        "Maintain consistent spacing"
+      ]
+    }
+  },
+  "patterns": {
+    "stateManagement": {
+      "local": {
+        "tool": "useState",
+        "usage": "Component-level state",
+        "examples": ["search state", "modal state", "loading state"]
+      },
+      "shared": {
+        "tool": "Custom hooks",
+        "usage": "Shared state logic",
+        "examples": [
+          "useMap for map state",
+          "useGetPOIs for data fetching",
+          "useURLParams for URL state"
+        ]
+      }
+    },
+    "errorHandling": {
+      "validation": {
+        "tool": "Zod schemas",
+        "usage": "Runtime data validation",
+        "examples": ["customMarkerSchema", "metadataSchema"]
+      },
+      "ui": {
+        "components": ["SearchSection"],
+        "states": ["loading", "error", "success"]
+      }
+    }
+  },
+  "bestPractices": {
+    "components": [
+      "Keep components focused on a single responsibility",
+      "Use TypeScript interfaces for props",
+      "Follow atomic design principles",
+      "Implement proper error handling",
+      "Support accessibility standards"
+    ],
+    "hooks": [
+      "Extract reusable logic into custom hooks",
+      "Keep hooks focused on specific functionality",
+      "Handle cleanup in useEffect",
+      "Use proper dependency arrays",
+      "Implement error handling"
+    ],
+    "typescript": [
+      "Use strict type checking",
+      "Define interfaces for all component props",
+      "Use zod for runtime type validation",
+      "Avoid any type",
+      "Use proper type imports"
+    ],
+    "performance": [
+      "Use marker clustering for large datasets",
+      "Implement proper memoization",
+      "Optimize re-renders",
+      "Use lazy loading where appropriate",
+      "Handle API responses efficiently"
+    ],
+    "security": [
+      "Validate API URLs",
+      "Sanitize user input",
+      "Use proper CORS settings",
+      "Implement CSP",
+      "Handle errors securely"
+    ]
+  }
+}
