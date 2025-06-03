@@ -1,12 +1,16 @@
-import { FunctionComponent } from 'react'
-import { CustomMarker } from '@/types'
+import { ComponentProps, FunctionComponent, PropsWithChildren } from 'react'
+import { CustomMarker } from '../../types'
+import { linkifyText } from '@/utils/linkifyText'
 
-const POIDetails: FunctionComponent<CustomMarker> = ({
+type POIDetailsProps = PropsWithChildren<ComponentProps<'div'> & CustomMarker>
+
+const POIDetails: FunctionComponent<POIDetailsProps> = ({
   title,
   description,
+  className,
 }): JSX.Element => {
   return (
-    <div className="p-1">
+    <div className={`overflow-hidden p-1 ${className}`}>
       <h3 className="p-2 pl-0 font-bold">{title}</h3>
 
       {!!description &&
@@ -15,8 +19,11 @@ const POIDetails: FunctionComponent<CustomMarker> = ({
         ) : (
           <ul className="mt-2 [&>*:last-child]:border-0">
             {description.map((descriptionItem, key) => (
-              <li className="border-b-2 border-gray-100 p-2 pl-0" key={key}>
-                {descriptionItem}
+              <li
+                className="overflow-hidden truncate whitespace-nowrap border-b-2 border-gray-100 p-2 pl-0"
+                key={key}
+              >
+                {linkifyText(descriptionItem)}
               </li>
             ))}
           </ul>

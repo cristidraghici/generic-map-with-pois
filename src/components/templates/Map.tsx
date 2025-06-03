@@ -95,7 +95,7 @@ function Map() {
               onClick={() => handlePOISelect(poi)}
               color={Array.isArray(poi.description) ? 'green' : 'blue'}
             >
-              <POIDetails {...poi} />
+              <POIDetails className="max-w-[300px]" {...poi} />
             </MarkerElement>
           ))}
         </MarkerClusterGroup>
