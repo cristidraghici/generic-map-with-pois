@@ -7,6 +7,7 @@ type POIDetailsProps = PropsWithChildren<
     CustomMarker & {
       maxLines?: number
       showImages?: boolean
+      showTitle?: boolean
     }
 >
 
@@ -17,10 +18,13 @@ const POIDetails: FunctionComponent<POIDetailsProps> = ({
   className = '',
   maxLines = 0,
   showImages = true,
+  showTitle = true,
 }): JSX.Element => {
   return (
     <div className={`overflow-hidden ${className}`}>
-      <h3 className="mb-4 text-xl font-bold">{title}</h3>
+      {(showTitle || !(!showTitle && title.length < 10)) && (
+        <h3 className="mb-4 text-xl font-bold">{title}</h3>
+      )}
 
       {!!description &&
         (!Array.isArray(description) ? (

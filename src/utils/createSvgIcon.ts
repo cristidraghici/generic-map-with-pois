@@ -1,17 +1,40 @@
-import L from 'leaflet'
+import L, { IconOptions } from 'leaflet'
 
 import IconSVG from '@/assets/icon.svg?raw'
+import DotSVG from '@/assets/dot.svg?raw'
 
-function createSvgIcon(color = '#3B82F6') {
-  const svgWithColor = IconSVG.replace(/fill=".*?"/g, `fill="${color}"`)
+const ICONS = [
+  {
+    name: 'default',
+    icon: IconSVG,
+    config: {
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      tooltipAnchor: [16, -28],
+    } as IconOptions,
+  },
+  {
+    name: 'dot',
+    icon: DotSVG,
+    config: {
+      iconSize: [10, 10],
+      popupAnchor: [0, 0],
+    } as IconOptions,
+  },
+]
+
+function createSvgIcon(icon = 'default', color = '#3B82F6') {
+  const selectedIcon = ICONS.find((item) => item.name === icon)
+
+  if (!selectedIcon) {
+    throw new Error(`Icon ${icon} not found.`)
+  }
 
   const svgIcon = L.divIcon({
-    html: svgWithColor,
+    html: selectedIcon.icon.replace(/fill=".*?"/g, `fill="${color}"`),
     className: 'custom-svg-marker',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    tooltipAnchor: [16, -28],
+    ...selectedIcon.config,
   })
 
   return svgIcon

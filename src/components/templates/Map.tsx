@@ -100,6 +100,7 @@ function Map() {
                 {...poi}
                 maxLines={5}
                 showImages={false}
+                showTitle={false}
               />
             </MarkerElement>
           ))}
