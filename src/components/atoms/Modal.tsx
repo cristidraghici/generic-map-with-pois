@@ -29,10 +29,10 @@ const Modal: FunctionComponent<PropsWithChildren<ModalProps>> = ({
         }`}
         onClick={handleContainerClick}
       >
-        <div className="relative z-[999] mx-auto w-full max-w-md rounded bg-white shadow-xl">
+        <div className="relative z-[999] mx-auto w-full max-w-md rounded bg-white pl-2 pr-2 shadow-xl">
           <Button
             variant="transparent"
-            className="absolute right-4 top-4"
+            className="absolute right-2 top-2"
             onClick={onClose}
             icon={
               <IconCloseSVG className="h-6 w-6 text-gray-600 transition duration-300 ease-in-out" />

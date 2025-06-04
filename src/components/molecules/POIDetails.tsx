@@ -40,11 +40,15 @@ const POIDetails: FunctionComponent<POIDetailsProps> = ({
           </ul>
         ))}
 
-      {showImages &&
-        images.length > 0 &&
-        images.map((image) => (
-          <img src={image} key={image} alt={image} width="100%" />
-        ))}
+      {showImages && images.length > 0 && (
+        <ul>
+          {images.map((image) => (
+            <li key={image}>
+              <img src={image} alt={image} width="100%" />
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   )
 }
