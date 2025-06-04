@@ -6,14 +6,17 @@ type POIDetailsProps = PropsWithChildren<
   ComponentProps<'div'> &
     CustomMarker & {
       maxLines?: number
+      showImages?: boolean
     }
 >
 
 const POIDetails: FunctionComponent<POIDetailsProps> = ({
   title,
   description,
-  className,
+  images = [],
+  className = '',
   maxLines = 0,
+  showImages = true,
 }): JSX.Element => {
   return (
     <div className={`overflow-hidden ${className}`}>
@@ -26,15 +29,21 @@ const POIDetails: FunctionComponent<POIDetailsProps> = ({
           <ul className="mt-2 space-y-3 text-gray-700 [&>*:last-child]:border-0">
             {description
               .filter((_, key) => (maxLines > 0 ? key < maxLines : true))
-              .map((descriptionItem, key) => (
+              .map((item, key) => (
                 <li
                   className="break-words border-b border-gray-200 pb-3"
                   key={key}
                 >
-                  {linkifyText(descriptionItem)}
+                  {linkifyText(item)}
                 </li>
               ))}
           </ul>
+        ))}
+
+      {showImages &&
+        images.length > 0 &&
+        images.map((image) => (
+          <img src={image} key={image} alt={image} width="100%" />
         ))}
     </div>
   )

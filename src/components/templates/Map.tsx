@@ -95,7 +95,12 @@ function Map() {
               onClick={() => handlePOISelect(poi)}
               color={Array.isArray(poi.description) ? 'green' : 'blue'}
             >
-              <POIDetails className="max-w-[300px]" {...poi} maxLines={5} />
+              <POIDetails
+                className="max-w-[300px]"
+                {...poi}
+                maxLines={5}
+                showImages={false}
+              />
             </MarkerElement>
           ))}
         </MarkerClusterGroup>
@@ -106,7 +111,7 @@ function Map() {
         isZoomInDisabled={isZoomInDisabled}
         isZoomOutDisabled={isZoomOutDisabled}
         loading={loading}
-        metadata={typeof metadata === 'string' ? metadata : metadata[0]}
+        metadata={metadata}
         onRefresh={reload}
         setMapBounds={setMapBounds}
       />

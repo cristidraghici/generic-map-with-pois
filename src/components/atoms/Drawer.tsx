@@ -20,7 +20,7 @@ const Drawer: FunctionComponent<PropsWithChildren<DrawerProps>> = ({
       <Backdrop onClose={onClose} isOpen={isOpen} />
 
       <div
-        className={`fixed inset-y-0 z-[999] w-96 bg-white shadow-xl transition-transform duration-300 ease-in-out ${
+        className={`fixed inset-y-0 z-[999] m-1 mb-6 w-96 rounded-md bg-white p-1 shadow-xl transition-transform duration-300 ease-in-out ${
           side === 'right' ? 'right-0' : 'left-0'
         } ${
           isOpen

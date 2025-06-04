@@ -5,6 +5,7 @@ export const customMarkerSchema = z.object({
   longitude: z.number(),
   title: z.string(),
   description: z.union([z.string(), z.string().array()]).optional(),
+  images: z.string().array().optional(),
 })
 
 export const metadataSchema = z.union([z.string(), z.string().array()])

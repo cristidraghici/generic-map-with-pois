@@ -14,7 +14,7 @@ interface MapControlsProps {
   isZoomInDisabled: boolean
   isZoomOutDisabled: boolean
   loading: boolean
-  metadata?: string
+  metadata?: string | string[]
   onRefresh: () => void
   setMapBounds: () => void
 }
@@ -64,7 +64,21 @@ const MapControls: FunctionComponent<MapControlsProps> = ({
       {metadata && (
         <ButtonGroup className="absolute left-[10px] top-[120px]">
           <Modal isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)}>
-            {metadata}
+            {!!metadata &&
+              (!Array.isArray(metadata) ? (
+                <div className="text-gray-700">{metadata}</div>
+              ) : (
+                <ul className="mt-2 space-y-3 text-gray-700 [&>*:last-child]:border-0">
+                  {metadata.map((item, key) => (
+                    <li
+                      className="break-words border-b border-gray-200 pb-3"
+                      key={key}
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              ))}
           </Modal>
 
           <Button

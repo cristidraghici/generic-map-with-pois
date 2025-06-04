@@ -20,7 +20,7 @@ const SearchSection: FunctionComponent<SearchSectionProps> = ({
   onSearchCancel,
 }) => {
   return (
-    <div className="absolute right-0 top-0 z-[998] w-[400px] max-w-full p-2 pl-[50px]">
+    <div className="absolute right-0 top-0 z-[998]  w-96 max-w-full p-2 pl-[50px]">
       <SearchField
         className="mb-2"
         value={search}

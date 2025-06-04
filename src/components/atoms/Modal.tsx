@@ -1,7 +1,7 @@
 import { FunctionComponent, PropsWithChildren, MouseEvent } from 'react'
 import { ReactComponent as IconCloseSVG } from '@/assets/icons/close.svg'
 import Button from './Button'
-import { Backdrop } from './Backdrop'
+import Backdrop from './Backdrop'
 
 interface ModalProps {
   isOpen: boolean
@@ -14,7 +14,6 @@ const Modal: FunctionComponent<PropsWithChildren<ModalProps>> = ({
   children,
 }) => {
   const handleContainerClick = (e: MouseEvent) => {
-    // Only close if clicking the container itself, not its children
     if (e.target === e.currentTarget) {
       onClose()
     }
@@ -25,7 +24,7 @@ const Modal: FunctionComponent<PropsWithChildren<ModalProps>> = ({
       <Backdrop onClose={onClose} isOpen={isOpen} />
 
       <div
-        className={`fixed inset-0 z-[999] flex items-center justify-center p-4 transition-opacity duration-300 ${
+        className={`fixed inset-0 z-[999] flex items-center justify-center transition-opacity duration-300 ${
           isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
         onClick={handleContainerClick}

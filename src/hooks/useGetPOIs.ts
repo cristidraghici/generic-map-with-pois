@@ -8,7 +8,8 @@ import { CustomMarker, CustomMarkerWithMetadata, Metadata } from '../types'
  * Acts as a basic security measure against malicious URLs
  */
 const ALLOWED_API_URL_PATTERNS: RegExp[] = [
-  /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/, // Matches Github pages URLs
+  /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/, // Matches pages URLs, e.g. Github
+  /^(https?:\/\/)?(localhost|127\.0\.0\.1)(:\d+)?([/\w .-]*)*\/?$/, // Matches localhost and IP
 ]
 
 const DEFAULT_MOCK_DATA_PATH = '/cities_in_romania.json'
