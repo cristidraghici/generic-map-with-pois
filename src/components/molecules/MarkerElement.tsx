@@ -1,8 +1,8 @@
 import { FunctionComponent, PropsWithChildren } from 'react'
 import { Marker, Tooltip } from 'react-leaflet'
-import L from 'leaflet'
 import { CustomMarker } from '@/types'
 import createSvgIcon from '@/utils/createSvgIcon'
+import createTextIcon from '@/utils/createTextIcon'
 
 const MARKER_COLORS = {
   red: '#DC2626',
@@ -27,13 +27,7 @@ const MarkerElement: FunctionComponent<
   const showTitle = title && title.length <= 10
   const icon = !showTitle
     ? createSvgIcon('default', color)
-    : L.divIcon({
-        className: '',
-        html: `<div class="w-[65px] h-[20px] bg-[${MARKER_COLORS.blue}] text-white flex items-center justify-center border-1 border-black">${title}</div>`,
-        iconSize: [65, 20],
-        iconAnchor: [32.5, 20],
-        tooltipAnchor: [0, -20],
-      })
+    : createTextIcon(title, MARKER_COLORS.blue)
 
   return (
     <Marker
