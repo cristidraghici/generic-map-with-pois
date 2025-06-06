@@ -1,6 +1,6 @@
-import { FunctionComponent, PropsWithChildren } from 'react'
+import { FunctionComponent, PropsWithChildren, useMemo } from 'react'
 import { Marker, Tooltip } from 'react-leaflet'
-import { CustomMarker } from '@/types'
+import { CustomMarker, Config } from '@/types'
 import createSvgIcon from '@/utils/createSvgIcon'
 import createTextIcon from '@/utils/createTextIcon'
 
@@ -13,6 +13,7 @@ const MARKER_COLORS = {
 interface MarkerElementProps {
   marker: CustomMarker
   color: (typeof MARKER_COLORS)[keyof typeof MARKER_COLORS]
+  icon: Config['typeOfIcon']
   onClick?: () => void
 }
 
@@ -20,14 +21,23 @@ const MarkerElement: FunctionComponent<
   PropsWithChildren<MarkerElementProps>
 > = ({
   marker: { latitude, longitude, title },
-  color = 'blue',
+  color = MARKER_COLORS.blue,
+  icon = 'default',
   onClick,
   children,
 }) => {
-  const showTitle = title && title.length <= 10
-  const icon = !showTitle
-    ? createSvgIcon('default', color)
-    : createTextIcon(title, MARKER_COLORS.blue)
+  const iconType = useMemo(() => {
+    if (icon === 'text' && (!title || title.length === 0)) {
+      return 'default'
+    }
+
+    return icon
+  }, [icon, title])
+
+  const validatedIcon =
+    iconType === 'text'
+      ? createTextIcon(title, color)
+      : createSvgIcon(iconType, color)
 
   return (
     <Marker
@@ -37,10 +47,12 @@ const MarkerElement: FunctionComponent<
           onClick && onClick()
         },
       }}
-      icon={icon}
+      icon={validatedIcon}
     >
       {children && (
-        <Tooltip direction={showTitle ? 'top' : 'auto'}>{children}</Tooltip>
+        <Tooltip direction={iconType === 'text' ? 'top' : 'auto'}>
+          {children}
+        </Tooltip>
       )}
     </Marker>
   )

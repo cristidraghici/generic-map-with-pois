@@ -1,7 +1,12 @@
 import { useState, useEffect, useCallback } from 'react'
 import { customMarkerSchema, customMarkerWithMetadataSchema } from '../schemas'
 import mockData from '../assets/cities_in_romania.json'
-import { CustomMarker, CustomMarkerWithMetadata, Metadata } from '../types'
+import {
+  Config,
+  CustomMarker,
+  CustomMarkerWithMetadata,
+  Metadata,
+} from '../types'
 
 /**
  * Regular expressions for validating API URLs
@@ -13,18 +18,29 @@ const ALLOWED_API_URL_PATTERNS: RegExp[] = [
 ]
 
 const DEFAULT_MOCK_DATA_PATH = '/cities_in_romania.json'
+const DEFAULT_CONFIG: Config = {
+  typeOfIcon: 'default',
+}
 
 const useGetPOIs = (url?: string, search?: string) => {
   const [records, setRecords] = useState<CustomMarker[]>([])
   const [metadata, setMetadata] = useState<Metadata>('')
+  const [config, setConfig] = useState<Config>(DEFAULT_CONFIG)
+
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [reloadCounter, setReloadCounter] = useState(0)
 
   const loadMockData = useCallback(() => {
-    const { records, metadata } = mockData
+    const {
+      records,
+      metadata,
+      config = DEFAULT_CONFIG,
+    } = mockData as CustomMarkerWithMetadata
+
     setRecords(records)
     setMetadata(metadata)
+    setConfig(config)
   }, [])
 
   const isURLAllowed = useCallback((urlToTest: string): boolean => {
@@ -62,6 +78,9 @@ const useGetPOIs = (url?: string, search?: string) => {
 
         setRecords(validatedResponse.data.records)
         setMetadata(validatedResponse.data.metadata)
+        if (validatedResponse.data.config) {
+          setConfig({ ...DEFAULT_CONFIG, ...validatedResponse.data.config })
+        }
         return
       }
 
@@ -72,6 +91,7 @@ const useGetPOIs = (url?: string, search?: string) => {
 
       setRecords(validatedResponse.data)
       setMetadata('')
+      setConfig(DEFAULT_CONFIG)
     },
     [],
   )
@@ -121,6 +141,7 @@ const useGetPOIs = (url?: string, search?: string) => {
   return {
     records: getFilteredRecords(records, search),
     metadata,
+    config,
     loading,
     error,
     reload: useCallback(() => setReloadCounter((prev) => prev + 1), []),

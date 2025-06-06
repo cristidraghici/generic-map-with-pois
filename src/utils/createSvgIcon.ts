@@ -1,12 +1,12 @@
 import L, { IconOptions } from 'leaflet'
 
-import IconSVG from '@/assets/icon.svg?raw'
+import DefaultSVG from '@/assets/default.svg?raw'
 import DotSVG from '@/assets/dot.svg?raw'
 
 const ICONS = [
   {
     name: 'default',
-    icon: IconSVG,
+    icon: DefaultSVG,
     config: {
       iconSize: [25, 41],
       iconAnchor: [12, 41],

@@ -55,10 +55,15 @@ function Map() {
   const handleModalClose = () => setSelectedPoi(null)
 
   // Custom hooks for data and map management
-  const { records, metadata, loading, error, reload } = useGetPOIs(
-    URLParams.api || undefined,
-    search,
-  )
+  const {
+    records,
+    metadata,
+    config: recordsConfig,
+    loading,
+    error,
+    reload,
+  } = useGetPOIs(URLParams.api || undefined, search)
+
   const {
     map,
     setMap,
@@ -94,13 +99,13 @@ function Map() {
               marker={poi}
               onClick={() => handlePOISelect(poi)}
               color={Array.isArray(poi.description) ? 'green' : 'blue'}
+              icon={recordsConfig['typeOfIcon']}
             >
               <POIDetails
                 className="max-w-[300px]"
                 {...poi}
                 maxLines={5}
                 showImages={false}
-                showTitle={false}
               />
             </MarkerElement>
           ))}
