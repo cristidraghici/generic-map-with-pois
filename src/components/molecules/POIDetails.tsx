@@ -1,6 +1,7 @@
 import { ComponentProps, FunctionComponent, PropsWithChildren } from 'react'
 import { CustomMarker } from '../../types'
 import { linkifyText } from '@/utils/linkifyText'
+import ImageGallery from '../atoms/ImageGallery'
 
 type POIDetailsProps = PropsWithChildren<
   ComponentProps<'div'> &
@@ -18,13 +19,10 @@ const POIDetails: FunctionComponent<POIDetailsProps> = ({
   className = '',
   maxLines = 0,
   showImages = true,
-  showTitle = true,
 }): JSX.Element => {
   return (
     <div className={`overflow-hidden ${className}`}>
-      {(showTitle || !(!showTitle && title.length < 10)) && (
-        <h3 className="mb-4 text-xl font-bold">{title}</h3>
-      )}
+      <h3 className="mb-4 text-xl font-bold">{title}</h3>
 
       {!!description &&
         (!Array.isArray(description) ? (
@@ -44,15 +42,7 @@ const POIDetails: FunctionComponent<POIDetailsProps> = ({
           </ul>
         ))}
 
-      {showImages && images.length > 0 && (
-        <ul>
-          {images.map((image) => (
-            <li key={image}>
-              <img src={image} alt={image} width="100%" />
-            </li>
-          ))}
-        </ul>
-      )}
+      {showImages && <ImageGallery images={images} />}
     </div>
   )
 }
