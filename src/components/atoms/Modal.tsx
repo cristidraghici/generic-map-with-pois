@@ -21,7 +21,7 @@ const Modal: FunctionComponent<PropsWithChildren<ModalProps>> = ({
 
   return (
     <>
-      <Backdrop onClose={onClose} isOpen={isOpen} />
+      <Backdrop onClick={onClose} isOpen={isOpen} />
 
       <div
         className={`fixed inset-0 z-[999] flex items-center justify-center transition-opacity duration-300 ${

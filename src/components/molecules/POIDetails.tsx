@@ -1,7 +1,7 @@
 import { ComponentProps, FunctionComponent, PropsWithChildren } from 'react'
 import { CustomMarker } from '../../types'
 import { linkifyText } from '@/utils/linkifyText'
-import ImageGallery from '../atoms/ImageGallery'
+import ImageGallery from './ImageGallery'
 
 type POIDetailsProps = PropsWithChildren<
   ComponentProps<'div'> &

@@ -9,7 +9,7 @@ import 'leaflet/dist/leaflet.css'
 L.Marker.prototype.options.icon = createSvgIcon()
 
 // Components
-import Drawer from '@/components/atoms/Drawer'
+import Drawer from '@/components/molecules/Drawer'
 import POIDetails from '@/components/molecules/POIDetails'
 import MarkerElement from '@/components/molecules/MarkerElement'
 import MapControls from '@/components/organisms/MapControls'
