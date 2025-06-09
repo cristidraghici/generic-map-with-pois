@@ -14,7 +14,7 @@ const SearchField: FunctionComponent<SearchFieldProps> = ({
   value,
   onChange,
   onCancel,
-  className,
+  className = '',
 }) => {
   return (
     <Input

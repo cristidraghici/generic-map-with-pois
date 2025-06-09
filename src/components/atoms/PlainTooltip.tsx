@@ -17,10 +17,10 @@ type PlainTooltipComponentProps = ComponentProps<'div'> & PlainTooltipProps
 const PlainTooltip: FunctionComponent<
   PropsWithChildren<PlainTooltipComponentProps>
 > = ({
-  className,
-  children,
   tooltip,
+  className = '',
   msDelay = 1000, // default delay in ms
+  children,
   ...rest
 }) => {
   const [isHovered, setIsHovered] = useState(false)

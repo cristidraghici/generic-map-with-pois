@@ -47,7 +47,7 @@ const Drawer: FunctionComponent<PropsWithChildren<DrawerProps>> = ({
             <IconCloseSVG className="h-6 w-6 text-gray-600 transition duration-300 ease-in-out" />
           }
         />
-        <div className="h-full overflow-y-auto p-3 ">{children}</div>
+        <div className="z-[999] h-full overflow-y-auto p-3">{children}</div>
       </div>
     </>
   )

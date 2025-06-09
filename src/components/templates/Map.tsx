@@ -23,6 +23,7 @@ import useMap from '@/hooks/useMap'
 // Types
 import { CustomMarker } from '@/types'
 import createSvgIcon from '@/utils/createSvgIcon'
+import ListView from '../organisms/ListView'
 
 // Constants
 const MAP_TILE_LAYER = {
@@ -51,7 +52,14 @@ function Map() {
 
   // POI selection state and handlers
   const [selectedPOI, setSelectedPoi] = useState<CustomMarker | null>(null)
-  const handlePOISelect = (poi: CustomMarker) => setSelectedPoi(poi)
+  const handlePOISelect = (poi: CustomMarker) => {
+    setSelectedPoi(poi)
+
+    // Center the map on the selected POI
+    if (map) {
+      map.flyTo([poi.latitude, poi.longitude], 18)
+    }
+  }
   const handleModalClose = () => setSelectedPoi(null)
 
   // Custom hooks for data and map management
@@ -69,6 +77,7 @@ function Map() {
     visibleRecords,
     setMap,
     setMapBounds,
+    handleInvalidateSize,
     isZoomInDisabled,
     isZoomOutDisabled,
     config,
@@ -85,33 +94,41 @@ function Map() {
         onSearchCancel={handleSearchCancel}
       />
 
-      <MapContainer
-        {...config}
-        style={{ height: '100vh' }}
-        ref={setMap}
-        zoomControl={false}
+      <ListView
+        isListEnabled={!!recordsConfig['isListVisible']}
+        records={visibleRecords}
+        handlePOISelect={handlePOISelect}
+        handleInvalidateSize={handleInvalidateSize}
       >
-        <TileLayer {...MAP_TILE_LAYER} />
+        <MapContainer
+          {...config}
+          style={{ height: '100%', width: '100%' }}
+          ref={setMap}
+          zoomControl={false}
+          attributionControl={!!recordsConfig['isListVisible']}
+        >
+          <TileLayer {...MAP_TILE_LAYER} />
 
-        <MarkerClusterGroup>
-          {visibleRecords.map((poi, index) => (
-            <MarkerElement
-              key={index}
-              marker={poi}
-              onClick={() => handlePOISelect(poi)}
-              color={Array.isArray(poi.description) ? 'green' : 'blue'}
-              icon={recordsConfig['typeOfIcon']}
-            >
-              <POIDetails
-                className="max-w-[300px]"
-                {...poi}
-                maxLines={5}
-                showImages={false}
-              />
-            </MarkerElement>
-          ))}
-        </MarkerClusterGroup>
-      </MapContainer>
+          <MarkerClusterGroup>
+            {visibleRecords.map((poi, index) => (
+              <MarkerElement
+                key={index}
+                marker={poi}
+                onClick={() => handlePOISelect(poi)}
+                color={Array.isArray(poi.description) ? 'green' : 'blue'}
+                icon={recordsConfig['typeOfIcon']}
+              >
+                <POIDetails
+                  className="max-w-[300px]"
+                  {...poi}
+                  maxLines={5}
+                  showImages={false}
+                />
+              </MarkerElement>
+            ))}
+          </MarkerClusterGroup>
+        </MapContainer>
+      </ListView>
 
       <MapControls
         map={map}

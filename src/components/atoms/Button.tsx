@@ -7,9 +7,9 @@ export interface ButtonProps extends ComponentProps<'button'> {
 
 const Button: FunctionComponent<PropsWithChildren<ButtonProps>> = ({
   children,
-  className,
   disabled,
   icon,
+  className = '',
   variant = 'default',
   ...rest
 }) => {

@@ -48,7 +48,7 @@ const useGetPOIs = (url?: string, search?: string) => {
   }, [])
 
   const getFilteredRecords = useCallback(
-    (records: CustomMarker[], searchTerm?: string) => {
+    (records: CustomMarker[], searchTerm?: string): CustomMarker[] => {
       if (!searchTerm) return records
 
       return records.filter((record) => {
@@ -78,6 +78,7 @@ const useGetPOIs = (url?: string, search?: string) => {
 
         setRecords(validatedResponse.data.records)
         setMetadata(validatedResponse.data.metadata)
+
         if (validatedResponse.data.config) {
           setConfig({ ...DEFAULT_CONFIG, ...validatedResponse.data.config })
         }

@@ -1,9 +1,14 @@
-import { FunctionComponent, PropsWithChildren, MouseEvent } from 'react'
+import {
+  FunctionComponent,
+  PropsWithChildren,
+  MouseEvent,
+  ComponentProps,
+} from 'react'
 import { ReactComponent as IconCloseSVG } from '@/assets/icons/close.svg'
 import Button from './Button'
 import Backdrop from './Backdrop'
 
-interface ModalProps {
+interface ModalProps extends ComponentProps<'div'> {
   isOpen: boolean
   onClose: () => void
 }
@@ -12,6 +17,8 @@ const Modal: FunctionComponent<PropsWithChildren<ModalProps>> = ({
   isOpen,
   onClose,
   children,
+  className = '',
+  ...rest
 }) => {
   const handleContainerClick = (e: MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -24,7 +31,8 @@ const Modal: FunctionComponent<PropsWithChildren<ModalProps>> = ({
       <Backdrop onClick={onClose} isOpen={isOpen} />
 
       <div
-        className={`fixed inset-0 z-[999] flex items-center justify-center transition-opacity duration-300 ${
+        {...rest}
+        className={`fixed inset-0 z-[999] m-2 flex items-center justify-center transition-opacity duration-300 ${className} ${
           isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
         onClick={handleContainerClick}

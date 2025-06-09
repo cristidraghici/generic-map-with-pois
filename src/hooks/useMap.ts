@@ -76,6 +76,12 @@ const useMap = (records: CustomMarker[]) => {
     setIsZoomInDisabled(currentZoom === maxZoom)
   }, [])
 
+  const handleInvalidateSize = useCallback(() => {
+    if (!map) return
+
+    map.invalidateSize()
+  }, [map])
+
   /**
    * Set initial bounds when map or markers change
    */
@@ -110,6 +116,7 @@ const useMap = (records: CustomMarker[]) => {
     visibleRecords,
     setMap,
     setMapBounds,
+    handleInvalidateSize,
     isZoomInDisabled,
     isZoomOutDisabled,
     config: {

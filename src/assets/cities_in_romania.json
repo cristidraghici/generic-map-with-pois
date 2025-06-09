@@ -1,5 +1,8 @@
 {
   "metadata": "These are a few of the beautiful cities of Romania!",
+  "config": {
+    "isListVisible": true
+  },
   "records": [
     {
       "title": "Bucharest",

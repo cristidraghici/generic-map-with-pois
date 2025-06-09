@@ -12,6 +12,7 @@ export const metadataSchema = z.union([z.string(), z.string().array()])
 
 export const configSchema = z.object({
   typeOfIcon: z.enum(['default', 'dot', 'text']),
+  isListVisible: z.boolean().optional(),
 })
 
 export const customMarkerWithMetadataSchema = z.object({

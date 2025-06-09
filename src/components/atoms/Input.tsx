@@ -7,9 +7,9 @@ interface InputProps extends ComponentProps<'input'> {
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, leftIcon, rightIcon, onRightIconClick, ...rest }, ref) => {
+  ({ className = '', leftIcon, rightIcon, onRightIconClick, ...rest }, ref) => {
     return (
-      <div className={`relative ${className || ''}`}>
+      <div className={`relative ${className}`}>
         <input
           ref={ref}
           type="text"

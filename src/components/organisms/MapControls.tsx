@@ -39,12 +39,14 @@ const MapControls: FunctionComponent<MapControlsProps> = ({
       <ButtonGroup className="absolute left-[10px] top-[10px]">
         <ButtonWithTooltip
           tooltip="Zoom in"
+          variant="transparent"
           onClick={() => map?.zoomIn()}
           disabled={isZoomInDisabled}
           icon={<IconPlusSVG width={15} height={15} className="fill-current" />}
         />
         <ButtonWithTooltip
           tooltip="Zoom out"
+          variant="transparent"
           onClick={() => map?.zoomOut()}
           disabled={isZoomOutDisabled}
           icon={
@@ -56,6 +58,7 @@ const MapControls: FunctionComponent<MapControlsProps> = ({
       <ButtonGroup className="absolute left-[10px] top-[80px]">
         <ButtonWithTooltip
           tooltip="Refresh"
+          variant="transparent"
           onClick={handleRefresh}
           disabled={loading}
           icon={
