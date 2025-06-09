@@ -1,7 +1,8 @@
 {
   "metadata": "These are a few of the beautiful cities of Romania!",
   "config": {
-    "isListVisible": true
+    "isListVisible": true,
+    "zoomOnSelect": true
   },
   "records": [
     {

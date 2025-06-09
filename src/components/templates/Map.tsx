@@ -52,15 +52,6 @@ function Map() {
 
   // POI selection state and handlers
   const [selectedPOI, setSelectedPoi] = useState<CustomMarker | null>(null)
-  const handlePOISelect = (poi: CustomMarker) => {
-    setSelectedPoi(poi)
-
-    // Center the map on the selected POI
-    if (map) {
-      map.flyTo([poi.latitude, poi.longitude], 18)
-    }
-  }
-  const handleModalClose = () => setSelectedPoi(null)
 
   // Custom hooks for data and map management
   const {
@@ -82,6 +73,17 @@ function Map() {
     isZoomOutDisabled,
     config,
   } = useMap(records)
+
+  const handlePOISelect = (poi: CustomMarker) => {
+    setSelectedPoi(poi)
+
+    // Center the map on the selected POI
+    if (map && !!recordsConfig['zoomOnSelect']) {
+      map.flyTo([poi.latitude, poi.longitude], 18)
+    }
+  }
+
+  const handleModalClose = () => setSelectedPoi(null)
 
   return (
     <>
