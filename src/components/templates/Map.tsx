@@ -66,6 +66,7 @@ function Map() {
 
   const {
     map,
+    visibleRecords,
     setMap,
     setMapBounds,
     isZoomInDisabled,
@@ -93,7 +94,7 @@ function Map() {
         <TileLayer {...MAP_TILE_LAYER} />
 
         <MarkerClusterGroup>
-          {records.map((poi, index) => (
+          {visibleRecords.map((poi, index) => (
             <MarkerElement
               key={index}
               marker={poi}

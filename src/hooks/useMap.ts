@@ -20,14 +20,17 @@ const MAP_CONFIG = {
 } as const
 
 const useMap = (records: CustomMarker[]) => {
+  const [currentMapBounds, setCurrentMapBounds] = useState<LatLngBounds | null>(
+    null,
+  )
   const [map, setMap] = useState<MapType | null>(null)
   const [isZoomInDisabled, setIsZoomInDisabled] = useState(false)
   const [isZoomOutDisabled, setIsZoomOutDisabled] = useState(false)
 
   /**
-   * Calculate bounds based on marker positions
+   * Calculate bounds encompassing all markers
    */
-  const bounds: LatLngBounds = useMemo(
+  const allRecordsBounds: LatLngBounds = useMemo(
     () =>
       L.latLngBounds(
         records.map<LatLngExpression>((marker) => [
@@ -39,15 +42,28 @@ const useMap = (records: CustomMarker[]) => {
   )
 
   /**
+   * Filter records based on the current map viewport bounds
+   */
+  const visibleRecords = useMemo(() => {
+    if (!currentMapBounds) {
+      return records
+    }
+    return records.filter((record) =>
+      currentMapBounds.contains([record.latitude, record.longitude]),
+    )
+  }, [records, currentMapBounds])
+
+  /**
    * Adjust map view to fit all markers with padding
    */
   const setMapBounds = useCallback(() => {
     if (!map) return
 
-    const paddedBounds = bounds.pad(MAP_CONFIG.BOUNDS_PADDING)
+    const paddedBounds = allRecordsBounds.pad(MAP_CONFIG.BOUNDS_PADDING)
     map.fitBounds(paddedBounds)
     map.setMaxBounds(paddedBounds)
-  }, [map, bounds])
+    setCurrentMapBounds(map.getBounds()) // Update current bounds after fitting
+  }, [map, allRecordsBounds])
 
   /**
    * Handle zoom level changes and update zoom control states
@@ -64,26 +80,34 @@ const useMap = (records: CustomMarker[]) => {
    * Set initial bounds when map or markers change
    */
   useEffect(() => {
-    if (!map || !bounds.isValid()) return
+    if (!map || !allRecordsBounds.isValid()) return
 
-    const setBoundsTimeout = setTimeout(setMapBounds, 1000)
-    return () => clearTimeout(setBoundsTimeout)
-  }, [map, bounds, setMapBounds])
+    setMapBounds()
+  }, [map, allRecordsBounds, setMapBounds])
 
-  /**
-   * Set up zoom change listener
-   */
   useEffect(() => {
     if (!map) return
 
-    map.on('zoom', () => handleZoomChange(map))
+    const updateBoundsAndZoom = () => {
+      const bounds = map.getBounds()
+      setCurrentMapBounds(bounds)
+      handleZoomChange(map)
+    }
+
+    updateBoundsAndZoom()
+
+    map.on('zoomend', updateBoundsAndZoom)
+    map.on('moveend', updateBoundsAndZoom)
+
     return () => {
-      map.off('zoom')
+      map.off('zoomend', updateBoundsAndZoom)
+      map.off('moveend', updateBoundsAndZoom)
     }
   }, [map, handleZoomChange])
 
   return {
     map,
+    visibleRecords,
     setMap,
     setMapBounds,
     isZoomInDisabled,
