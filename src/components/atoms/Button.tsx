@@ -1,6 +1,6 @@
 import { FunctionComponent, ComponentProps, PropsWithChildren } from 'react'
 
-interface ButtonProps extends ComponentProps<'button'> {
+export interface ButtonProps extends ComponentProps<'button'> {
   icon?: JSX.Element
   variant?: 'default' | 'transparent'
 }
