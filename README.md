@@ -21,6 +21,7 @@ type ResponseType = Promise<
     longitude: number
     title: string
     description?: string | string[]
+    images?: string[]
   }[]
 >
 ```
@@ -30,6 +31,11 @@ There is also an option to use an enveloped structure:
 ```typescript
 interface APIEnvelope<T> {
   metadata: string | string[]
+  config: {
+    typeOfIcon: 'text' | 'default' | 'dot' // the icon to use in the data
+    isListVisible: boolean | undefined // show the toggler to view a list
+    zoomOnSelect: boolean | undefined // zoom to a POI when clicked
+  }
   records: T[]
 }
 ```

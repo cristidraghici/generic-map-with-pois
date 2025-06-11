@@ -1,6 +1,6 @@
 import z from 'zod'
 
-export const customMarkerSchema = z.object({
+export const customRecordSchema = z.object({
   latitude: z.number(),
   longitude: z.number(),
   title: z.string(),
@@ -16,8 +16,13 @@ export const configSchema = z.object({
   zoomOnSelect: z.boolean().optional(),
 })
 
-export const customMarkerWithMetadataSchema = z.object({
+export const customRecordWithMetadataSchema = z.object({
   metadata: metadataSchema,
-  records: customMarkerSchema.array(),
+  records: customRecordSchema.array(),
   config: configSchema.optional(),
 })
+
+export const anySuccessfulResponseSchema = z.union([
+  customRecordSchema.array(),
+  customRecordWithMetadataSchema,
+])

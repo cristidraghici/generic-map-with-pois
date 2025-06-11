@@ -1,17 +1,12 @@
 import { FunctionComponent, PropsWithChildren, useMemo } from 'react'
 import { Marker, Tooltip } from 'react-leaflet'
-import { CustomMarker, Config } from '@/types'
+import { CustomRecord, Config } from '@/types'
 import createSvgIcon from '@/utils/createSvgIcon'
 import createTextIcon from '@/utils/createTextIcon'
-
-const MARKER_COLORS = {
-  red: '#DC2626',
-  blue: '#3B82F6',
-  green: '#10B981',
-}
+import { MARKER_COLORS } from '@/constants'
 
 interface MarkerElementProps {
-  marker: CustomMarker
+  record: CustomRecord
   color: (typeof MARKER_COLORS)[keyof typeof MARKER_COLORS]
   icon: Config['typeOfIcon']
   onClick?: () => void
@@ -20,7 +15,7 @@ interface MarkerElementProps {
 const MarkerElement: FunctionComponent<
   PropsWithChildren<MarkerElementProps>
 > = ({
-  marker: { latitude, longitude, title },
+  record: { latitude, longitude, title },
   color = MARKER_COLORS.blue,
   icon = 'default',
   onClick,

@@ -1,7 +1,6 @@
 import { FunctionComponent, useState } from 'react'
 import ButtonGroup from '../molecules/ButtonGroup'
 import Modal from '../atoms/Modal'
-import { Map as MapType } from 'leaflet'
 
 import { ReactComponent as IconPlusSVG } from '@/assets/icons/plus.svg'
 import { ReactComponent as IconMinusSVG } from '@/assets/icons/minus.svg'
@@ -10,27 +9,26 @@ import { ReactComponent as IconInfoSVG } from '@/assets/icons/info.svg'
 import ButtonWithTooltip from '../molecules/ButtonWithTooltip'
 
 interface MapControlsProps {
-  map: MapType | null
   isZoomInDisabled: boolean
   isZoomOutDisabled: boolean
   loading: boolean
   metadata?: string | string[]
   onRefresh: () => void
-  setMapBounds: () => void
+  handleZoomIn: () => void
+  handleZoomOut: () => void
 }
 
 const MapControls: FunctionComponent<MapControlsProps> = ({
-  map,
   isZoomInDisabled,
   isZoomOutDisabled,
   loading,
   metadata,
   onRefresh,
-  setMapBounds,
+  handleZoomIn,
+  handleZoomOut,
 }) => {
   const handleRefresh = () => {
     onRefresh()
-    setMapBounds()
   }
   const [isInfoOpen, setIsInfoOpen] = useState(false)
 
@@ -40,14 +38,14 @@ const MapControls: FunctionComponent<MapControlsProps> = ({
         <ButtonWithTooltip
           tooltip="Zoom in"
           variant="transparent"
-          onClick={() => map?.zoomIn()}
+          onClick={() => handleZoomIn()}
           disabled={isZoomInDisabled}
           icon={<IconPlusSVG width={15} height={15} className="fill-current" />}
         />
         <ButtonWithTooltip
           tooltip="Zoom out"
           variant="transparent"
-          onClick={() => map?.zoomOut()}
+          onClick={() => handleZoomOut()}
           disabled={isZoomOutDisabled}
           icon={
             <IconMinusSVG width={15} height={15} className="fill-current" />

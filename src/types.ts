@@ -1,14 +1,17 @@
 import { z } from 'zod'
 import {
-  customMarkerSchema,
+  customRecordSchema,
   metadataSchema,
-  customMarkerWithMetadataSchema,
+  customRecordWithMetadataSchema,
   configSchema,
+  anySuccessfulResponseSchema,
 } from './schemas'
 
-export type CustomMarker = z.infer<typeof customMarkerSchema>
+export type CustomRecord = z.infer<typeof customRecordSchema>
 export type Metadata = z.infer<typeof metadataSchema>
 export type Config = z.infer<typeof configSchema>
-export type CustomMarkerWithMetadata = z.infer<
-  typeof customMarkerWithMetadataSchema
+export type CustomRecordWithMetadata = z.infer<
+  typeof customRecordWithMetadataSchema
 >
+
+export type AnySuccessfulResponse = z.infer<typeof anySuccessfulResponseSchema>

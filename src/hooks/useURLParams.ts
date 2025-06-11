@@ -2,21 +2,16 @@ import { useState, useEffect } from 'react'
 
 type URLParams = { [key: string]: string }
 
-function parseQueryString(queryString: string): URLParams {
-  try {
-    const params: URLParams = {}
-    const query = new URLSearchParams(queryString)
-    query.forEach((value, key) => {
-      params[key] = value
-    })
-    return params
-  } catch (error) {
-    console.error('Error parsing URL parameters:', error)
-    return {}
-  }
+const parseQueryString = (queryString: string): URLParams => {
+  const params: URLParams = {}
+  const query = new URLSearchParams(queryString)
+  query.forEach((value, key) => {
+    params[key] = value
+  })
+  return params
 }
 
-function useURLParams(): URLParams {
+const useURLParams = (): URLParams => {
   const [params, setParams] = useState<URLParams>({})
 
   useEffect(() => {

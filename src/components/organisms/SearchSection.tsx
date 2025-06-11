@@ -6,7 +6,7 @@ interface SearchSectionProps {
   search: string
   loading: boolean
   error: string | null
-  api?: string
+  hasUrl: boolean
   onSearchChange: (_value: string) => void
   onSearchCancel: () => void
 }
@@ -15,7 +15,7 @@ const SearchSection: FunctionComponent<SearchSectionProps> = ({
   search,
   loading,
   error,
-  api,
+  hasUrl,
   onSearchChange,
   onSearchCancel,
 }) => {
@@ -24,13 +24,13 @@ const SearchSection: FunctionComponent<SearchSectionProps> = ({
       <SearchField
         className="mb-2"
         value={search}
-        onChange={onSearchChange}
+        onInputChange={onSearchChange}
         onCancel={onSearchCancel}
       />
 
       <ConditionalElement
         as="div"
-        rcIf={!api}
+        rcIf={!hasUrl}
         className="rounded-md bg-white p-2 text-gray-800"
       >
         It appears you have not specified an <strong>?api=</strong> param. You

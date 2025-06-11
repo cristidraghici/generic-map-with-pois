@@ -1,18 +1,18 @@
 import { ComponentProps, FunctionComponent, PropsWithChildren } from 'react'
-import { CustomMarker } from '../../types'
+import { CustomRecord } from '../../types'
 import { linkifyText } from '@/utils/linkifyText'
 import ImageGallery from './ImageGallery'
 
-type POIDetailsProps = PropsWithChildren<
+type RecordDetailsProps = PropsWithChildren<
   ComponentProps<'div'> &
-    CustomMarker & {
+    CustomRecord & {
       maxLines?: number
       showImages?: boolean
       showTitle?: boolean
     }
 >
 
-const POIDetails: FunctionComponent<POIDetailsProps> = ({
+const RecordDetails: FunctionComponent<RecordDetailsProps> = ({
   title,
   description,
   images = [],
@@ -47,4 +47,4 @@ const POIDetails: FunctionComponent<POIDetailsProps> = ({
   )
 }
 
-export default POIDetails
+export default RecordDetails

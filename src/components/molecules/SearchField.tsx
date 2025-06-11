@@ -5,14 +5,14 @@ import { ReactComponent as IconCloseSVG } from '@/assets/icons/close.svg'
 
 interface SearchFieldProps {
   value: string
-  onChange: (_value: string) => void
+  onInputChange: (_value: string) => void
   onCancel: () => void
   className?: string
 }
 
 const SearchField: FunctionComponent<SearchFieldProps> = ({
   value,
-  onChange,
+  onInputChange,
   onCancel,
   className = '',
 }) => {
@@ -20,7 +20,7 @@ const SearchField: FunctionComponent<SearchFieldProps> = ({
     <Input
       className={className}
       value={value}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={(e) => onInputChange(e.target.value)}
       leftIcon={<IconSearchSVG className="fill-gray-800" width={20} />}
       rightIcon={
         value ? (
