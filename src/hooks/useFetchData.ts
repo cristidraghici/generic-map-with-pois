@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { anySuccessfulResponseSchema } from '../schemas'
 import mockData from '../assets/cities_in_romania.json'
 import {
@@ -15,6 +15,10 @@ import {
   DEFAULT_CONFIG,
 } from '@/constants'
 
+const isURLAllowed = (urlToTest: string): boolean => {
+  return ALLOWED_API_URL_PATTERNS.some((pattern) => pattern.test(urlToTest))
+}
+
 const useFetchData = (url?: string, search?: string) => {
   const [records, setRecords] = useState<CustomRecord[]>([])
   const [metadata, setMetadata] = useState<Metadata>('')
@@ -24,26 +28,18 @@ const useFetchData = (url?: string, search?: string) => {
   const [loading, setLoading] = useState(false)
   const [reloadCounter, setReloadCounter] = useState(0)
 
-  const isURLAllowed = useCallback((urlToTest: string): boolean => {
-    return ALLOWED_API_URL_PATTERNS.some((pattern) => pattern.test(urlToTest))
-  }, [])
+  const filteredRecords = useMemo((): CustomRecord[] => {
+    if (!search) return records
 
-  const getFilteredRecords = useCallback(
-    (records: CustomRecord[], searchTerm?: string): CustomRecord[] => {
-      if (!searchTerm) return records
+    return records.filter((record) => {
+      const descriptionText = Array.isArray(record.description)
+        ? record.description.join(' ')
+        : record.description || ''
 
-      return records.filter((record) => {
-        const descriptionText = Array.isArray(record.description)
-          ? record.description.join(' ')
-          : record.description || ''
-
-        const searchableText =
-          `${record.title} ${descriptionText}`.toLowerCase()
-        return searchableText.includes(searchTerm.toLowerCase())
-      })
-    },
-    [],
-  )
+      const searchableText = `${record.title} ${descriptionText}`.toLowerCase()
+      return searchableText.includes(search.toLowerCase())
+    })
+  }, [records, search])
 
   useEffect(() => {
     if (!url) return
@@ -104,12 +100,12 @@ const useFetchData = (url?: string, search?: string) => {
     fetchData()
 
     return () => controller.abort()
-  }, [url, reloadCounter, isURLAllowed])
+  }, [url, reloadCounter])
 
   const reload = useCallback(() => setReloadCounter((prev) => prev + 1), [])
 
   return {
-    records: getFilteredRecords(records, search),
+    records: filteredRecords,
     metadata,
     config,
     loading,

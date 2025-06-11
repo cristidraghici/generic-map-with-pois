@@ -16,14 +16,12 @@ type MapContainerProps = {
   setMap: React.Dispatch<React.SetStateAction<L.Map | null>>
   records: CustomRecord[]
   onRecordSelect: (_record: CustomRecord) => void
-  isAttributionControlVisible: boolean
   icon: Config['typeOfIcon']
 }
 
 const MapContainer = ({
   setMap,
   records,
-  isAttributionControlVisible,
   onRecordSelect,
   icon,
 }: MapContainerProps) => {
@@ -34,7 +32,7 @@ const MapContainer = ({
       zoom={MAP_CONFIG.ZOOM}
       style={{ height: '100%', width: '100%' }}
       zoomControl={false}
-      attributionControl={isAttributionControlVisible}
+      attributionControl={true}
     >
       <TileLayer {...MAP_TILE_LAYER} />
 

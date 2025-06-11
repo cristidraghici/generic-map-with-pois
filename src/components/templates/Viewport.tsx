@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { LatLngTuple } from 'leaflet'
+import L, { LatLngTuple } from 'leaflet'
 
 import Drawer from '@/components/molecules/Drawer'
 import RecordDetails from '@/components/molecules/RecordDetails'
@@ -86,14 +86,13 @@ const Viewport = () => {
       />
 
       <HorizontalViewportSplit
-        isSplitEnabled={!!config['isListVisible']}
+        isSplitEnabled={!!config.isListVisible}
         mainElement={
           <MapContainer
             setMap={setMap}
             records={visibleRecords}
             onRecordSelect={handleRecordSelect}
-            isAttributionControlVisible={!!config['isListVisible']}
-            icon={config['typeOfIcon']}
+            icon={config.typeOfIcon}
           />
         }
         splitElement={
@@ -102,6 +101,17 @@ const Viewport = () => {
             onRecordSelect={handleRecordSelect}
           />
         }
+        onClick={(isListOpen) => {
+          if (!map) return
+
+          if (isListOpen && map.attributionControl) {
+            map.removeControl(map.attributionControl)
+          }
+
+          if (!isListOpen) {
+            map.addControl(L.control.attribution())
+          }
+        }}
         onResize={() => {
           handleMapRefresh()
         }}

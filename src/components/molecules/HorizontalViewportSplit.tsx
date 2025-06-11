@@ -9,7 +9,7 @@ interface HorizontalViewportSplitProps {
   splitElement: ReactNode
   isSplitEnabled: boolean
 
-  onClick?: () => void
+  onClick?: (_isListOpen?: boolean) => void
   onResize?: () => void
 }
 
@@ -53,7 +53,7 @@ const HorizontalViewportSplit = ({
           variant="transparent"
           onClick={() => {
             setIsListOpen((prev) => {
-              !!onClick && onClick()
+              !!onClick && onClick(!prev)
 
               return !prev
             })
