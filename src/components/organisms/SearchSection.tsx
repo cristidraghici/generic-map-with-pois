@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'react'
-import SearchField from '../molecules/SearchField'
+import SearchField from '../atoms/SearchField'
 import ConditionalElement from '../atoms/ConditionalElement'
 
 interface SearchSectionProps {
@@ -8,25 +8,17 @@ interface SearchSectionProps {
   error: string | null
   hasUrl: boolean
   onSearchChange: (_value: string) => void
-  onSearchCancel: () => void
 }
 
 const SearchSection: FunctionComponent<SearchSectionProps> = ({
-  search,
   loading,
   error,
   hasUrl,
   onSearchChange,
-  onSearchCancel,
 }) => {
   return (
     <div className="absolute right-0 top-0 z-[998]  w-96 max-w-full p-2 pl-[50px]">
-      <SearchField
-        className="mb-2"
-        value={search}
-        onInputChange={onSearchChange}
-        onCancel={onSearchCancel}
-      />
+      <SearchField className="mb-2" onInputChange={onSearchChange} />
 
       <ConditionalElement
         as="div"

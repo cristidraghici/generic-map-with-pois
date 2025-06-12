@@ -84,7 +84,6 @@ const Viewport = () => {
         error={error}
         hasUrl={!!api}
         onSearchChange={(value: string) => setSearch(value)}
-        onSearchCancel={() => setSearch('')}
       />
 
       <HorizontalViewportSplit
