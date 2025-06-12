@@ -22,8 +22,10 @@ const Viewport = () => {
 
   const { api } = useURLParams()
 
-  const { records, metadata, config, loading, error, reload } =
-    useFetchData(api)
+  const { records, metadata, config, loading, error, reload } = useFetchData(
+    api,
+    search,
+  )
 
   const {
     map,
@@ -67,7 +69,7 @@ const Viewport = () => {
 
       setSelectedRecord(record)
 
-      if (map && !!config['zoomOnSelect']) {
+      if (map && !!config.zoomOnSelect) {
         map.flyTo([record.latitude, record.longitude], 18)
       }
     },
@@ -98,7 +100,12 @@ const Viewport = () => {
         splitElement={
           <ListView
             records={visibleRecords}
-            onRecordSelect={handleRecordSelect}
+            onRecordSelect={(record) => {
+              handleRecordSelect(record)
+              if (!config.zoomOnSelect) {
+                map?.flyTo([record.latitude, record.longitude], 14)
+              }
+            }}
           />
         }
         onClick={(isListOpen) => {

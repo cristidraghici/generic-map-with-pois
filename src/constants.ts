@@ -38,7 +38,7 @@ export const MAP_CONFIG = {
   /**
    * Padding factor for map bounds (20% padding)
    */
-  BOUNDS_PADDING: 0.2,
+  BOUNDS_PADDING: 0.6,
 } as const
 
 export const MAP_TILE_LAYER = {
