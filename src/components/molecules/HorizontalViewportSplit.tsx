@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useRef, useState } from 'react'
 import ButtonGroup from '../molecules/ButtonGroup'
 import ButtonWithTooltip from '../molecules/ButtonWithTooltip'
-import { ReactComponent as IconListSVG } from '@/assets/icons/list.svg'
+import { ReactComponent as IconListSVG } from '@/assets/icons/cards.svg'
 
 interface HorizontalViewportSplitProps {
   mainElement: ReactNode
@@ -45,22 +45,24 @@ const HorizontalViewportSplit = ({
         {mainElement}
       </div>
 
-      {isListOpen && <div style={{ height: '50vh' }}>{splitElement}</div>}
-
-      <ButtonGroup className="absolute bottom-[30px] left-[10px] z-[998]">
-        <ButtonWithTooltip
-          tooltip="Toggle the split view"
-          variant="transparent"
-          onClick={() => {
-            setIsListOpen((prev) => {
-              !!onClick && onClick(!prev)
-
-              return !prev
-            })
-          }}
-          icon={<IconListSVG width={15} height={15} className="fill-current" />}
-        />
-      </ButtonGroup>
+      <div className="relative w-full">
+        <ButtonGroup className="absolute -top-[40px] left-[10px] z-[998]">
+          <ButtonWithTooltip
+            tooltip="Toggle the split view"
+            variant="transparent"
+            onClick={() => {
+              setIsListOpen((prev) => {
+                !!onClick && onClick(!prev)
+                return !prev
+              })
+            }}
+            icon={
+              <IconListSVG width={15} height={15} className="fill-current" />
+            }
+          />
+        </ButtonGroup>
+        {isListOpen && <div style={{ height: '50vh' }}>{splitElement}</div>}
+      </div>
     </>
   )
 }

@@ -101,6 +101,7 @@ const Viewport = () => {
             records={visibleRecords}
             onRecordSelect={(record) => {
               handleRecordSelect(record)
+
               if (!config.zoomOnSelect) {
                 map?.flyTo([record.latitude, record.longitude], 14)
               }

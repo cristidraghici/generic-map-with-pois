@@ -28,7 +28,7 @@ const Drawer: FunctionComponent<PropsWithChildren<DrawerProps>> = ({
       <Backdrop onClick={onClose} isOpen={isOpen} />
 
       <div
-        className={`fixed inset-y-0 z-[999] m-1 mb-6 w-96 max-w-[calc(100%-0.5rem)] rounded-md bg-white p-1 shadow-xl transition-transform duration-300 ease-in-out ${
+        className={`fixed inset-y-0 z-[999] w-96 max-w-[calc(100%-0.5rem)] bg-white p-1 shadow-xl transition-transform duration-300 ease-in-out ${
           side === 'right' ? 'right-0' : 'left-0'
         } ${
           isOpen
@@ -37,7 +37,7 @@ const Drawer: FunctionComponent<PropsWithChildren<DrawerProps>> = ({
             ? 'translate-x-full'
             : '-translate-x-full'
         }`}
-        // style={{ maxWidth: 'calc(100% - 0.5rem)' }}
+        style={{ maxWidth: 'calc(100% - 0.5rem)' }}
       >
         <Button
           variant="transparent"
