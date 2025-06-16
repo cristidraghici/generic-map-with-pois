@@ -41,7 +41,10 @@ const HorizontalViewportSplit = ({
 
   return (
     <>
-      <div ref={containerRef} style={{ height: isListOpen ? '50vh' : '100vh' }}>
+      <div
+        ref={containerRef}
+        style={{ height: isListOpen ? '50dvh' : '100dvh' }}
+      >
         {mainElement}
       </div>
 
@@ -61,7 +64,7 @@ const HorizontalViewportSplit = ({
             }
           />
         </ButtonGroup>
-        {isListOpen && <div style={{ height: '50vh' }}>{splitElement}</div>}
+        {isListOpen && <div style={{ height: '50dvh' }}>{splitElement}</div>}
       </div>
     </>
   )
