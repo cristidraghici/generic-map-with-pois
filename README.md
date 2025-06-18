@@ -17,6 +17,7 @@ If you specify an address in the `?api=` url param, then it will try to use that
 ```typescript
 type ResponseType = Promise<
   {
+    id?: string
     latitude: number
     longitude: number
     title: string

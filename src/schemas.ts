@@ -1,6 +1,7 @@
 import z from 'zod'
 
 export const customRecordSchema = z.object({
+  id: z.string().optional(),
   latitude: z.number(),
   longitude: z.number(),
   title: z.string(),

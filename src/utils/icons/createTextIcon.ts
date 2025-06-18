@@ -17,7 +17,7 @@ function createTextIcon(title = '', color = '#3B82F6') {
   const iconWidth = textWidth
   const iconHeight = 24
 
-  return L.divIcon({
+  const icon = L.divIcon({
     className: '',
     html: `
     <div class="relative group group-hover:z-[9999]">
@@ -36,5 +36,7 @@ function createTextIcon(title = '', color = '#3B82F6') {
     iconAnchor: [iconWidth / 2, iconHeight],
     tooltipAnchor: [0, -iconHeight],
   })
+
+  return icon
 }
 export default createTextIcon

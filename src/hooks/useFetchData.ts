@@ -28,6 +28,14 @@ const useFetchData = (url?: string, search?: string) => {
   const [loading, setLoading] = useState(false)
   const [reloadCounter, setReloadCounter] = useState(0)
 
+  const handleSetRecords = useCallback((records: CustomRecord[]) => {
+    const recordsWithIds = records.map((record, index) => ({
+      ...record,
+      id: record.id ? record.id : `id_${index.toString(36)}`,
+    }))
+    setRecords(recordsWithIds)
+  }, [])
+
   const filteredRecords = useMemo((): CustomRecord[] => {
     if (!search) return records
 
@@ -51,7 +59,7 @@ const useFetchData = (url?: string, search?: string) => {
         config = DEFAULT_CONFIG,
       } = processApiResponse(mockData as CustomRecordWithMetadata)
 
-      setRecords(records)
+      handleSetRecords(records)
       setMetadata(metadata)
       setConfig(config)
       return
@@ -84,7 +92,7 @@ const useFetchData = (url?: string, search?: string) => {
           validatedResponse.data,
         )
 
-        setRecords(records)
+        handleSetRecords(records)
         setMetadata(metadata)
         setConfig({ ...DEFAULT_CONFIG, ...config })
       } catch (error) {
@@ -100,7 +108,7 @@ const useFetchData = (url?: string, search?: string) => {
     fetchData()
 
     return () => controller.abort()
-  }, [url, reloadCounter])
+  }, [url, reloadCounter, handleSetRecords])
 
   const reload = useCallback(() => setReloadCounter((prev) => prev + 1), [])
 

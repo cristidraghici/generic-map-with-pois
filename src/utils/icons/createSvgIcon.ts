@@ -24,15 +24,20 @@ const ICONS = [
   },
 ]
 
-function createSvgIcon(icon = 'default', color = '#3B82F6') {
+const createSvgIcon = (
+  icon: string = 'default',
+  color: string = '#3B82F6',
+): L.DivIcon => {
   const selectedIcon = ICONS.find((item) => item.name === icon)
 
   if (!selectedIcon) {
-    throw new Error(`Icon ${icon} not found.`)
+    throw new Error(`Icon "${icon}" not found.`)
   }
 
+  const svgHtml = selectedIcon.icon.replace(/fill=".*?"/g, `fill="${color}"`)
+
   const svgIcon = L.divIcon({
-    html: selectedIcon.icon.replace(/fill=".*?"/g, `fill="${color}"`),
+    html: svgHtml,
     className: 'custom-svg-marker',
     ...selectedIcon.config,
   })

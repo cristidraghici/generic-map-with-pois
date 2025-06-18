@@ -17,8 +17,8 @@ const ListView = ({ records = [], onRecordSelect }: ListViewProps) => {
     <>
       <div className="flex h-[50vh] flex-col bg-gray-100 p-4">
         <ul className="grid flex-grow grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4 overflow-auto bg-gray-100 p-4">
-          {records.slice(0, visibleItemsCount).map((record, index) => (
-            <li key={index} className="flex">
+          {records.slice(0, visibleItemsCount).map((record) => (
+            <li key={record.id} className="flex">
               <button
                 type="button"
                 className="flex h-full w-full max-w-[300px] flex-col justify-between rounded-lg border border-gray-200 bg-white p-4 text-left shadow-md transition-all duration-200 hover:bg-gray-50 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
