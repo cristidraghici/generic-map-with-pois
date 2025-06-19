@@ -15,6 +15,7 @@ export const configSchema = z.object({
   typeOfIcon: z.enum(['default', 'dot', 'text']),
   isListVisible: z.boolean().optional(),
   zoomOnSelect: z.boolean().optional(),
+  isListFilteredToViewport: z.boolean().optional(),
 })
 
 export const customRecordWithMetadataSchema = z.object({

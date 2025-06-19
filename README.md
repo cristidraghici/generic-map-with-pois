@@ -35,6 +35,7 @@ interface APIEnvelope<T> {
   config: {
     typeOfIcon: 'text' | 'default' | 'dot' // the icon to use in the data
     isListVisible: boolean | undefined // show the toggler to view a list
+    isListFilteredToViewport: boolean | undefined // show only the POIs in the viewport
     zoomOnSelect: boolean | undefined // zoom to a POI when clicked
   }
   records: T[]

@@ -98,12 +98,12 @@ const Viewport = () => {
         }
         splitElement={
           <ListView
-            records={visibleRecords}
+            records={config.isListFilteredToViewport ? visibleRecords : records}
             onRecordSelect={(record) => {
               handleRecordSelect(record)
 
               if (!config.zoomOnSelect) {
-                map?.flyTo([record.latitude, record.longitude], 14)
+                map?.flyTo([record.latitude, record.longitude], 18)
               }
             }}
           />
