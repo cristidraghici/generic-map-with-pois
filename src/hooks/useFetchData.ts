@@ -8,6 +8,7 @@ import {
   Metadata,
 } from '../types'
 import processApiResponse from '@/utils/processApiResponse'
+import { resolveRelativePaths } from '@/utils/resolveRelativePaths'
 
 import {
   ALLOWED_API_URL_PATTERNS,
@@ -88,9 +89,9 @@ const useFetchData = (url?: string, search?: string) => {
           throw new Error('Invalid response format: Could not parse entities')
         }
 
-        const { records, metadata, config } = processApiResponse(
-          validatedResponse.data,
-        )
+        // Resolve relative paths in the JSON data based on the API URL
+        const resolvedData = resolveRelativePaths(data, url)
+        const { records, metadata, config } = processApiResponse(resolvedData)
 
         handleSetRecords(records)
         setMetadata(metadata)
