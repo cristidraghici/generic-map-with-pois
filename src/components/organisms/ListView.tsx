@@ -25,7 +25,12 @@ const ListView = ({ records = [], onRecordSelect }: ListViewProps) => {
                   className="flex h-full w-full max-w-[300px] flex-col justify-between rounded-lg border border-gray-200 bg-white p-4 text-left shadow-md transition-all duration-200 hover:bg-gray-50 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
                   onClick={() => onRecordSelect(record)}
                 >
-                  <RecordDetails {...record} maxLines={5} showImages={false} />
+                  <RecordDetails
+                    {...record}
+                    maxLines={5}
+                    showImages={false}
+                    showSharableLink={false}
+                  />
                 </button>
               </li>
             ))}

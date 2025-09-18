@@ -20,7 +20,7 @@ const Viewport = () => {
     null,
   )
 
-  const { api } = useURLParams()
+  const { api, id } = useURLParams()
 
   const { records, metadata, config, loading, error, reload } = useFetchData(
     api,
@@ -60,6 +60,14 @@ const Viewport = () => {
     )
   }, [records, currentMapBounds])
 
+  /**
+   * Get ID from URL parameter (if exists)
+   */
+  const idFromUrl = useMemo(() => {
+    if (!id) return null
+    return id
+  }, [id])
+
   const handleRecordSelect = useCallback(
     (record: CustomRecord | null) => {
       if (!record) {
@@ -69,12 +77,26 @@ const Viewport = () => {
 
       setSelectedRecord(record)
 
-      if (map && !!config.zoomOnSelect) {
-        map.flyTo([record.latitude, record.longitude], 18)
+      if (!map) return
+
+      if (!!config.zoomOnSelect || idFromUrl === record.id) {
+        map.flyTo([record.latitude, record.longitude], 15)
       }
     },
-    [map, config],
+    [map, config, idFromUrl],
   )
+
+  /**
+   * Handle ID parameter to focus specific record
+   */
+  useEffect(() => {
+    if (!id || !records || records.length === 0) return
+
+    const targetRecord = records.find((record) => record.id === id)
+    if (targetRecord) {
+      handleRecordSelect(targetRecord)
+    }
+  }, [id, records, handleRecordSelect])
 
   return (
     <>

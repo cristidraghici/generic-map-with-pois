@@ -2,6 +2,7 @@ import { ComponentProps, FunctionComponent, PropsWithChildren } from 'react'
 import { CustomRecord } from '../../types'
 import { linkifyText } from '@/utils/linkifyText'
 import ImageGallery from './ImageGallery'
+import { ShareableLink } from '../atoms/ShareableLink'
 
 type RecordDetailsProps = PropsWithChildren<
   ComponentProps<'div'> &
@@ -9,16 +10,19 @@ type RecordDetailsProps = PropsWithChildren<
       maxLines?: number
       showImages?: boolean
       showTitle?: boolean
+      showSharableLink?: boolean
     }
 >
 
 const RecordDetails: FunctionComponent<RecordDetailsProps> = ({
+  id,
   title,
   description,
   images = [],
   className = '',
   maxLines = 0,
   showImages = true,
+  showSharableLink = true,
 }): JSX.Element => {
   return (
     <div className={`overflow-hidden ${className}`}>
@@ -43,6 +47,8 @@ const RecordDetails: FunctionComponent<RecordDetailsProps> = ({
         ))}
 
       {showImages && <ImageGallery images={images} />}
+
+      {id && showSharableLink && <ShareableLink id={id} />}
     </div>
   )
 }

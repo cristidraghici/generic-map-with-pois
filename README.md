@@ -27,6 +27,27 @@ type ResponseType = Promise<
 >
 ```
 
+### URL Parameters
+
+- `?api=` - Specifies the API endpoint or JSON file to load POI data from
+- `?id=` - Focuses on a specific record by its ID and opens its details panel
+
+**Example URLs:**
+- `/?api=/cities_in_romania.json` - Load the demo data
+- `/?api=/cities_in_romania.json&id=id_1` - Load demo data and focus on Cluj-Napoca (second record)
+- `/?api=https://your-api.com/pois.json&id=custom-poi-123` - Load from API and focus on specific record
+
+**Note:** If your data doesn't include `id` fields, the system will automatically generate them using the pattern `id_0`, `id_1`, `id_2`, etc., based on the array index.
+
+### Shareable Links
+
+When viewing record details (either in the drawer or map popups), if the record has an ID, you'll see a "Share this location" section with:
+- A "Copy Link" button that copies the shareable URL to your clipboard
+- A text input showing the full shareable URL that you can manually copy
+- The shareable URL includes all current parameters plus the specific record ID
+
+This makes it easy to share direct links to specific locations with others.
+
 There is also an option to use an enveloped structure:
 
 ```typescript
