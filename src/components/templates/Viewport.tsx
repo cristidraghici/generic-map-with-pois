@@ -50,23 +50,27 @@ const Viewport = () => {
   }, [map, records, handleSetBounds])
 
   /**
-   * Filter records based on the current map viewport bounds
-   */
-  const visibleRecords = useMemo(() => {
-    if (!currentMapBounds) return records
-
-    return records.filter((record) =>
-      currentMapBounds.contains([record.latitude, record.longitude]),
-    )
-  }, [records, currentMapBounds])
-
-  /**
    * Get ID from URL parameter (if exists)
    */
   const idFromUrl = useMemo(() => {
     if (!id) return null
     return id
   }, [id])
+
+  /**
+   * Filter records based on the current map viewport bounds
+   */
+  const visibleRecords = useMemo(() => {
+    if (idFromUrl && config.showOnlyURLRecord)
+      return records.filter((record) => record.id === idFromUrl)
+
+    if (currentMapBounds)
+      return records.filter((record) =>
+        currentMapBounds.contains([record.latitude, record.longitude]),
+      )
+
+    return records
+  }, [records, currentMapBounds, idFromUrl, config])
 
   const handleRecordSelect = useCallback(
     (record: CustomRecord | null) => {

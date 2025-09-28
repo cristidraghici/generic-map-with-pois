@@ -16,6 +16,7 @@ export const configSchema = z.object({
   isListVisible: z.boolean().optional(),
   zoomOnSelect: z.boolean().optional(),
   isListFilteredToViewport: z.boolean().optional(),
+  showOnlyURLRecord: z.boolean().optional(),
 })
 
 export const customRecordWithMetadataSchema = z.object({

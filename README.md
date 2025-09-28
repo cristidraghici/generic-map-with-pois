@@ -33,6 +33,7 @@ type ResponseType = Promise<
 - `?id=` - Focuses on a specific record by its ID and opens its details panel
 
 **Example URLs:**
+
 - `/?api=/cities_in_romania.json` - Load the demo data
 - `/?api=/cities_in_romania.json&id=id_1` - Load demo data and focus on Cluj-Napoca (second record)
 - `/?api=https://your-api.com/pois.json&id=custom-poi-123` - Load from API and focus on specific record
@@ -42,6 +43,7 @@ type ResponseType = Promise<
 ### Shareable Links
 
 When viewing record details (either in the drawer or map popups), if the record has an ID, you'll see a "Share this location" section with:
+
 - A "Copy Link" button that copies the shareable URL to your clipboard
 - A text input showing the full shareable URL that you can manually copy
 - The shareable URL includes all current parameters plus the specific record ID
@@ -58,6 +60,7 @@ interface APIEnvelope<T> {
     isListVisible: boolean | undefined // show the toggler to view a list
     isListFilteredToViewport: boolean | undefined // show only the POIs in the viewport
     zoomOnSelect: boolean | undefined // zoom to a POI when clicked
+    showOnlyURLRecord: boolean | undefined // show only the record specified in the url
   }
   records: T[]
 }

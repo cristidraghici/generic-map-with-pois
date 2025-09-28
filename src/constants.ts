@@ -22,6 +22,8 @@ export const DEFAULT_CONFIG: Config = {
   typeOfIcon: 'default',
   isListVisible: false,
   zoomOnSelect: false,
+  isListFilteredToViewport: false,
+  showOnlyURLRecord: true,
 } as const
 
 export const MAP_CONFIG = {
