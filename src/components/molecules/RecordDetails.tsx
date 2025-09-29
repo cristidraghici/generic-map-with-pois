@@ -4,12 +4,14 @@ import { linkifyText } from '@/utils/linkifyText'
 import ImageGallery from './ImageGallery'
 import { ShareableLink } from '../atoms/ShareableLink'
 import { DownloadButton } from '../atoms/DownloadButton'
+import { MiniMap } from '../atoms/MiniMap'
 
 type RecordDetailsProps = PropsWithChildren<
   ComponentProps<'div'> &
     CustomRecord & {
       maxLines?: number
       showImages?: boolean
+      showMinimap?: boolean
       showTitle?: boolean
       showActions?: boolean
     }
@@ -23,7 +25,10 @@ const RecordDetails: FunctionComponent<RecordDetailsProps> = ({
   className = '',
   maxLines = 0,
   showImages = true,
+  showMinimap = true,
   showActions = true,
+  latitude,
+  longitude,
 }): JSX.Element => {
   return (
     <div className={`RecordDetails overflow-hidden ${className}`}>
@@ -48,6 +53,7 @@ const RecordDetails: FunctionComponent<RecordDetailsProps> = ({
         ))}
 
       {showImages && <ImageGallery images={images} />}
+      {showMinimap && <MiniMap latitude={latitude} longitude={longitude} />}
 
       {id && showActions && (
         <div className="RecordDetailsActionButtons">
