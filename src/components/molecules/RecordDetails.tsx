@@ -3,6 +3,7 @@ import { CustomRecord } from '../../types'
 import { linkifyText } from '@/utils/linkifyText'
 import ImageGallery from './ImageGallery'
 import { ShareableLink } from '../atoms/ShareableLink'
+import { DownloadButton } from '../atoms/DownloadButton'
 
 type RecordDetailsProps = PropsWithChildren<
   ComponentProps<'div'> &
@@ -10,7 +11,7 @@ type RecordDetailsProps = PropsWithChildren<
       maxLines?: number
       showImages?: boolean
       showTitle?: boolean
-      showSharableLink?: boolean
+      showActions?: boolean
     }
 >
 
@@ -22,10 +23,10 @@ const RecordDetails: FunctionComponent<RecordDetailsProps> = ({
   className = '',
   maxLines = 0,
   showImages = true,
-  showSharableLink = true,
+  showActions = true,
 }): JSX.Element => {
   return (
-    <div className={`overflow-hidden ${className}`}>
+    <div className={`RecordDetails overflow-hidden ${className}`}>
       <h3 className="mb-4 text-xl font-bold">{title}</h3>
 
       {!!description &&
@@ -48,7 +49,12 @@ const RecordDetails: FunctionComponent<RecordDetailsProps> = ({
 
       {showImages && <ImageGallery images={images} />}
 
-      {id && showSharableLink && <ShareableLink id={id} />}
+      {id && showActions && (
+        <div className="RecordDetailsActionButtons">
+          <ShareableLink id={id} />
+          <DownloadButton selector=".RecordDetails" />
+        </div>
+      )}
     </div>
   )
 }

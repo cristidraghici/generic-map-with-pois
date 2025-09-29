@@ -11,7 +11,7 @@ export const ShareableLink: FunctionComponent<ShareableLinkProps> = ({
   const [copySuccess, setCopySuccess] = useState(false)
 
   return (
-    <div className="mt-4 border-t border-gray-200 pt-4">
+    <div className="mt-4 pt-4">
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-gray-600">
           Share this location:

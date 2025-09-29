@@ -100,7 +100,7 @@ const MapContainer = ({
                 {...record}
                 maxLines={5}
                 showImages={false}
-                showSharableLink={false}
+                showActions={false}
               />
             </MarkerElement>
           )

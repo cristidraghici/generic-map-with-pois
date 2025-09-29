@@ -29,7 +29,7 @@ const ListView = ({ records = [], onRecordSelect }: ListViewProps) => {
                     {...record}
                     maxLines={5}
                     showImages={false}
-                    showSharableLink={false}
+                    showActions={false}
                   />
                 </button>
               </li>
