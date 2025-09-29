@@ -26,12 +26,30 @@ type MapContainerProps = {
 
 const MapContainer = ({
   setMap,
-  records,
   onRecordSelect,
   icon,
+  records,
 }: MapContainerProps) => {
-  const clusterOptions = useMemo(() => {
-    return {
+  const recordMarkers = useMemo<
+    (CustomRecord & {
+      icon: Config['typeOfIcon']
+      color: (typeof MARKER_COLORS)[keyof typeof MARKER_COLORS]
+    })[]
+  >(() => {
+    return records.map((record) => ({
+      ...record,
+      icon:
+        icon === 'text' && (!record.title || record.title.length === 0)
+          ? 'default'
+          : icon,
+      color: Array.isArray(record.description)
+        ? MARKER_COLORS.green
+        : MARKER_COLORS.blue,
+    }))
+  }, [records, icon])
+
+  const clusterOptions = useMemo(
+    () => ({
       chunkedLoading: true,
       chunkInterval: 200,
       chunkDelay: 50,
@@ -40,29 +58,11 @@ const MapContainer = ({
       showCoverageOnHover: false,
       zoomToBoundsOnClick: true,
       removeOutsideVisibleBounds: true,
-      animate: true,
-    }
-  }, [records.length])
-
-  const recordMarkers = useMemo<
-    (CustomRecord & {
-      icon: Config['typeOfIcon']
-      color: (typeof MARKER_COLORS)[keyof typeof MARKER_COLORS]
-    })[]
-  >(() => {
-    return records.map((record) => {
-      return {
-        ...record,
-        icon:
-          icon === 'text' && (!record.title || record.title.length === 0)
-            ? 'default'
-            : icon,
-        color: Array.isArray(record.description)
-          ? MARKER_COLORS.green
-          : MARKER_COLORS.blue,
-      }
-    })
-  }, [records, icon])
+      animate: records.length < 500, // Disable animation for very large datasets
+      disableClusteringAtZoom: records.length > 10000 ? 15 : 18, // Disable clustering earlier for very large datasets
+    }),
+    [records.length],
+  )
 
   const startTime = performance.now()
 
@@ -86,26 +86,24 @@ const MapContainer = ({
       <TileLayer {...MAP_TILE_LAYER} />
 
       <MarkerClusterGroup {...clusterOptions}>
-        {recordMarkers.map((record) => {
-          return (
-            <MarkerElement
-              key={record.id}
-              record={record}
-              onClick={() => onRecordSelect(record)}
-              color={record.color}
-              icon={record.icon}
-            >
-              <RecordDetails
-                className="max-w-[300px]"
-                {...record}
-                maxLines={5}
-                showImages={false}
-                showMinimap={false}
-                showActions={false}
-              />
-            </MarkerElement>
-          )
-        })}
+        {recordMarkers.map((record) => (
+          <MarkerElement
+            key={record.id}
+            record={record}
+            onClick={() => onRecordSelect(record)}
+            color={record.color}
+            icon={record.icon}
+          >
+            <RecordDetails
+              className="max-w-[300px]"
+              {...record}
+              maxLines={5}
+              showImages={false}
+              showMinimap={false}
+              showActions={false}
+            />
+          </MarkerElement>
+        ))}
       </MarkerClusterGroup>
     </LeafletMapContainer>
   )

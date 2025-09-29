@@ -69,7 +69,7 @@ const Viewport = () => {
         currentMapBounds.contains([record.latitude, record.longitude]),
       )
 
-    return records
+    return []
   }, [records, currentMapBounds, idFromUrl, config])
 
   const handleRecordSelect = useCallback(
