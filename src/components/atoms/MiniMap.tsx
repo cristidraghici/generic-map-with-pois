@@ -49,7 +49,7 @@ export const MiniMap = ({
 
   return (
     <div
-      className={`${className} mb-4 mt-4 h-40 w-full overflow-hidden rounded-md border border-gray-200`}
+      className={`${className} pdf-page-break-before mb-4 mt-4 h-40 w-full overflow-hidden rounded-md border border-gray-200`}
     >
       <MapContainer
         center={position}

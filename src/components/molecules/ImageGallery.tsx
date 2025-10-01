@@ -60,7 +60,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
       {images.length > 0 && (
         <ul className="flex flex-wrap gap-4">
           {images.map((image, index) => (
-            <li key={image} className="w-full cursor-pointer">
+            <li key={image} className="w-full cursor-pointer pdf-page-break-before">
               <button
                 type="button"
                 onClick={() => openModal(index)}

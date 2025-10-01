@@ -23,13 +23,7 @@ export const DownloadButton: FunctionComponent<{ selector: string }> = ({
       const hiddenButtons: HTMLElement[] = []
 
       actionButtons.forEach((button) => {
-        if (
-          button instanceof HTMLElement &&
-          (button.textContent?.toLowerCase().includes('download') ||
-            button.textContent?.toLowerCase().includes('share') ||
-            button.classList.contains('download') ||
-            button.classList.contains('share'))
-        ) {
+        if (button instanceof HTMLDivElement) {
           button.style.display = 'none'
           hiddenButtons.push(button)
         }
@@ -44,6 +38,12 @@ export const DownloadButton: FunctionComponent<{ selector: string }> = ({
           unit: 'in',
           format: 'letter',
           orientation: 'portrait' as const,
+        },
+        pagebreak: {
+          mode: ['css', 'legacy'],
+          before: '.pdf-page-break-before',
+          after: '.pdf-page-break-after',
+          avoid: '.pdf-page-break-avoid',
         },
       }
 
