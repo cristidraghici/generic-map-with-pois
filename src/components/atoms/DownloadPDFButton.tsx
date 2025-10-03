@@ -1,7 +1,8 @@
 import { FunctionComponent, useState } from 'react'
 import html2pdf from 'html2pdf.js'
+import { ReactComponent as IconDownloadSVG } from '@/assets/icons/download.svg'
 
-export const DownloadButton: FunctionComponent<{ selector: string }> = ({
+export const DownloadPDFButton: FunctionComponent<{ selector: string }> = ({
   selector,
 }) => {
   const [isGenerating, setIsGenerating] = useState(false)
@@ -65,56 +66,12 @@ export const DownloadButton: FunctionComponent<{ selector: string }> = ({
       <button
         onClick={downloadPDF}
         disabled={isGenerating}
-        className={`mt-4 inline-flex items-center rounded-md px-3 py-1.5 text-xs font-medium text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 ${
-          isGenerating
-            ? 'cursor-not-allowed bg-gray-400'
-            : 'bg-green-600 hover:bg-green-700 focus:ring-green-500'
-        }`}
+        className={`mt-4 inline-flex items-center rounded-md bg-green-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1`}
       >
-        {isGenerating ? (
-          <>
-            <svg
-              className="mr-1.5 h-3 w-3 animate-spin"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              />
-            </svg>
-            Generating...
-          </>
-        ) : (
-          <>
-            <svg
-              className="mr-1.5 h-3 w-3"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-            Download PDF
-          </>
-        )}
+        <IconDownloadSVG className="mr-1.5 h-3 w-3" /> Download PDF
       </button>
     </div>
   )
 }
 
-export default DownloadButton
+export default DownloadPDFButton

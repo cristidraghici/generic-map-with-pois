@@ -1,13 +1,17 @@
 import { FunctionComponent, PropsWithChildren, memo, useMemo } from 'react'
-import { Marker, Tooltip } from 'react-leaflet'
+import { Marker, MarkerProps, Tooltip } from 'react-leaflet'
 import { CustomRecord, Config } from '@/types'
 import createSvgIcon from '@/utils/icons/createSvgIcon'
 import createTextIcon from '@/utils/icons/createTextIcon'
 import { iconCacheManager } from '@/utils/icons/cache'
 import { MARKER_COLORS } from '@/constants'
 
-interface MarkerElementProps {
-  record: CustomRecord
+interface MarkerElementProps extends Omit<MarkerProps, 'icon' | 'position'> {
+  record: Partial<CustomRecord> & {
+    latitude: number
+    longitude: number
+    title?: string
+  }
   color: (typeof MARKER_COLORS)[keyof typeof MARKER_COLORS]
   icon: Config['typeOfIcon']
   onClick?: () => void
@@ -21,6 +25,7 @@ const MarkerElement: FunctionComponent<
   icon = 'default',
   onClick,
   children,
+  ...rest
 }) => {
   const iconEl = useMemo(() => {
     const cacheId = `${icon}-${color}-${title}`
@@ -38,13 +43,14 @@ const MarkerElement: FunctionComponent<
 
   return (
     <Marker
-      position={[latitude, longitude]}
       eventHandlers={{
         click: () => {
           onClick && onClick()
         },
       }}
       icon={iconEl}
+      position={[latitude, longitude]}
+      {...rest}
     >
       {children && (
         <Tooltip direction={icon === 'text' ? 'top' : 'auto'}>

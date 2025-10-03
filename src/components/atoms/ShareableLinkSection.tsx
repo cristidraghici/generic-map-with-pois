@@ -1,13 +1,14 @@
 import { ComponentProps, FunctionComponent, useState } from 'react'
 import { generateShareableUrl } from '@/utils/generateShareableUrl'
+import { ReactComponent as CopyIconSVG } from '@/assets/icons/copy.svg'
 
-interface ShareableLinkProps extends ComponentProps<'div'> {
+interface ShareableLinkSectionProps extends ComponentProps<'div'> {
   id: string
 }
 
-export const ShareableLink: FunctionComponent<ShareableLinkProps> = ({
-  id,
-}) => {
+export const ShareableLinkSection: FunctionComponent<
+  ShareableLinkSectionProps
+> = ({ id }) => {
   const [copySuccess, setCopySuccess] = useState(false)
 
   return (
@@ -61,19 +62,7 @@ export const ShareableLink: FunctionComponent<ShareableLinkProps> = ({
             </>
           ) : (
             <>
-              <svg
-                className="mr-1.5 h-3 w-3"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                />
-              </svg>
+              <CopyIconSVG className="mr-1.5 h-3 w-3" />
               Copy Link
             </>
           )}

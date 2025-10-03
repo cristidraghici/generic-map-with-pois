@@ -1,42 +1,13 @@
-import { useEffect, useRef } from 'react'
-import L from 'leaflet'
-import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer } from 'react-leaflet'
+import MarkerElement from '../molecules/MarkerElement'
+import { MARKER_COLORS } from '@/constants'
 import 'leaflet/dist/leaflet.css'
-import createSvgIcon from '@/utils/icons/createSvgIcon'
-
-// Fix for marker icons
-L.Marker.prototype.options.icon = createSvgIcon()
 
 interface MiniMapProps {
   latitude: number
   longitude: number
   zoom?: number
   className?: string
-}
-
-const MiniMapContent = ({
-  latitude,
-  longitude,
-}: {
-  latitude: number
-  longitude: number
-}) => {
-  const map = useMap()
-  const markerRef = useRef<L.Marker>(null)
-
-  useEffect(() => {
-    if (markerRef.current) {
-      map.setView([latitude, longitude], map.getZoom())
-    }
-  }, [latitude, longitude, map])
-
-  return (
-    <Marker
-      ref={markerRef}
-      position={[latitude, longitude]}
-      interactive={false}
-    />
-  )
 }
 
 export const MiniMap = ({
@@ -66,7 +37,12 @@ export const MiniMap = ({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        <MiniMapContent latitude={latitude} longitude={longitude} />
+
+        <MarkerElement
+          record={{ latitude, longitude }}
+          color={MARKER_COLORS.blue}
+          icon="default"
+        />
       </MapContainer>
     </div>
   )

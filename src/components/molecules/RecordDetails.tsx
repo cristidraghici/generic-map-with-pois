@@ -2,8 +2,8 @@ import { ComponentProps, FunctionComponent, PropsWithChildren } from 'react'
 import { CustomRecord } from '../../types'
 import { linkifyText } from '@/utils/linkifyText'
 import ImageGallery from './ImageGallery'
-import { ShareableLink } from '../atoms/ShareableLink'
-import { DownloadButton } from '../atoms/DownloadButton'
+import { ShareableLinkSection } from '../atoms/ShareableLinkSection'
+import { DownloadPDFButton } from '../atoms/DownloadPDFButton'
 import { MiniMap } from '../atoms/MiniMap'
 
 type RecordDetailsProps = PropsWithChildren<
@@ -31,7 +31,7 @@ const RecordDetails: FunctionComponent<RecordDetailsProps> = ({
   longitude,
 }): JSX.Element => {
   return (
-    <div className={`RecordDetails overflow-hidden ${className}`}>
+    <div className={`RecordDetails mb-4 overflow-hidden p-1 ${className}`}>
       <h3 className="mb-4 text-xl font-bold">{title}</h3>
 
       {!!description &&
@@ -57,8 +57,8 @@ const RecordDetails: FunctionComponent<RecordDetailsProps> = ({
 
       {id && showActions && (
         <div className="RecordDetailsActionButtons">
-          <ShareableLink id={id} />
-          <DownloadButton selector=".RecordDetails" />
+          <ShareableLinkSection id={id} />
+          <DownloadPDFButton selector=".RecordDetails" />
         </div>
       )}
     </div>
