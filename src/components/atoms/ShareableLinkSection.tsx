@@ -15,7 +15,7 @@ export const ShareableLinkSection: FunctionComponent<
     <div className="mt-4 pt-4">
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-gray-600">
-          Share this location:
+          Share this location
         </span>
         <button
           onClick={async () => {

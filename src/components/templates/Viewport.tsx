@@ -169,14 +169,7 @@ const Viewport = () => {
         isOpen={selectedRecord !== null}
         onClose={() => handleRecordSelect(null)}
       >
-        {selectedRecord && (
-          <RecordDetails
-            {...selectedRecord}
-            isPageBreakBeforeMediaInPDFEnabled={
-              config.isPageBreakBeforeMediaInPDFEnabled
-            }
-          />
-        )}
+        {selectedRecord && <RecordDetails {...selectedRecord} />}
       </Drawer>
     </>
   )

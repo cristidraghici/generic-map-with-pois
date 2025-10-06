@@ -40,7 +40,6 @@ interface APIEnvelope {
     isListFilteredToViewport: boolean | undefined // false, show only the POIs in the viewport
     isZoomOnSelectEnabled: boolean | undefined // false, zoom to a POI when clicked
     isShowOnlyURLRecordEnabled: boolean | undefined // true, show only the record specified in the url
-    isPageBreakBeforeMediaInPDFEnabled: boolean | undefined // false, insert a page break before each media to prevent cropping
   }
   records: PointOfInterest[]
 }

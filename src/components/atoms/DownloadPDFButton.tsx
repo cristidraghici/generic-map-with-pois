@@ -8,6 +8,8 @@ interface DownloadPDFButtonProps {
   name?: string
   onBeforeGenerate?: () => void
   onAfterGenerate?: () => void
+  togglePageBreakBeforeMediaInPDF?: () => void
+  isPageBreakBeforeMediaInPDFEnabled?: boolean
 }
 
 export const DownloadPDFButton: FunctionComponent<DownloadPDFButtonProps> = ({
@@ -15,6 +17,8 @@ export const DownloadPDFButton: FunctionComponent<DownloadPDFButtonProps> = ({
   name = 'pdf-document',
   onBeforeGenerate,
   onAfterGenerate,
+  togglePageBreakBeforeMediaInPDF,
+  isPageBreakBeforeMediaInPDFEnabled = false,
 }) => {
   const [isGenerating, setIsGenerating] = useState(false)
 
@@ -93,15 +97,40 @@ export const DownloadPDFButton: FunctionComponent<DownloadPDFButtonProps> = ({
   }
 
   return (
-    <div className="flex justify-end">
-      <button
-        onClick={downloadPDF}
-        disabled={isGenerating}
-        className={`mt-4 inline-flex items-center rounded-md bg-green-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1`}
-      >
-        <IconDownloadSVG className="mr-1.5 h-3 w-3" /> Download PDF
-      </button>
-    </div>
+    <>
+      <div className="flex items-center justify-between gap-2 rounded-lg pt-4 transition">
+        <label
+          htmlFor="page-break-before-media-toggle"
+          className="select-none text-sm font-medium text-gray-600"
+        >
+          Page break before media
+        </label>
+
+        <input
+          type="checkbox"
+          id="page-break-before-media-toggle"
+          className="h-4 w-8 cursor-pointer appearance-none rounded-full bg-gray-300 transition-colors before:absolute before:h-4 before:w-4 before:translate-x-0 before:rounded-full before:bg-white before:shadow before:transition-transform checked:bg-green-600 checked:before:translate-x-4"
+          style={{ position: 'relative' }}
+          onChange={() => {
+            if (typeof togglePageBreakBeforeMediaInPDF === 'function') {
+              togglePageBreakBeforeMediaInPDF()
+            }
+          }}
+          checked={!!isPageBreakBeforeMediaInPDFEnabled}
+          disabled={isGenerating}
+        />
+      </div>
+
+      <div className="flex justify-end">
+        <button
+          onClick={downloadPDF}
+          disabled={isGenerating}
+          className={`mt-4 inline-flex items-center rounded-md bg-green-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1`}
+        >
+          <IconDownloadSVG className="mr-1.5 h-3 w-3" /> Download PDF
+        </button>
+      </div>
+    </>
   )
 }
 

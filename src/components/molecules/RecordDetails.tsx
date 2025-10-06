@@ -3,6 +3,7 @@ import {
   FunctionComponent,
   PropsWithChildren,
   useRef,
+  useState,
 } from 'react'
 import type { Map as LeafletMap } from 'leaflet'
 import { CustomRecord } from '../../types'
@@ -20,7 +21,6 @@ type RecordDetailsProps = PropsWithChildren<
       showMinimap?: boolean
       showTitle?: boolean
       showActions?: boolean
-      isPageBreakBeforeMediaInPDFEnabled?: boolean
     }
 >
 
@@ -36,9 +36,12 @@ const RecordDetails: FunctionComponent<RecordDetailsProps> = ({
   showActions = true,
   latitude,
   longitude,
-  isPageBreakBeforeMediaInPDFEnabled = false,
 }): JSX.Element => {
   const miniMapRef = useRef<LeafletMap | null>(null)
+  const [
+    isPageBreakBeforeMediaInPDFEnabled,
+    setIsPageBreakBeforeMediaInPDFEnabled,
+  ] = useState(false)
 
   return (
     <div className={`RecordDetails mb-4 overflow-hidden p-1 ${className}`}>
@@ -110,6 +113,12 @@ const RecordDetails: FunctionComponent<RecordDetailsProps> = ({
                 miniMapRef.current?.invalidateSize()
               }
             }}
+            togglePageBreakBeforeMediaInPDF={() => {
+              setIsPageBreakBeforeMediaInPDFEnabled((prev) => !prev)
+            }}
+            isPageBreakBeforeMediaInPDFEnabled={
+              isPageBreakBeforeMediaInPDFEnabled
+            }
           />
         </div>
       )}
