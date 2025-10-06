@@ -6,11 +6,15 @@ import { sanitizeFileName } from '@/utils/files'
 interface DownloadPDFButtonProps {
   selector: string
   name?: string
+  onBeforeGenerate?: () => void
+  onAfterGenerate?: () => void
 }
 
 export const DownloadPDFButton: FunctionComponent<DownloadPDFButtonProps> = ({
   selector,
   name = 'pdf-document',
+  onBeforeGenerate,
+  onAfterGenerate,
 }) => {
   const [isGenerating, setIsGenerating] = useState(false)
 
@@ -41,11 +45,17 @@ export const DownloadPDFButton: FunctionComponent<DownloadPDFButtonProps> = ({
         margin: 0.5,
         filename: `${sanitizeFileName(name)}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+        },
         jsPDF: {
           unit: 'in',
           format: 'letter',
           orientation: 'portrait' as const,
+          compress: true,
+          putOnlyUsedFonts: true,
+          floatPrecision: 16,
         },
         pagebreak: {
           mode: ['css', 'legacy'],
@@ -55,7 +65,21 @@ export const DownloadPDFButton: FunctionComponent<DownloadPDFButtonProps> = ({
         },
       }
 
+      if (onBeforeGenerate) {
+        onBeforeGenerate()
+
+        // Wait a moment to ensure any UI updates are rendered
+        await new Promise((resolve) => setTimeout(resolve, 200))
+      }
+
       await html2pdf().set(options).from(element).save()
+
+      // Wait a moment to ensure the PDF has been fully processed
+      await new Promise((resolve) => setTimeout(resolve, 100))
+
+      if (onAfterGenerate) {
+        onAfterGenerate()
+      }
 
       // Show buttons again after PDF generation
       hiddenButtons.forEach((button) => {

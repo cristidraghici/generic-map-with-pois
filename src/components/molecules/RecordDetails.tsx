@@ -1,4 +1,10 @@
-import { ComponentProps, FunctionComponent, PropsWithChildren } from 'react'
+import {
+  ComponentProps,
+  FunctionComponent,
+  PropsWithChildren,
+  useRef,
+} from 'react'
+import type { Map as LeafletMap } from 'leaflet'
 import { CustomRecord } from '../../types'
 import { linkifyText } from '@/utils/linkifyText'
 import ImageGallery from './ImageGallery'
@@ -32,6 +38,8 @@ const RecordDetails: FunctionComponent<RecordDetailsProps> = ({
   longitude,
   isPageBreakBeforeMediaInPDFEnabled = false,
 }): JSX.Element => {
+  const miniMapRef = useRef<LeafletMap | null>(null)
+
   return (
     <div className={`RecordDetails mb-4 overflow-hidden p-1 ${className}`}>
       <h3 className="mb-4 text-xl font-bold">{title}</h3>
@@ -62,8 +70,10 @@ const RecordDetails: FunctionComponent<RecordDetailsProps> = ({
           }
         />
       )}
+
       {showMinimap && (
         <MiniMap
+          ref={miniMapRef}
           latitude={latitude}
           longitude={longitude}
           isPageBreakBeforeMediaInPDFEnabled={
@@ -75,7 +85,32 @@ const RecordDetails: FunctionComponent<RecordDetailsProps> = ({
       {id && showActions && (
         <div className="RecordDetailsActionButtons">
           <ShareableLinkSection id={id} />
-          <DownloadPDFButton selector=".RecordDetails" name={id} />
+
+          <DownloadPDFButton
+            selector=".RecordDetails"
+            name={id}
+            onBeforeGenerate={() => {
+              const mapContainer = miniMapRef.current?.getContainer()
+              if (mapContainer) {
+                // Store the current width so we can restore it later
+                mapContainer.dataset.originalWidth = mapContainer.style.width
+
+                // Temporarily enlarge the map before PDF capture
+                mapContainer.style.width = '800px'
+                miniMapRef.current?.invalidateSize()
+              }
+            }}
+            onAfterGenerate={() => {
+              const mapContainer = miniMapRef.current?.getContainer()
+              if (mapContainer) {
+                // Restore the original width
+                mapContainer.style.width =
+                  mapContainer.dataset.originalWidth || ''
+                delete mapContainer.dataset.originalWidth
+                miniMapRef.current?.invalidateSize()
+              }
+            }}
+          />
         </div>
       )}
     </div>
