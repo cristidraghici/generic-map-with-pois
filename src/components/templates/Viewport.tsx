@@ -102,6 +102,11 @@ const Viewport = () => {
     }
   }, [id, records, handleRecordSelect])
 
+  const isListEnabled = useMemo(
+    () => !!config.isListEnabled && records.length > 0 && !idFromUrl,
+    [config.isListEnabled, records.length, idFromUrl],
+  )
+
   return (
     <>
       <SearchSection
@@ -113,7 +118,7 @@ const Viewport = () => {
       />
 
       <HorizontalViewportSplit
-        isSplitEnabled={!!config.isListEnabled}
+        isSplitEnabled={isListEnabled}
         mainElement={
           <MapContainer
             setMap={setMap}
