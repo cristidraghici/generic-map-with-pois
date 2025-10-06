@@ -8,23 +8,42 @@
 
 ## About
 
-This project uses React, Typescript, Leaflet and OpenStreetMap to show points of interest (POIs).
+This project uses React, Typescript, Leaflet and OpenStreetMap to show points of interest (POIs). It will automatically set bounds and zoom to the loaded POIs. By default, it will show a few cities of Romania. The format for the POI is:
 
-It will automatically set bounds and zoom to the loaded POIs. By default, it will show a few cities of Romania.
+```typescript
+type PointOfInterest = {
+  id?: string
+  latitude: number
+  longitude: number
+  title: string
+  description?: string | string[]
+  images?: string[]
+}
+```
+
+### Response types
 
 If you specify an address in the `?api=` url param, then it will try to use that as a source for the points. Please remember to have the following format in your response:
 
 ```typescript
-type ResponseType = Promise<
-  {
-    id?: string
-    latitude: number
-    longitude: number
-    title: string
-    description?: string | string[]
-    images?: string[]
-  }[]
->
+interface Response extends Array<PointOfInterest> {}
+```
+
+There is also an option to use an enveloped structure:
+
+```typescript
+interface APIEnvelope {
+  metadata: string | string[]
+  config: {
+    typeOfIcon: 'text' | 'default' | 'dot' // default, the icon to use in the data
+    isListEnabled: boolean | undefined // true, show the toggler to view a list
+    isListFilteredToViewport: boolean | undefined // false, show only the POIs in the viewport
+    isZoomOnSelectEnabled: boolean | undefined // false, zoom to a POI when clicked
+    isShowOnlyURLRecordEnabled: boolean | undefined // true, show only the record specified in the url
+    isPageBreakBeforeMediaInPDFEnabled: boolean | undefined // false, insert a page break before each media to prevent cropping
+  }
+  records: PointOfInterest[]
+}
 ```
 
 ### URL Parameters
@@ -39,33 +58,6 @@ type ResponseType = Promise<
 - `/?api=https://your-api.com/pois.json&id=custom-poi-123` - Load from API and focus on specific record
 
 **Note:** If your data doesn't include `id` fields, the system will automatically generate them using the pattern `id_0`, `id_1`, `id_2`, etc., based on the array index.
-
-### Shareable Links
-
-When viewing record details (either in the drawer or map popups), if the record has an ID, you'll see a "Share this location" section with:
-
-- A "Copy Link" button that copies the shareable URL to your clipboard
-- A text input showing the full shareable URL that you can manually copy
-- The shareable URL includes all current parameters plus the specific record ID
-
-This makes it easy to share direct links to specific locations with others.
-
-There is also an option to use an enveloped structure:
-
-```typescript
-interface APIEnvelope<T> {
-  metadata: string | string[]
-  config: {
-    typeOfIcon: 'text' | 'default' | 'dot' // default, the icon to use in the data
-    isListEnabled: boolean | undefined // true, show the toggler to view a list
-    isListFilteredToViewport: boolean | undefined // false, show only the POIs in the viewport
-    isZoomOnSelectEnabled: boolean | undefined // false, zoom to a POI when clicked
-    isShowOnlyURLRecordEnabled: boolean | undefined // true, show only the record specified in the url
-    isPageBreakBeforeMediaInPDFEnabled: boolean | undefined // false, insert a page break before each media to prevent cropping
-  }
-  records: T[]
-}
-```
 
 ## Install and first run
 

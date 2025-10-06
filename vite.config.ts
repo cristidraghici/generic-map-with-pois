@@ -4,7 +4,8 @@ import svgr from 'vite-plugin-svgr'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/generic-map-with-pois',
+  base:
+    process.env.VITE_IS_GH_PAGES === 'true' ? '/generic-map-with-pois/' : '/',
   plugins: [
     react(),
     svgr({
