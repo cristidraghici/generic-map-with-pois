@@ -75,7 +75,7 @@ const RecordDetails: FunctionComponent<RecordDetailsProps> = ({
       {id && showActions && (
         <div className="RecordDetailsActionButtons">
           <ShareableLinkSection id={id} />
-          <DownloadPDFButton selector=".RecordDetails" />
+          <DownloadPDFButton selector=".RecordDetails" name={id} />
         </div>
       )}
     </div>

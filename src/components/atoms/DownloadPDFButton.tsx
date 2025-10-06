@@ -1,9 +1,16 @@
 import { FunctionComponent, useState } from 'react'
 import html2pdf from 'html2pdf.js'
 import { ReactComponent as IconDownloadSVG } from '@/assets/icons/download.svg'
+import { sanitizeFileName } from '@/utils/files'
 
-export const DownloadPDFButton: FunctionComponent<{ selector: string }> = ({
+interface DownloadPDFButtonProps {
+  selector: string
+  name?: string
+}
+
+export const DownloadPDFButton: FunctionComponent<DownloadPDFButtonProps> = ({
   selector,
+  name = 'pdf-document',
 }) => {
   const [isGenerating, setIsGenerating] = useState(false)
 
@@ -32,7 +39,7 @@ export const DownloadPDFButton: FunctionComponent<{ selector: string }> = ({
 
       const options = {
         margin: 0.5,
-        filename: 'map-with-pois.pdf',
+        filename: `${sanitizeFileName(name)}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true },
         jsPDF: {
