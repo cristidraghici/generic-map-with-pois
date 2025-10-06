@@ -14,6 +14,7 @@ type RecordDetailsProps = PropsWithChildren<
       showMinimap?: boolean
       showTitle?: boolean
       showActions?: boolean
+      isPageBreakBeforeMediaInPDFEnabled?: boolean
     }
 >
 
@@ -29,6 +30,7 @@ const RecordDetails: FunctionComponent<RecordDetailsProps> = ({
   showActions = true,
   latitude,
   longitude,
+  isPageBreakBeforeMediaInPDFEnabled = false,
 }): JSX.Element => {
   return (
     <div className={`RecordDetails mb-4 overflow-hidden p-1 ${className}`}>
@@ -52,8 +54,23 @@ const RecordDetails: FunctionComponent<RecordDetailsProps> = ({
           </ul>
         ))}
 
-      {showImages && <ImageGallery images={images} />}
-      {showMinimap && <MiniMap latitude={latitude} longitude={longitude} />}
+      {showImages && (
+        <ImageGallery
+          images={images}
+          isPageBreakBeforeMediaInPDFEnabled={
+            isPageBreakBeforeMediaInPDFEnabled
+          }
+        />
+      )}
+      {showMinimap && (
+        <MiniMap
+          latitude={latitude}
+          longitude={longitude}
+          isPageBreakBeforeMediaInPDFEnabled={
+            isPageBreakBeforeMediaInPDFEnabled
+          }
+        />
+      )}
 
       {id && showActions && (
         <div className="RecordDetailsActionButtons">

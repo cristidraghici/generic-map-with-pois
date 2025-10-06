@@ -20,10 +20,11 @@ export const DEFAULT_MOCK_DATA_PATH = '/cities_in_romania.json'
 
 export const DEFAULT_CONFIG: Config = {
   typeOfIcon: 'default',
-  isListVisible: false,
-  zoomOnSelect: false,
+  isListEnabled: true,
+  isZoomOnSelectEnabled: false,
   isListFilteredToViewport: false,
-  showOnlyURLRecord: true,
+  isShowOnlyURLRecordEnabled: true,
+  isPageBreakBeforeMediaInPDFEnabled: false,
 } as const
 
 export const MAP_CONFIG = {

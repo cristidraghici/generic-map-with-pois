@@ -61,7 +61,7 @@ const Viewport = () => {
    * Filter records based on the current map viewport bounds
    */
   const visibleRecords = useMemo(() => {
-    if (idFromUrl && config.showOnlyURLRecord)
+    if (idFromUrl && config.isShowOnlyURLRecordEnabled)
       return records.filter((record) => record.id === idFromUrl)
 
     if (currentMapBounds)
@@ -83,7 +83,7 @@ const Viewport = () => {
 
       if (!map) return
 
-      if (!!config.zoomOnSelect || idFromUrl === record.id) {
+      if (!!config.isZoomOnSelectEnabled || idFromUrl === record.id) {
         map.flyTo([record.latitude, record.longitude], 15)
       }
     },
@@ -113,7 +113,7 @@ const Viewport = () => {
       />
 
       <HorizontalViewportSplit
-        isSplitEnabled={!!config.isListVisible}
+        isSplitEnabled={!!config.isListEnabled}
         mainElement={
           <MapContainer
             setMap={setMap}
@@ -128,7 +128,7 @@ const Viewport = () => {
             onRecordSelect={(record) => {
               handleRecordSelect(record)
 
-              if (!config.zoomOnSelect) {
+              if (!config.isZoomOnSelectEnabled) {
                 map?.flyTo([record.latitude, record.longitude], 18)
               }
             }}
@@ -164,7 +164,14 @@ const Viewport = () => {
         isOpen={selectedRecord !== null}
         onClose={() => handleRecordSelect(null)}
       >
-        {selectedRecord && <RecordDetails {...selectedRecord} />}
+        {selectedRecord && (
+          <RecordDetails
+            {...selectedRecord}
+            isPageBreakBeforeMediaInPDFEnabled={
+              config.isPageBreakBeforeMediaInPDFEnabled
+            }
+          />
+        )}
       </Drawer>
     </>
   )

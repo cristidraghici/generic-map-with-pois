@@ -8,6 +8,7 @@ interface MiniMapProps {
   longitude: number
   zoom?: number
   className?: string
+  isPageBreakBeforeMediaInPDFEnabled?: boolean
 }
 
 export const MiniMap = ({
@@ -15,12 +16,15 @@ export const MiniMap = ({
   longitude,
   zoom = 15,
   className = '',
+  isPageBreakBeforeMediaInPDFEnabled = false,
 }: MiniMapProps) => {
   const position: [number, number] = [latitude, longitude]
 
   return (
     <div
-      className={`${className} pdf-page-break-before mb-4 mt-4 h-40 w-full overflow-hidden rounded-md border border-gray-200`}
+      className={`${className} mb-4 mt-4 h-40 w-full overflow-hidden rounded-md border border-gray-200 ${
+        isPageBreakBeforeMediaInPDFEnabled ? 'pdf-page-break-before' : ''
+      }`}
     >
       <MapContainer
         center={position}

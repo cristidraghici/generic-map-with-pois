@@ -1,8 +1,12 @@
 {
   "metadata": "These are a few of the beautiful cities of Romania!",
   "config": {
-    "isListVisible": true,
-    "zoomOnSelect": true
+    "isListEnabled": true,
+    "isZoomOnSelectEnabled": true,
+    "isListFilteredToViewport": false,
+    "isShowOnlyURLRecordEnabled": true,
+    "isPageBreakBeforeMediaInPDFEnabled": false,
+    "typeOfIcon": "default"
   },
   "records": [
     {

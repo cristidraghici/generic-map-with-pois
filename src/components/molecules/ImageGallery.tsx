@@ -5,9 +5,13 @@ import Backdrop from '../atoms/Backdrop'
 
 interface ImageGalleryProps {
   images: string[]
+  isPageBreakBeforeMediaInPDFEnabled?: boolean
 }
 
-const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
+const ImageGallery: React.FC<ImageGalleryProps> = ({
+  images,
+  isPageBreakBeforeMediaInPDFEnabled = false,
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
 
@@ -60,7 +64,14 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
       {images.length > 0 && (
         <ul className="flex flex-wrap gap-4">
           {images.map((image, index) => (
-            <li key={image} className="w-full cursor-pointer pdf-page-break-before">
+            <li
+              key={image}
+              className={`w-full cursor-pointer ${
+                isPageBreakBeforeMediaInPDFEnabled
+                  ? 'pdf-page-break-before'
+                  : ''
+              }`}
+            >
               <button
                 type="button"
                 onClick={() => openModal(index)}

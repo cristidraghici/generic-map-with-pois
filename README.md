@@ -56,11 +56,12 @@ There is also an option to use an enveloped structure:
 interface APIEnvelope<T> {
   metadata: string | string[]
   config: {
-    typeOfIcon: 'text' | 'default' | 'dot' // the icon to use in the data
-    isListVisible: boolean | undefined // show the toggler to view a list
-    isListFilteredToViewport: boolean | undefined // show only the POIs in the viewport
-    zoomOnSelect: boolean | undefined // zoom to a POI when clicked
-    showOnlyURLRecord: boolean | undefined // show only the record specified in the url
+    typeOfIcon: 'text' | 'default' | 'dot' // default, the icon to use in the data
+    isListEnabled: boolean | undefined // true, show the toggler to view a list
+    isListFilteredToViewport: boolean | undefined // false, show only the POIs in the viewport
+    isZoomOnSelectEnabled: boolean | undefined // false, zoom to a POI when clicked
+    isShowOnlyURLRecordEnabled: boolean | undefined // true, show only the record specified in the url
+    isPageBreakBeforeMediaInPDFEnabled: boolean | undefined // false, insert a page break before each media to prevent cropping
   }
   records: T[]
 }
