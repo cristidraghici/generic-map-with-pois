@@ -5,6 +5,7 @@
     "isZoomOnSelectEnabled": true,
     "isListFilteredToViewport": false,
     "isShowOnlyURLRecordEnabled": true,
+    "isAggressiveOptimizationEnabled": false,
     "typeOfIcon": "default"
   },
   "records": [

@@ -13,6 +13,7 @@ import useFetchData from '@/hooks/useFetchData'
 import useURLParams from '@/hooks/useURLParams'
 import useMap from '@/hooks/useMap'
 import { CustomRecord } from '@/types'
+import { reduceVisibleRecords } from '@/utils/performance'
 
 const Viewport = () => {
   const [search, setSearch] = useState<string>('')
@@ -57,20 +58,27 @@ const Viewport = () => {
     return id
   }, [id])
 
+  const zoomLevel = useMemo(() => map?.getZoom() || 0, [map])
+
   /**
    * Filter records based on the current map viewport bounds
    */
   const visibleRecords = useMemo(() => {
+    if (!currentMapBounds) return []
+
     if (idFromUrl && config.isShowOnlyURLRecordEnabled)
       return records.filter((record) => record.id === idFromUrl)
 
-    if (currentMapBounds)
-      return records.filter((record) =>
-        currentMapBounds.contains([record.latitude, record.longitude]),
-      )
+    if (config.isAggressiveOptimizationEnabled) {
+      return reduceVisibleRecords(records, currentMapBounds, zoomLevel)
+    }
+
+    return records.filter((record) =>
+      currentMapBounds.contains([record.latitude, record.longitude]),
+    )
 
     return []
-  }, [records, currentMapBounds, idFromUrl, config])
+  }, [records, currentMapBounds, idFromUrl, config, zoomLevel])
 
   const handleRecordSelect = useCallback(
     (record: CustomRecord | null) => {

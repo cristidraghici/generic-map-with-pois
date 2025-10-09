@@ -1,5 +1,5 @@
 import { CustomRecord } from '@/types'
-import L, { LatLngBounds } from 'leaflet'
+import { LatLngBounds } from 'leaflet'
 
 interface PerformanceMetrics {
   renderTime: number
@@ -72,49 +72,57 @@ export const getOptimalClusterRadius = (markerCount: number): number => {
  * Reduces the number of visible records based on the current map bounds and zoom level.
  * This improves performance by limiting the number of markers rendered at once,
  * but also can give a less accurate representation of all data points.
- *
- * This is kept as an idea but
  */
 export const reduceVisibleRecords = (
   records: CustomRecord[],
   currentMapBounds: LatLngBounds | null,
-  currentZoom: number | undefined,
-) => {
-  if (!currentMapBounds) {
-    return []
-  }
+  currentZoom = 10,
+): CustomRecord[] => {
+  if (!currentMapBounds || records.length === 0) return []
 
-  // For large datasets, filter markers to only show those in or near the current viewport
-  const paddingFactor = 1.5 // Show markers 1.5x outside the current bounds
-  const extendedBounds = currentMapBounds.pad(paddingFactor)
-
-  // Get center of the current viewport for distance calculation
+  // Slight padding to prevent "popping" at edges
+  const extendedBounds = currentMapBounds.pad(1.2)
   const center = currentMapBounds.getCenter()
+  const centerLat = center.lat
+  const centerLng = center.lng
 
-  // Filter records by bounds first, then sort by distance to center
-  const filteredRecords = records.filter((record) => {
-    const markerLatLng = L.latLng(record.latitude, record.longitude)
-    return extendedBounds.contains(markerLatLng)
-  })
+  // Adaptive limit by zoom (exponential scale)
+  // Smooth transition from wide (low zoom) to detailed (high zoom)
+  const base = 200
+  const zoomFactor = 1.5
+  const maxVisibleMarkers = Math.min(
+    Math.floor(base * Math.pow(zoomFactor, currentZoom - 5)),
+    8000,
+  )
 
-  // Sort by distance from center (closer markers load first)
-  filteredRecords.sort((a, b) => {
-    const distanceA = center.distanceTo(L.latLng(a.latitude, a.longitude))
-    const distanceB = center.distanceTo(L.latLng(b.latitude, b.longitude))
-    return distanceA - distanceB
-  })
+  const visible: { record: CustomRecord; distance: number }[] = []
+  const south = extendedBounds.getSouth()
+  const north = extendedBounds.getNorth()
+  const west = extendedBounds.getWest()
+  const east = extendedBounds.getEast()
 
-  // Level-of-detail: reduce markers at lower zoom levels
-  let maxVisibleMarkers = 2000
-  if (currentZoom !== undefined) {
-    if (currentZoom < 8) {
-      maxVisibleMarkers = Math.min(filteredRecords.length, 500) // Very few at low zoom
-    } else if (currentZoom < 10) {
-      maxVisibleMarkers = Math.min(filteredRecords.length, 1000) // Moderate at medium zoom
-    } else {
-      maxVisibleMarkers = Math.min(filteredRecords.length, 2000) // Full at high zoom
+  // Pre-filter to reduce candidate set
+  for (let i = 0; i < records.length; i++) {
+    const { latitude, longitude } = records[i]
+    if (
+      latitude >= south &&
+      latitude <= north &&
+      longitude >= west &&
+      longitude <= east
+    ) {
+      visible.push({
+        record: records[i],
+        distance: (latitude - centerLat) ** 2 + (longitude - centerLng) ** 2, // squared distance (faster)
+      })
     }
   }
 
-  return filteredRecords.slice(0, maxVisibleMarkers)
+  // If within budget, return directly
+  if (visible.length <= maxVisibleMarkers) {
+    return visible.map((v) => v.record)
+  }
+
+  // Otherwise, sort only the nearest ones (partial sort approximation)
+  visible.sort((a, b) => a.distance - b.distance)
+  return visible.slice(0, maxVisibleMarkers).map((v) => v.record)
 }

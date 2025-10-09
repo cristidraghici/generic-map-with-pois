@@ -40,6 +40,7 @@ interface APIEnvelope {
     isListFilteredToViewport: boolean | undefined // false, show only the POIs in the viewport
     isZoomOnSelectEnabled: boolean | undefined // false, zoom to a POI when clicked
     isShowOnlyURLRecordEnabled: boolean | undefined // true, show only the record specified in the url
+    isAggressiveOptimizationEnabled: boolean | undefined // false, aggressively limit the number of records shown on the map to improve performance
   }
   records: PointOfInterest[]
 }

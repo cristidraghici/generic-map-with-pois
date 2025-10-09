@@ -24,6 +24,7 @@ export const DEFAULT_CONFIG: Config = {
   isZoomOnSelectEnabled: false,
   isListFilteredToViewport: false,
   isShowOnlyURLRecordEnabled: true,
+  isAggressiveOptimizationEnabled: false,
 } as const
 
 export const MAP_CONFIG = {
