@@ -9,6 +9,7 @@ import {
 } from '../types'
 import processApiResponse from '@/utils/processApiResponse'
 import { resolveRelativePaths } from '@/utils/resolveRelativePaths'
+import fuzzyMatch from '@/utils/fuzzyMatch'
 
 import {
   ALLOWED_API_URL_PATTERNS,
@@ -45,8 +46,8 @@ const useFetchData = (url?: string, search?: string) => {
         ? record.description.join(' ')
         : record.description || ''
 
-      const searchableText = `${record.title} ${descriptionText}`.toLowerCase()
-      return searchableText.includes(search.toLowerCase())
+      const searchableText = `${record.title} ${descriptionText}`
+      return fuzzyMatch(searchableText, search, true)
     })
   }, [records, search])
 

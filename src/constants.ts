@@ -49,3 +49,13 @@ export const MAP_TILE_LAYER = {
   attribution:
     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 } as const
+
+/**
+ * Fuzzy (Levenshtein) search configuration
+ */
+export const FUZZY_SEARCH_CONFIG = {
+  enabled: true, // toggle fuzzy search on/off
+  maxDistance: 2, // absolute maximum Levenshtein distance allowed
+  useRelative: true, // whether to compute a relative threshold based on query length
+  maxRelativeDistance: 0.25, // maximum fraction (0-1) of query length allowed as distance
+} as const
