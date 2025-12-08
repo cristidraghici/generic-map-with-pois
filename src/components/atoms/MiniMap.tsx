@@ -1,8 +1,8 @@
-import { MapContainer, TileLayer } from 'react-leaflet'
-import { forwardRef } from 'react'
 import type { Map as LeafletMap } from 'leaflet'
-import MarkerElement from '../molecules/MarkerElement'
+import { forwardRef } from 'react'
+import { MapContainer, TileLayer } from 'react-leaflet'
 import { MARKER_COLORS } from '@/constants'
+import MarkerElement from '../molecules/MarkerElement'
 import 'leaflet/dist/leaflet.css'
 
 interface MiniMapProps {

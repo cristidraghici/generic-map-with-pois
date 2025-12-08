@@ -1,6 +1,6 @@
 import { FunctionComponent } from 'react'
-import SearchField from '../atoms/SearchField'
 import ConditionalElement from '../atoms/ConditionalElement'
+import SearchField from '../atoms/SearchField'
 
 interface SearchSectionProps {
   search: string

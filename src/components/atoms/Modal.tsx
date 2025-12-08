@@ -1,12 +1,12 @@
 import {
-  FunctionComponent,
-  PropsWithChildren,
-  MouseEvent,
   ComponentProps,
+  FunctionComponent,
+  MouseEvent,
+  PropsWithChildren,
 } from 'react'
 import { ReactComponent as IconCloseSVG } from '@/assets/icons/close.svg'
-import Button from './Button'
 import Backdrop from './Backdrop'
+import Button from './Button'
 
 interface ModalProps extends ComponentProps<'div'> {
   isOpen: boolean

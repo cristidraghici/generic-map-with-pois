@@ -1,10 +1,10 @@
 import { z } from 'zod'
 import {
-  customRecordSchema,
-  metadataSchema,
-  customRecordWithMetadataSchema,
-  configSchema,
   anySuccessfulResponseSchema,
+  configSchema,
+  customRecordSchema,
+  customRecordWithMetadataSchema,
+  metadataSchema,
 } from './schemas'
 
 export type CustomRecord = z.infer<typeof customRecordSchema>

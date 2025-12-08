@@ -1,3 +1,4 @@
+import type { Map as LeafletMap } from 'leaflet'
 import {
   ComponentProps,
   FunctionComponent,
@@ -5,13 +6,12 @@ import {
   useRef,
   useState,
 } from 'react'
-import type { Map as LeafletMap } from 'leaflet'
-import { CustomRecord } from '../../types'
 import { linkifyText } from '@/utils/linkifyText'
-import ImageGallery from './ImageGallery'
-import { ShareableLinkSection } from '../atoms/ShareableLinkSection'
+import { CustomRecord } from '../../types'
 import { DownloadPDFButton } from '../atoms/DownloadPDFButton'
 import { MiniMap } from '../atoms/MiniMap'
+import { ShareableLinkSection } from '../atoms/ShareableLinkSection'
+import ImageGallery from './ImageGallery'
 
 type RecordDetailsProps = PropsWithChildren<
   ComponentProps<'div'> &

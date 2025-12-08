@@ -1,6 +1,6 @@
 import { ComponentProps, FunctionComponent, useState } from 'react'
-import { generateShareableUrl } from '@/utils/generateShareableUrl'
 import { ReactComponent as CopyIconSVG } from '@/assets/icons/copy.svg'
+import { generateShareableUrl } from '@/utils/generateShareableUrl'
 
 interface ShareableLinkSectionProps extends ComponentProps<'div'> {
   id: string

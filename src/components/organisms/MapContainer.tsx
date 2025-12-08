@@ -1,17 +1,16 @@
-import { useMemo } from 'react'
 import L from 'leaflet'
+import { useMemo } from 'react'
 import { MapContainer as LeafletMapContainer, TileLayer } from 'react-leaflet'
 import MarkerClusterGroup from 'react-leaflet-cluster'
-import { MAP_CONFIG, MAP_TILE_LAYER, MARKER_COLORS } from '@/constants'
-import RecordDetails from '@/components/molecules/RecordDetails'
 import MarkerElement from '@/components/molecules/MarkerElement'
+import RecordDetails from '@/components/molecules/RecordDetails'
+import { MAP_CONFIG, MAP_TILE_LAYER, MARKER_COLORS } from '@/constants'
+import { Config, CustomRecord } from '@/types'
 import createSvgIcon from '@/utils/icons/createSvgIcon'
 import {
   getOptimalClusterRadius,
   performanceMonitor,
 } from '@/utils/performance'
-
-import { CustomRecord, Config } from '@/types'
 import 'leaflet/dist/leaflet.css'
 
 // Fix for github pages not showing the icon

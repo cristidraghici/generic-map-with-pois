@@ -1,11 +1,11 @@
 import { FunctionComponent, useState } from 'react'
-import ButtonGroup from '../molecules/ButtonGroup'
-import Modal from '../atoms/Modal'
+import { ReactComponent as IconInfoSVG } from '@/assets/icons/info.svg'
+import { ReactComponent as IconMinusSVG } from '@/assets/icons/minus.svg'
 
 import { ReactComponent as IconPlusSVG } from '@/assets/icons/plus.svg'
-import { ReactComponent as IconMinusSVG } from '@/assets/icons/minus.svg'
 import { ReactComponent as IconRefreshSVG } from '@/assets/icons/refresh.svg'
-import { ReactComponent as IconInfoSVG } from '@/assets/icons/info.svg'
+import Modal from '../atoms/Modal'
+import ButtonGroup from '../molecules/ButtonGroup'
 import ButtonWithTooltip from '../molecules/ButtonWithTooltip'
 
 interface MapControlsProps {

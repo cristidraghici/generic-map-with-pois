@@ -1,5 +1,5 @@
-import { CustomRecord } from '@/types'
 import { LatLngBounds } from 'leaflet'
+import { CustomRecord } from '@/types'
 
 interface PerformanceMetrics {
   renderTime: number
@@ -91,7 +91,7 @@ export const reduceVisibleRecords = (
   const base = 200
   const zoomFactor = 1.5
   const maxVisibleMarkers = Math.min(
-    Math.floor(base * Math.pow(zoomFactor, currentZoom - 5)),
+    Math.floor(base * zoomFactor ** (currentZoom - 5)),
     8000,
   )
 

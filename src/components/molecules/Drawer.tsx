@@ -5,9 +5,9 @@ import {
   useMemo,
 } from 'react'
 import { ReactComponent as IconCloseSVG } from '@/assets/icons/close.svg'
-import Button from '../atoms/Button'
-import Backdrop from '../atoms/Backdrop'
 import useKeyPress from '@/hooks/useKeyPress'
+import Backdrop from '../atoms/Backdrop'
+import Button from '../atoms/Button'
 
 interface DrawerProps extends ComponentProps<'div'> {
   isOpen: boolean
@@ -41,8 +41,8 @@ const Drawer: FunctionComponent<PropsWithChildren<DrawerProps>> = ({
           isOpen
             ? 'translate-x-0'
             : side === 'right'
-            ? 'translate-x-full'
-            : '-translate-x-full'
+              ? 'translate-x-full'
+              : '-translate-x-full'
         }`}
         style={{ maxWidth: 'calc(100% - 0.5rem)' }}
         {...props}

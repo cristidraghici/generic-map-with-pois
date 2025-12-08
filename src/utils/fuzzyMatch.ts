@@ -1,5 +1,5 @@
-import levenshtein from './levenshtein'
 import { FUZZY_SEARCH_CONFIG } from '@/constants'
+import levenshtein from './levenshtein'
 
 /**
  * Returns true if `text` fuzzily matches `query` according to config.

@@ -15,10 +15,10 @@ export const generateShareableUrl = (id: string): string => {
 
   try {
     const currentUrl = new URL(window.location.href)
-    
+
     // Add or update the id parameter
     currentUrl.searchParams.set('id', id.trim())
-    
+
     return currentUrl.toString()
   } catch (error) {
     console.error('Error generating shareable URL:', error)

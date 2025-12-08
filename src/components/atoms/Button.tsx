@@ -1,4 +1,4 @@
-import { FunctionComponent, ComponentProps, PropsWithChildren } from 'react'
+import { ComponentProps, FunctionComponent, PropsWithChildren } from 'react'
 
 export interface ButtonProps extends ComponentProps<'button'> {
   icon?: JSX.Element

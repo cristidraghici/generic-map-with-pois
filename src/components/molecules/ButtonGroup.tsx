@@ -1,4 +1,4 @@
-import { FunctionComponent, PropsWithChildren, ComponentProps } from 'react'
+import { ComponentProps, FunctionComponent, PropsWithChildren } from 'react'
 
 const ButtonGroup: FunctionComponent<
   PropsWithChildren<ComponentProps<'div'>>

@@ -1,10 +1,10 @@
-import { FunctionComponent, PropsWithChildren, memo, useMemo } from 'react'
+import { FunctionComponent, memo, PropsWithChildren, useMemo } from 'react'
 import { Marker, MarkerProps, Tooltip } from 'react-leaflet'
-import { CustomRecord, Config } from '@/types'
+import { MARKER_COLORS } from '@/constants'
+import { Config, CustomRecord } from '@/types'
+import { iconCacheManager } from '@/utils/icons/cache'
 import createSvgIcon from '@/utils/icons/createSvgIcon'
 import createTextIcon from '@/utils/icons/createTextIcon'
-import { iconCacheManager } from '@/utils/icons/cache'
-import { MARKER_COLORS } from '@/constants'
 
 interface MarkerElementProps extends Omit<MarkerProps, 'icon' | 'position'> {
   record: Partial<CustomRecord> & {
@@ -45,7 +45,7 @@ const MarkerElement: FunctionComponent<
     <Marker
       eventHandlers={{
         click: () => {
-          onClick && onClick()
+          onClick?.()
         },
       }}
       icon={iconEl}

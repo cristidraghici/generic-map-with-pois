@@ -6,10 +6,10 @@ import {
   useRef,
   useState,
 } from 'react'
-import { ReactComponent as IconSearchSVG } from '@/assets/icons/search.svg'
 import { ReactComponent as IconCloseSVG } from '@/assets/icons/close.svg'
-import debounce from '@/utils/debounce'
+import { ReactComponent as IconSearchSVG } from '@/assets/icons/search.svg'
 import useKeyPress from '@/hooks/useKeyPress'
+import debounce from '@/utils/debounce'
 
 interface SearchFieldProps extends ComponentProps<'input'> {
   onInputChange: (_value: string) => void
@@ -25,7 +25,7 @@ const SearchField: FunctionComponent<SearchFieldProps> = ({
   const inputRef = useRef<HTMLInputElement>(null)
 
   const debouncedInputChange = debounce(
-    (value: string) => onInputChange && onInputChange(value),
+    (value: string) => onInputChange?.(value),
     100,
   )
 

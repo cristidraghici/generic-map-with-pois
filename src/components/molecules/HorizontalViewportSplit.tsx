@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useRef, useState } from 'react'
+import { ReactComponent as IconListSVG } from '@/assets/icons/cards.svg'
 import ButtonGroup from '../molecules/ButtonGroup'
 import ButtonWithTooltip from '../molecules/ButtonWithTooltip'
-import { ReactComponent as IconListSVG } from '@/assets/icons/cards.svg'
 
 interface HorizontalViewportSplitProps {
   mainElement: ReactNode
@@ -33,7 +33,7 @@ const HorizontalViewportSplit = ({
     observer.observe(containerRef.current)
 
     return () => observer.disconnect()
-  }, [isListOpen, onResize, isSplitEnabled])
+  }, [onResize, isSplitEnabled])
 
   if (!isSplitEnabled) {
     return <div style={{ height: '100vh' }}>{mainElement}</div>

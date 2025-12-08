@@ -1,5 +1,5 @@
-import { FunctionComponent, useState } from 'react'
 import html2pdf from 'html2pdf.js'
+import { FunctionComponent, useState } from 'react'
 import { ReactComponent as IconDownloadSVG } from '@/assets/icons/download.svg'
 import { sanitizeFileName } from '@/utils/files'
 

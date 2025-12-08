@@ -1,17 +1,17 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
 import L, { LatLngTuple } from 'leaflet'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import Drawer from '@/components/molecules/Drawer'
+import HorizontalViewportSplit from '@/components/molecules/HorizontalViewportSplit'
 import RecordDetails from '@/components/molecules/RecordDetails'
+import ListView from '@/components/organisms/ListView'
+import MapContainer from '@/components/organisms/MapContainer'
 import MapControls from '@/components/organisms/MapControls'
 import SearchSection from '@/components/organisms/SearchSection'
-import MapContainer from '@/components/organisms/MapContainer'
-import ListView from '@/components/organisms/ListView'
-import HorizontalViewportSplit from '@/components/molecules/HorizontalViewportSplit'
 
 import useFetchData from '@/hooks/useFetchData'
-import useURLParams from '@/hooks/useURLParams'
 import useMap from '@/hooks/useMap'
+import useURLParams from '@/hooks/useURLParams'
 import { CustomRecord } from '@/types'
 import { reduceVisibleRecords } from '@/utils/performance'
 
@@ -76,8 +76,6 @@ const Viewport = () => {
     return records.filter((record) =>
       currentMapBounds.contains([record.latitude, record.longitude]),
     )
-
-    return []
   }, [records, currentMapBounds, idFromUrl, config, zoomLevel])
 
   const handleRecordSelect = useCallback(

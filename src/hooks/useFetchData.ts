@@ -1,23 +1,22 @@
-import { useState, useEffect, useCallback, useMemo } from 'react'
-import { anySuccessfulResponseSchema } from '../schemas'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  ALLOWED_API_URL_PATTERNS,
+  DEFAULT_CONFIG,
+  ROMANIAN_CITIES_MOCK_DATA_PATH,
+  WORLD_CITIES_MOCK_DATA_PATH,
+} from '@/constants'
+import fuzzyMatch from '@/utils/fuzzyMatch'
+import processApiResponse from '@/utils/processApiResponse'
+import { resolveRelativePaths } from '@/utils/resolveRelativePaths'
 import mockRomanianCitiesData from '../assets/cities_in_romania.json'
 import mockWorldCitiesData from '../assets/world_cities.json'
+import { anySuccessfulResponseSchema } from '../schemas'
 import {
   Config,
   CustomRecord,
   CustomRecordWithMetadata,
   Metadata,
 } from '../types'
-import processApiResponse from '@/utils/processApiResponse'
-import { resolveRelativePaths } from '@/utils/resolveRelativePaths'
-import fuzzyMatch from '@/utils/fuzzyMatch'
-
-import {
-  ALLOWED_API_URL_PATTERNS,
-  ROMANIAN_CITIES_MOCK_DATA_PATH,
-  WORLD_CITIES_MOCK_DATA_PATH,
-  DEFAULT_CONFIG,
-} from '@/constants'
 
 const isURLAllowed = (urlToTest: string): boolean => {
   return ALLOWED_API_URL_PATTERNS.some((pattern) => pattern.test(urlToTest))
@@ -30,7 +29,7 @@ const useFetchData = (url?: string, search?: string) => {
 
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
-  const [reloadCounter, setReloadCounter] = useState(0)
+  const [_reloadCounter, setReloadCounter] = useState(0)
 
   const handleSetRecords = useCallback((records: CustomRecord[]) => {
     const recordsWithIds = records.map((record, index) => ({
@@ -125,7 +124,7 @@ const useFetchData = (url?: string, search?: string) => {
     fetchData()
 
     return () => controller.abort()
-  }, [url, reloadCounter, handleSetRecords])
+  }, [url, handleSetRecords])
 
   const reload = useCallback(() => setReloadCounter((prev) => prev + 1), [])
 

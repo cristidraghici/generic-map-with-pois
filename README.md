@@ -64,6 +64,35 @@ interface APIEnvelope {
 - `npm i`
 - `npm run dev`
 
+## Development
+
+### Code Formatting and Linting
+
+This project uses [Biome](https://biomejs.dev/) for code formatting and linting.
+
+**Available commands:**
+- `npm run lint` - Check for linting errors
+- `npm run format` - Format code
+- `npm run check` - Run both linting and formatting (recommended)
+
+**VS Code Setup:**
+
+1. Install the [Biome extension](https://marketplace.visualstudio.com/items?itemName=biomejs.biome)
+2. Add to your workspace settings (`.vscode/settings.json`):
+
+```json
+{
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "quickfix.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
+  }
+}
+```
+
+This will automatically format your code and organize imports on save.
+
 ## Notes
 
 If you intend to use this project as a base for a new one, please remember to update the `base` url in `vite.config.js`. It is currently used for publishing the project to Github Pages. You can also completely remove it.

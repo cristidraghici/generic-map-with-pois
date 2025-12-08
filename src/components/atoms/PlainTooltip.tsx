@@ -1,10 +1,10 @@
 import {
-  FunctionComponent,
   ComponentProps,
+  FunctionComponent,
   PropsWithChildren,
-  useState,
   useEffect,
   useRef,
+  useState,
 } from 'react'
 
 export interface PlainTooltipProps {
