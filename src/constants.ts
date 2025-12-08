@@ -16,7 +16,20 @@ export const ALLOWED_API_URL_PATTERNS: RegExp[] = [
   /^(https?:\/\/)?(localhost|127\.0\.0\.1)(:\d+)?([/\w .-]*)*\/?$/, // Matches localhost and IP
 ]
 
-export const DEFAULT_MOCK_DATA_PATH = '/cities_in_romania.json'
+export const ROMANIAN_CITIES_MOCK_DATA_PATH = '/cities_in_romania.json'
+
+export const WORLD_CITIES_MOCK_DATA_PATH = '/world_cities.json'
+
+export const AVAILABLE_DATASETS = [
+  {
+    label: 'Romania Cities',
+    value: ROMANIAN_CITIES_MOCK_DATA_PATH,
+  },
+  {
+    label: 'World Cities (Top 5000)',
+    value: WORLD_CITIES_MOCK_DATA_PATH,
+  },
+] as const
 
 export const DEFAULT_CONFIG: Config = {
   typeOfIcon: 'default',

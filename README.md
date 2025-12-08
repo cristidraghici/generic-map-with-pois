@@ -71,3 +71,7 @@ If you intend to use this project as a base for a new one, please remember to up
 ## Icons
 
 We are using FontAwesome svg icons: [https://fontawesome.com/search](https://fontawesome.com/search)
+
+## Data Sources
+
+- **World Cities**: The dataset for world cities is provided by [joelacus/world-cities](https://github.com/joelacus/world-cities), licensed under CC-BY 4.0.

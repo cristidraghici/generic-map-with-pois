@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { anySuccessfulResponseSchema } from '../schemas'
-import mockData from '../assets/cities_in_romania.json'
+import mockRomanianCitiesData from '../assets/cities_in_romania.json'
+import mockWorldCitiesData from '../assets/world_cities.json'
 import {
   Config,
   CustomRecord,
@@ -13,7 +14,8 @@ import fuzzyMatch from '@/utils/fuzzyMatch'
 
 import {
   ALLOWED_API_URL_PATTERNS,
-  DEFAULT_MOCK_DATA_PATH,
+  ROMANIAN_CITIES_MOCK_DATA_PATH,
+  WORLD_CITIES_MOCK_DATA_PATH,
   DEFAULT_CONFIG,
 } from '@/constants'
 
@@ -54,12 +56,25 @@ const useFetchData = (url?: string, search?: string) => {
   useEffect(() => {
     if (!url) return
 
-    if (url === DEFAULT_MOCK_DATA_PATH) {
+    if (url === ROMANIAN_CITIES_MOCK_DATA_PATH) {
       const {
         records,
         metadata,
         config = DEFAULT_CONFIG,
-      } = processApiResponse(mockData as CustomRecordWithMetadata)
+      } = processApiResponse(mockRomanianCitiesData as CustomRecordWithMetadata)
+
+      handleSetRecords(records)
+      setMetadata(metadata)
+      setConfig(config)
+      return
+    }
+
+    if (url === WORLD_CITIES_MOCK_DATA_PATH) {
+      const {
+        records,
+        metadata,
+        config = DEFAULT_CONFIG,
+      } = processApiResponse(mockWorldCitiesData as CustomRecordWithMetadata)
 
       handleSetRecords(records)
       setMetadata(metadata)

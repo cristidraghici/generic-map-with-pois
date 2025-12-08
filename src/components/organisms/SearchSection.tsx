@@ -28,7 +28,27 @@ const SearchSection: FunctionComponent<SearchSectionProps> = ({
         It appears you have not specified an <strong>?api=</strong> param. You
         can use the default meanwhile:
         <div className="pt-4">
-          <a href="?api=/cities_in_romania.json">cities_in_romania.json</a>
+          <ul>
+            <li>
+              <a href="?api=/cities_in_romania.json">cities_in_romania.json</a>
+            </li>
+            <li>
+              <a
+                href="?api=/world_cities.json"
+                onClick={(e) => {
+                  if (
+                    !window.confirm(
+                      'Are you sure you want to load the world cities points? This can take a while.',
+                    )
+                  ) {
+                    e.preventDefault()
+                  }
+                }}
+              >
+                world_cities.json
+              </a>
+            </li>
+          </ul>
         </div>
       </ConditionalElement>
 
