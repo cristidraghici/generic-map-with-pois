@@ -5,6 +5,7 @@ import {
   ROMANIAN_CITIES_MOCK_DATA_PATH,
   WORLD_CITIES_MOCK_DATA_PATH,
 } from '@/constants'
+import { toRecordId } from '@/utils/brandTypes'
 import fuzzyMatch from '@/utils/fuzzyMatch'
 import processApiResponse from '@/utils/processApiResponse'
 import { resolveRelativePaths } from '@/utils/resolveRelativePaths'
@@ -34,7 +35,7 @@ const useFetchData = (url?: string, search?: string) => {
   const handleSetRecords = useCallback((records: CustomRecord[]) => {
     const recordsWithIds = records.map((record, index) => ({
       ...record,
-      id: record.id ? record.id : `id_${index.toString(36)}`,
+      id: toRecordId(record.id ? record.id : `id_${index.toString(36)}`),
     }))
     setRecords(recordsWithIds)
   }, [])

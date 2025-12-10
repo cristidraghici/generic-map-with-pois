@@ -1,7 +1,9 @@
 import z from 'zod'
 
+export const recordIdSchema = z.string().brand('recordId')
+
 export const customRecordSchema = z.object({
-  id: z.string().optional(),
+  id: recordIdSchema.optional(),
   latitude: z.number(),
   longitude: z.number(),
   title: z.string(),
