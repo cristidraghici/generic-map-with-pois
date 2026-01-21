@@ -93,6 +93,14 @@ This project uses [Biome](https://biomejs.dev/) for code formatting and linting.
 
 This will automatically format your code and organize imports on save.
 
+### devcontainer
+
+You can now open this project in a devcontainer by:
+
+- Opening VS Code Command Palette (Cmd+Shift+P)
+- Running "Dev Containers: Reopen in Container"
+
+
 ## Notes
 
 If you intend to use this project as a base for a new one, please remember to update the `base` url in `vite.config.js`. It is currently used for publishing the project to Github Pages. You can also completely remove it.
