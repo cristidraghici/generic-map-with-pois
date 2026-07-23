@@ -22,9 +22,8 @@
     "types": ["vite-plugin-svgr/client"],
 
     /* Path Aliases */
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src"],
