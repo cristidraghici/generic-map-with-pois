@@ -31,7 +31,7 @@ jobs:
       VITE_IS_GH_PAGES: 'true' # It's important to set this as a string
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
