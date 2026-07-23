@@ -1,0 +1,6 @@
+{
+  "*.{js,ts,jsx,tsx,json,css}": [
+    "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
+  ],
+  "src/assets/**/*.svg": ["svgo"]
+}

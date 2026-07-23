@@ -12,7 +12,8 @@
     "check:tsc": "tsc --noEmit",
     "check": "npm run check:biome && npm run check:tsc",
     "preview": "vite preview",
-    "svgo": "npx --yes -- svgo -r ./src/assets"
+    "svgo": "npx --yes -- svgo -r ./src/assets",
+    "prepare": "husky"
   },
   "dependencies": {
     "html2pdf.js": "^0.14.0",
@@ -31,6 +32,8 @@
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.0.3",
     "autoprefixer": "^10.4.21",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.1.1",
     "postcss": "^8.5.4",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.0.2",
