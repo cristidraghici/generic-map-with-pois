@@ -23,4 +23,19 @@ export default defineConfig({
       '@': '/src',
     },
   },
+  build: {
+    chunkSizeWarningLimit: 1600,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('leaflet')) return 'vendor-leaflet'
+            if (id.includes('react')) return 'vendor-react'
+            if (id.includes('html2pdf.js')) return 'vendor-html2pdf'
+            return 'vendor'
+          }
+        },
+      },
+    },
+  },
 })
