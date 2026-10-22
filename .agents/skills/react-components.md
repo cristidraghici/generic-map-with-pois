@@ -60,8 +60,8 @@ All custom hooks reside in [`src/hooks/`](file:///Users/cristi/Code/generic-map-
 - **Naming**: `use[Capability]` in camelCase.
 - **Single Responsibility**: Each hook manages one distinct slice of state or logic.
   - `useMap`: Map instance, bounds, zoom status.
-  - `useFetchData`: Safe data fetching, error handling, validation.
-  - `useURLParams`: Bidirectional synchronization with URL query parameters (`?api=`, `?id=`).
+  - `useFetchData`: Safe data fetching (multiple datasets in parallel), error handling, validation.
+  - `useURLParams`: Bidirectional synchronization with URL query parameters (`?api=`, `?api[]=`, `?selected=`, `?id=`).
   - `useKeyPress`: Global key listeners (e.g. `Escape` key listeners with cleanup).
 - **Cleanup**: Always return cleanup functions in `useEffect` when subscribing to events, intervals, or timeouts.
 

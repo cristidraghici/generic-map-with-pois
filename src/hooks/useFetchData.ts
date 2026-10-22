@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   ALLOWED_API_URL_PATTERNS,
   DEFAULT_CONFIG,
@@ -7,12 +7,14 @@ import {
 } from '@/constants'
 import { toRecordId } from '@/utils/brandTypes'
 import fuzzyMatch from '@/utils/fuzzyMatch'
+import getDatasetLabel from '@/utils/getDatasetLabel'
 import processApiResponse from '@/utils/processApiResponse'
 import { resolveRelativePaths } from '@/utils/resolveRelativePaths'
 import mockRomanianCitiesData from '../assets/cities_in_romania.json'
 import mockWorldCitiesData from '../assets/world_cities.json'
 import { anySuccessfulResponseSchema } from '../schemas'
 import {
+  AnySuccessfulResponse,
   Config,
   CustomRecord,
   CustomRecordWithMetadata,
@@ -26,68 +28,108 @@ const MOCK_DATASETS: Record<string, CustomRecordWithMetadata> = {
     mockWorldCitiesData as CustomRecordWithMetadata,
 }
 
+/**
+ * Separator used to build a stable key out of the list of URLs
+ */
+const URLS_KEY_SEPARATOR = '\n'
+
+interface DatasetState {
+  loading: boolean
+  error: string | null
+  title?: string
+  records: CustomRecord[]
+  metadata: Metadata
+  config: Config
+}
+
+export interface DatasetOption {
+  url: string
+  label: string
+}
+
+const EMPTY_DATASET: DatasetState = {
+  loading: false,
+  error: null,
+  records: [],
+  metadata: '',
+  config: DEFAULT_CONFIG,
+}
+
 const isURLAllowed = (urlToTest: string): boolean => {
   return ALLOWED_API_URL_PATTERNS.some((pattern) => pattern.test(urlToTest))
 }
 
-const useFetchData = (url?: string, search?: string) => {
-  const [records, setRecords] = useState<CustomRecord[]>([])
-  const [metadata, setMetadata] = useState<Metadata>('')
-  const [config, setConfig] = useState<Config>(DEFAULT_CONFIG)
+const withRecordIds = (records: CustomRecord[]): CustomRecord[] =>
+  records.map((record, index) => ({
+    ...record,
+    id: toRecordId(record.id ? record.id : `id_${index.toString(36)}`),
+  }))
 
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [reloadCounter, setReloadCounter] = useState(0)
+const toDatasetState = (response: AnySuccessfulResponse): DatasetState => {
+  const { title, records, metadata, config } = processApiResponse(response)
+  return {
+    loading: false,
+    error: null,
+    title,
+    records: withRecordIds(records),
+    metadata,
+    config,
+  }
+}
 
-  const handleSetRecords = useCallback((records: CustomRecord[]) => {
-    const recordsWithIds = records.map((record, index) => ({
-      ...record,
-      id: toRecordId(record.id ? record.id : `id_${index.toString(36)}`),
-    }))
-    setRecords(recordsWithIds)
-  }, [])
+/**
+ * Fetches all the provided datasets in parallel and keeps them in memory,
+ * exposing the records of the selected one
+ */
+const useFetchData = (
+  urls: string[],
+  selectedIndex: number,
+  search?: string,
+) => {
+  const [datasets, setDatasets] = useState<Record<string, DatasetState>>({})
+  const reloadControllerRef = useRef<AbortController | null>(null)
 
-  const filteredRecords = useMemo((): CustomRecord[] => {
-    if (!search) return records
+  // Keep a stable reference to the list of URLs, as the array identity may change on URL updates
+  const urlsKey = urls.join(URLS_KEY_SEPARATOR)
+  const stableUrls = useMemo(
+    () => (urlsKey ? urlsKey.split(URLS_KEY_SEPARATOR) : []),
+    [urlsKey],
+  )
 
-    return records.filter((record) => {
-      const descriptionText = Array.isArray(record.description)
-        ? record.description.join(' ')
-        : record.description || ''
+  const selectedUrl: string | undefined = stableUrls[selectedIndex]
+  const selectedDataset =
+    (selectedUrl && datasets[selectedUrl]) || EMPTY_DATASET
 
-      const searchableText = `${record.title} ${descriptionText}`
-      return fuzzyMatch(searchableText, search)
-    })
-  }, [records, search])
+  const updateDataset = useCallback(
+    (url: string, patch: Partial<DatasetState>) => {
+      setDatasets((prev) => ({
+        ...prev,
+        [url]: { ...(prev[url] ?? EMPTY_DATASET), ...patch },
+      }))
+    },
+    [],
+  )
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: reloadCounter triggers manual data refresh
-  useEffect(() => {
-    if (!url) return
+  const loadDataset = useCallback(
+    async (url: string, signal: AbortSignal) => {
+      const mockDataset = MOCK_DATASETS[url]
+      if (mockDataset) {
+        updateDataset(url, toDatasetState(mockDataset))
+        return
+      }
 
-    const mockDataset = MOCK_DATASETS[url]
-    if (mockDataset) {
-      const { records, metadata, config } = processApiResponse(mockDataset)
+      if (!isURLAllowed(url)) {
+        updateDataset(url, {
+          loading: false,
+          error: 'Invalid API URL: URL does not match security requirements',
+        })
+        return
+      }
 
-      handleSetRecords(records)
-      setMetadata(metadata)
-      setConfig(config)
-      setError(null)
-      return
-    }
-
-    if (!isURLAllowed(url)) {
-      setError('Invalid API URL: URL does not match security requirements')
-      return
-    }
-
-    const controller = new AbortController()
-
-    const fetchData = async () => {
       try {
-        setLoading(true)
-        setError(null)
+        updateDataset(url, { loading: true, error: null })
 
-        const response = await fetch(url, { signal: controller.signal })
+        const response = await fetch(url, { signal })
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
@@ -100,35 +142,81 @@ const useFetchData = (url?: string, search?: string) => {
 
         // Resolve relative paths in the JSON data based on the API URL
         const resolvedData = resolveRelativePaths(validatedResponse.data, url)
-        const { records, metadata, config } = processApiResponse(resolvedData)
-
-        handleSetRecords(records)
-        setMetadata(metadata)
-        setConfig(config)
+        updateDataset(url, toDatasetState(resolvedData))
       } catch (error) {
         if (error instanceof Error && error.name === 'AbortError') return
-        setError(
-          error instanceof Error ? error.message : 'An unknown error occurred',
-        )
-      } finally {
-        setLoading(false)
+        updateDataset(url, {
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'An unknown error occurred',
+        })
       }
+    },
+    [updateDataset],
+  )
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    for (const url of new Set(stableUrls)) {
+      loadDataset(url, controller.signal)
     }
 
-    fetchData()
-
     return () => controller.abort()
-  }, [url, handleSetRecords, reloadCounter])
+  }, [stableUrls, loadDataset])
 
-  const reload = useCallback(() => setReloadCounter((prev) => prev + 1), [])
+  useEffect(() => () => reloadControllerRef.current?.abort(), [])
+
+  /**
+   * Manually refreshes the selected dataset only
+   */
+  const reload = useCallback(() => {
+    if (!selectedUrl) return
+
+    reloadControllerRef.current?.abort()
+    const controller = new AbortController()
+    reloadControllerRef.current = controller
+
+    loadDataset(selectedUrl, controller.signal)
+  }, [selectedUrl, loadDataset])
+
+  const filteredRecords = useMemo((): CustomRecord[] => {
+    const { records } = selectedDataset
+    if (!search) return records
+
+    return records.filter((record) => {
+      const descriptionText = Array.isArray(record.description)
+        ? record.description.join(' ')
+        : record.description || ''
+
+      const searchableText = `${record.title} ${descriptionText}`
+      return fuzzyMatch(searchableText, search)
+    })
+  }, [selectedDataset, search])
+
+  const datasetOptions = useMemo(
+    (): DatasetOption[] =>
+      stableUrls.map((url) => ({
+        url,
+        label: getDatasetLabel(
+          url,
+          datasets[url]?.title,
+          datasets[url]?.metadata,
+        ),
+      })),
+    [stableUrls, datasets],
+  )
 
   return {
-    allRecords: records,
+    allRecords: selectedDataset.records,
     records: filteredRecords,
-    metadata,
-    config,
-    loading,
-    error,
+    metadata: selectedDataset.metadata,
+    config: selectedDataset.config,
+    loading: selectedDataset.loading,
+    error: selectedDataset.error,
+    datasets: datasetOptions,
     reload,
   }
 }

@@ -24,6 +24,7 @@ export const configSchema = z.object({
 })
 
 export const customRecordWithMetadataSchema = z.object({
+  title: z.string().optional(),
   metadata: metadataSchema,
   records: customRecordSchema.array(),
   config: configSchema.optional(),

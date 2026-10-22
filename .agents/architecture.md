@@ -90,8 +90,10 @@ anySuccessfulResponseSchema = z.union([
 
 ### 3.2 URL Parameters & Routing
 - `?api=<url>`: Target data source (validated against `ALLOWED_API_URL_PATTERNS`).
+- `?api[]=<url>` (repeatable, may be mixed with `?api=`): Multiple data sources. All are fetched in parallel by [`useFetchData`](file:///Users/cristi/Code/generic-map-with-pois/src/hooks/useFetchData.ts) and kept in memory; when 2+ are provided, a dataset dropdown is shown below the search input. Option labels resolve as: envelope `title` → first `metadata` entry → raw URL.
+- `?selected=<index>`: Zero-based index of the active dataset (defaults to `0`). Switching datasets clears the search, closes the drawer, and removes `?id=`.
 - `?id=<recordId>`: Selects and highlights a specific POI on initial load and opens its `RecordDetails` drawer.
-- Sync mechanism: Managed via [`useURLParams`](file:///Users/cristi/Code/generic-map-with-pois/src/hooks/useURLParams.ts), updating query strings without page reloads.
+- Sync mechanism: Managed via [`useURLParams`](file:///Users/cristi/Code/generic-map-with-pois/src/hooks/useURLParams.ts) (`params`, `listParams`, `updateParams`), updating query strings via `history.replaceState` without page reloads.
 
 ### 3.3 Security & Safe Fetching
 - URLs passed to `?api=` are strictly tested against `ALLOWED_API_URL_PATTERNS` in [`constants.ts`](file:///Users/cristi/Code/generic-map-with-pois/src/constants.ts). Only approved domains (e.g. GitHub Pages) and localhost/127.0.0.1 for local development are accepted.

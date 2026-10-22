@@ -4,7 +4,7 @@
 
 ## Demo
 
-[https://cristidraghici.github.io/generic-map-with-pois/?api=/cities_in_romania.json](https://cristidraghici.github.io/generic-map-with-pois/?api=/cities_in_romania.json)
+[https://cristidraghici.github.io/generic-map-with-pois/?api[]=/cities_in_romania.json&api[]=/world_cities.json&selected=0](https://cristidraghici.github.io/generic-map-with-pois/?api[]=/cities_in_romania.json&api[]=/world_cities.json&selected=0)
 
 ## About
 
@@ -12,13 +12,13 @@ This project uses React, Typescript, Leaflet and OpenStreetMap to show points of
 
 ```typescript
 type PointOfInterest = {
-  id?: string
-  latitude: number
-  longitude: number
-  title: string
-  description?: string | string[]
-  images?: string[]
-}
+  id?: string;
+  latitude: number;
+  longitude: number;
+  title: string;
+  description?: string | string[];
+  images?: string[];
+};
 ```
 
 ### Response types
@@ -33,28 +33,33 @@ There is also an option to use an enveloped structure:
 
 ```typescript
 interface APIEnvelope {
-  metadata: string | string[]
+  title?: string; // optional, label of the dataset in the dataset selector
+  metadata: string | string[];
   config: {
-    typeOfIcon: 'text' | 'default' | 'dot' // default, the icon to use in the data
-    isListEnabled: boolean | undefined // true, show the toggler to view a list
-    isListFilteredToViewport: boolean | undefined // false, show only the POIs in the viewport
-    isZoomOnSelectEnabled: boolean | undefined // false, zoom to a POI when clicked
-    isShowOnlyURLRecordEnabled: boolean | undefined // true, show only the record specified in the url
-    isAggressiveOptimizationEnabled: boolean | undefined // false, aggressively limit the number of records shown on the map to improve performance
-  }
-  records: PointOfInterest[]
+    typeOfIcon: "text" | "default" | "dot"; // default, the icon to use in the data
+    isListEnabled: boolean | undefined; // true, show the toggler to view a list
+    isListFilteredToViewport: boolean | undefined; // false, show only the POIs in the viewport
+    isZoomOnSelectEnabled: boolean | undefined; // false, zoom to a POI when clicked
+    isShowOnlyURLRecordEnabled: boolean | undefined; // true, show only the record specified in the url
+    isAggressiveOptimizationEnabled: boolean | undefined; // false, aggressively limit the number of records shown on the map to improve performance
+  };
+  records: PointOfInterest[];
 }
 ```
 
 ### URL Parameters
 
 - `?api=` - Specifies the API endpoint or JSON file to load POI data from
+- `?api[]=` - Can be repeated to provide multiple datasets, selectable from a dropdown below the search input. The dropdown label is the dataset `title`, then the first `metadata` entry, then the URL itself
+- `?selected=` - Zero-based index of the selected dataset when multiple `api[]` values are provided (defaults to `0`)
 - `?id=` - Focuses on a specific record by its ID and opens its details panel
 
 **Example URLs:**
 
 - `/?api=/cities_in_romania.json` - Load the demo data
 - `/?api=/cities_in_romania.json&id=id_1` - Load demo data and focus on Cluj-Napoca (second record)
+- `/?api[]=/cities_in_romania.json&api[]=/world_cities.json` - Load both demo datasets and switch between them from the dropdown
+- `/?api[]=/cities_in_romania.json&api[]=/world_cities.json&selected=1` - Same as above, with the world cities selected
 - `/?api=https://your-api.com/pois.json&id=custom-poi-123` - Load from API and focus on specific record
 
 **Note:** If your data doesn't include `id` fields, the system will automatically generate them using the pattern `id_0`, `id_1`, `id_2`, etc., based on the array index.
@@ -71,6 +76,7 @@ interface APIEnvelope {
 This project uses [Biome](https://biomejs.dev/) for code formatting and linting.
 
 **Available commands:**
+
 - `npm run lint` - Check for linting errors
 - `npm run format` - Format code
 - `npm run check` - Run both linting and formatting (recommended)
@@ -99,7 +105,6 @@ You can now open this project in a devcontainer by:
 
 - Opening VS Code Command Palette (Cmd+Shift+P)
 - Running "Dev Containers: Reopen in Container"
-
 
 ## Notes
 

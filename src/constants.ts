@@ -22,7 +22,7 @@ export const WORLD_CITIES_MOCK_DATA_PATH = '/world_cities.json'
 
 export const AVAILABLE_DATASETS = [
   {
-    label: 'Romania Cities',
+    label: 'Romanian Cities',
     value: ROMANIAN_CITIES_MOCK_DATA_PATH,
   },
   {

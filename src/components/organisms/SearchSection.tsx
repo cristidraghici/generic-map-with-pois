@@ -1,24 +1,57 @@
-import { FunctionComponent } from 'react'
+import { FunctionComponent, useMemo } from 'react'
 import { AVAILABLE_DATASETS, WORLD_CITIES_MOCK_DATA_PATH } from '@/constants'
+import { DatasetOption } from '@/hooks/useFetchData'
 import ConditionalElement from '../atoms/ConditionalElement'
 import SearchField from '../atoms/SearchField'
+import Select from '../atoms/Select'
 
 interface SearchSectionProps {
   loading: boolean
   error: string | null
   hasUrl: boolean
+  datasets: DatasetOption[]
+  selectedDatasetIndex: number
   onSearchChange: (_value: string) => void
+  onDatasetChange: (_index: number) => void
 }
 
 const SearchSection: FunctionComponent<SearchSectionProps> = ({
   loading,
   error,
   hasUrl,
+  datasets,
+  selectedDatasetIndex,
   onSearchChange,
+  onDatasetChange,
 }) => {
+  const datasetSelectOptions = useMemo(
+    () =>
+      datasets.map((dataset, index) => ({
+        value: index.toString(),
+        label: dataset.label,
+      })),
+    [datasets],
+  )
+
   return (
     <div className="absolute right-0 top-0 z-[998]  w-96 max-w-full p-2 pl-[50px]">
-      <SearchField className="mb-2" onInputChange={onSearchChange} />
+      {/* Remount on dataset change to reset the search input */}
+      <SearchField
+        key={selectedDatasetIndex}
+        className="mb-2"
+        onInputChange={onSearchChange}
+      />
+
+      {datasets.length > 1 && (
+        <Select
+          className="mb-2"
+          label="Select dataset"
+          name="dataset"
+          options={datasetSelectOptions}
+          value={selectedDatasetIndex.toString()}
+          onChange={(e) => onDatasetChange(Number(e.target.value))}
+        />
+      )}
 
       <ConditionalElement
         as="div"

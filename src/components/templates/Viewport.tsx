@@ -21,10 +21,32 @@ const Viewport = () => {
     null,
   )
 
-  const { api, id } = useURLParams()
+  const {
+    params: { id, selected },
+    listParams: { api: apiUrls = [] },
+    updateParams,
+  } = useURLParams()
 
-  const { allRecords, records, metadata, config, loading, error, reload } =
-    useFetchData(api, search)
+  /**
+   * Index of the selected dataset (`?selected=`), defaulting to the first one
+   */
+  const selectedDatasetIndex = useMemo(() => {
+    const index = Number(selected)
+    return Number.isInteger(index) && index >= 0 && index < apiUrls.length
+      ? index
+      : 0
+  }, [selected, apiUrls.length])
+
+  const {
+    allRecords,
+    records,
+    metadata,
+    config,
+    loading,
+    error,
+    datasets,
+    reload,
+  } = useFetchData(apiUrls, selectedDatasetIndex, search)
 
   const {
     map,
@@ -113,13 +135,29 @@ const Viewport = () => {
     [config.isListEnabled, records.length, idFromUrl],
   )
 
+  /**
+   * Switch the dataset: reset the search, close the drawer and drop the
+   * record `id`, which belongs to the previous dataset
+   */
+  const handleDatasetChange = useCallback(
+    (index: number) => {
+      setSearch('')
+      setSelectedRecord(null)
+      updateParams({ selected: index.toString(), id: null })
+    },
+    [updateParams],
+  )
+
   return (
     <>
       <SearchSection
         loading={loading}
         error={error}
-        hasUrl={!!api}
+        hasUrl={apiUrls.length > 0}
+        datasets={datasets}
+        selectedDatasetIndex={selectedDatasetIndex}
         onSearchChange={setSearch}
+        onDatasetChange={handleDatasetChange}
       />
 
       <HorizontalViewportSplit

@@ -4,6 +4,7 @@ import { AnySuccessfulResponse } from '@/types'
 const processApiResponse = (response: AnySuccessfulResponse) => {
   if (Array.isArray(response)) {
     return {
+      title: undefined,
       metadata: '',
       config: DEFAULT_CONFIG,
       records: response,
@@ -18,6 +19,7 @@ const processApiResponse = (response: AnySuccessfulResponse) => {
   }
 
   return {
+    title: undefined,
     metadata: '',
     config: DEFAULT_CONFIG,
     records: [],
