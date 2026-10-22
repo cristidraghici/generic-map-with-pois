@@ -35,12 +35,7 @@ const SearchSection: FunctionComponent<SearchSectionProps> = ({
 
   return (
     <div className="absolute right-0 top-0 z-[998]  w-96 max-w-full p-2 pl-[50px]">
-      {/* Remount on dataset change to reset the search input */}
-      <SearchField
-        key={selectedDatasetIndex}
-        className="mb-2"
-        onInputChange={onSearchChange}
-      />
+      <SearchField className="mb-2" onInputChange={onSearchChange} />
 
       {datasets.length > 1 && (
         <Select

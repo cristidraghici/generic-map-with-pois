@@ -136,12 +136,11 @@ const Viewport = () => {
   )
 
   /**
-   * Switch the dataset: reset the search, close the drawer and drop the
+   * Switch the dataset: keep the search, close the drawer and drop the
    * record `id`, which belongs to the previous dataset
    */
   const handleDatasetChange = useCallback(
     (index: number) => {
-      setSearch('')
       setSelectedRecord(null)
       updateParams({ selected: index.toString(), id: null })
     },
