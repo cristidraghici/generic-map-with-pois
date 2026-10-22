@@ -32,7 +32,7 @@ const MapContainer = ({
   const recordMarkers = useMemo<
     (CustomRecord & {
       icon: Config['typeOfIcon']
-      color: (typeof MARKER_COLORS)[keyof typeof MARKER_COLORS]
+      color: (typeof MARKER_COLORS)[keyof typeof MARKER_COLORS] | string
     })[]
   >(() => {
     return records.map((record) => ({
@@ -41,9 +41,11 @@ const MapContainer = ({
         icon === 'text' && (!record.title || record.title.length === 0)
           ? 'default'
           : icon,
-      color: Array.isArray(record.description)
-        ? MARKER_COLORS.green
-        : MARKER_COLORS.blue,
+      color:
+        record.color ||
+        (Array.isArray(record.description)
+          ? MARKER_COLORS.green
+          : MARKER_COLORS.blue),
     }))
   }, [records, icon])
 

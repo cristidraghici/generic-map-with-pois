@@ -12,7 +12,7 @@ interface MarkerElementProps extends Omit<MarkerProps, 'icon' | 'position'> {
     longitude: number
     title?: string
   }
-  color: (typeof MARKER_COLORS)[keyof typeof MARKER_COLORS]
+  color?: (typeof MARKER_COLORS)[keyof typeof MARKER_COLORS] | string
   icon: Config['typeOfIcon']
   onClick?: () => void
 }

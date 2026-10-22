@@ -9,6 +9,7 @@ export const customRecordSchema = z.object({
   title: z.string(),
   description: z.union([z.string(), z.string().array()]).optional(),
   images: z.string().array().optional(),
+  color: z.string().optional(),
 })
 
 export const metadataSchema = z.union([z.string(), z.string().array()])
