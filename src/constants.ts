@@ -20,6 +20,12 @@ export const ROMANIAN_CITIES_MOCK_DATA_PATH = '/cities_in_romania.json'
 
 export const WORLD_CITIES_MOCK_DATA_PATH = '/world_cities.json'
 
+export const PARIS_LANDMARKS_MOCK_DATA_PATH = '/cultural_landmarks_paris.json'
+
+export const NATIONAL_PARKS_MOCK_DATA_PATH = '/national_parks.json'
+
+export const SPACE_LAUNCH_SITES_MOCK_DATA_PATH = '/space_launch_sites.json'
+
 export const AVAILABLE_DATASETS = [
   {
     label: 'Romanian Cities',
@@ -28,6 +34,18 @@ export const AVAILABLE_DATASETS = [
   {
     label: 'World Cities (Top 5000)',
     value: WORLD_CITIES_MOCK_DATA_PATH,
+  },
+  {
+    label: 'Paris Landmarks (Text Icons & Gallery)',
+    value: PARIS_LANDMARKS_MOCK_DATA_PATH,
+  },
+  {
+    label: 'National Parks (Viewport Filtering)',
+    value: NATIONAL_PARKS_MOCK_DATA_PATH,
+  },
+  {
+    label: 'Space Launch Sites (Map Only / No List)',
+    value: SPACE_LAUNCH_SITES_MOCK_DATA_PATH,
   },
 ] as const
 

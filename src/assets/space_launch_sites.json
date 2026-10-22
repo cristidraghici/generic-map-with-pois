@@ -1,0 +1,87 @@
+{
+  "title": "Global Spaceports & Launch Sites",
+  "metadata": [
+    "Primary active orbital spaceports and rocket launch facilities around the world.",
+    "Showcasing isListEnabled set to false (pure map experience with bottom drawer disabled), aggressive optimization enabled, and agency-coded marker colors."
+  ],
+  "config": {
+    "typeOfIcon": "default",
+    "isListEnabled": false,
+    "isZoomOnSelectEnabled": true,
+    "isListFilteredToViewport": false,
+    "isShowOnlyURLRecordEnabled": true,
+    "isAggressiveOptimizationEnabled": true
+  },
+  "records": [
+    {
+      "id": "ksc-cape-canaveral",
+      "title": "Kennedy Space Center & Cape Canaveral",
+      "latitude": 28.5729,
+      "longitude": -80.649,
+      "color": "#1D4ED8",
+      "description": "United States - NASA's primary human spaceflight launch facility and the Cape Canaveral Space Force Station. Home to historic Apollo Saturn V, Space Shuttle, and modern Artemis/SpaceX Falcon 9 and Heavy launches.",
+      "images": [
+        "https://images.unsplash.com/photo-1517976487504-59a1a0512e47?auto=format&fit=crop&w=800&q=80"
+      ]
+    },
+    {
+      "id": "vandenberg-sfb",
+      "title": "Vandenberg Space Force Base",
+      "latitude": 34.742,
+      "longitude": -120.5724,
+      "color": "#2563EB",
+      "description": "United States (California) - The premier West Coast spaceport, specializing in polar, Sun-synchronous, and high-inclination orbital insertions over the open Pacific Ocean.",
+      "images": [
+        "https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?auto=format&fit=crop&w=800&q=80"
+      ]
+    },
+    {
+      "id": "guiana-space-centre",
+      "title": "Guiana Space Centre (CSG)",
+      "latitude": 5.239,
+      "longitude": -52.768,
+      "color": "#047857",
+      "description": "French Guiana - Europe's Spaceport operated jointly by CNES and ESA. Located just 5.3 degrees north of the Equator, maximizing the rotational assist of Earth for geostationary launches with Ariane and Vega rockets."
+    },
+    {
+      "id": "baikonur-cosmodrome",
+      "title": "Baikonur Cosmodrome",
+      "latitude": 45.965,
+      "longitude": 63.305,
+      "color": "#DC2626",
+      "description": "Kazakhstan - The world's first and largest operational space launch facility. Launched Sputnik 1 in 1957 and Yuri Gagarin on Vostok 1 in 1961; ongoing staging ground for Soyuz crewed missions to the ISS."
+    },
+    {
+      "id": "tanegashima-space-center",
+      "title": "Tanegashima Space Center (TNSC)",
+      "latitude": 30.4,
+      "longitude": 130.97,
+      "color": "#7C3AED",
+      "description": "Japan (Kagoshima Prefecture) - JAXA's primary rocket launch site situated on the southeastern coast of Tanegashima island, known as one of the most picturesque coastal spaceports in the world."
+    },
+    {
+      "id": "satish-dhawan-space-centre",
+      "title": "Satish Dhawan Space Centre (SDSC SHAR)",
+      "latitude": 13.72,
+      "longitude": 80.23,
+      "color": "#D97706",
+      "description": "India (Sriharikota Island, Andhra Pradesh) - ISRO's main orbital launch centre, responsible for Chandrayaan lunar missions, Mangalyaan Mars mission, and PSLV/LVM3 satellite launches."
+    },
+    {
+      "id": "rocket-lab-lc1",
+      "title": "Rocket Lab Launch Complex 1",
+      "latitude": -39.2603,
+      "longitude": 177.8659,
+      "color": "#111827",
+      "description": "New Zealand (Mahia Peninsula) - The world's first private commercial orbital launch facility, dedicated to Rocket Lab Electron missions with high orbital launch cadence."
+    },
+    {
+      "id": "esrange-space-center",
+      "title": "Esrange Space Center",
+      "latitude": 67.893,
+      "longitude": 21.104,
+      "color": "#0891B2",
+      "description": "Sweden (Kiruna) - Arctic rocket range operated by the Swedish Space Corporation. Inaugurated Spaceport Esrange for orbital satellite launches in 2023."
+    }
+  ]
+}

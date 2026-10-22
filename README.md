@@ -4,7 +4,7 @@
 
 ## Demo
 
-[https://cristidraghici.github.io/generic-map-with-pois/?api[]=/cities_in_romania.json&api[]=/world_cities.json&selected=0](https://cristidraghici.github.io/generic-map-with-pois/?api[]=/cities_in_romania.json&api[]=/world_cities.json&selected=0)
+[https://cristidraghici.github.io/generic-map-with-pois/?api[]=/cities_in_romania.json&api[]=/world_cities.json&api[]=/cultural_landmarks_paris.json&api[]=/national_parks.json&api[]=/space_launch_sites.json&selected=0](https://cristidraghici.github.io/generic-map-with-pois/?api[]=/cities_in_romania.json&api[]=/world_cities.json&api[]=/cultural_landmarks_paris.json&api[]=/national_parks.json&api[]=/space_launch_sites.json&selected=0)
 
 ## About
 
@@ -56,10 +56,12 @@ interface APIEnvelope {
 
 **Example URLs:**
 
-- `/?api=/cities_in_romania.json` - Load the demo data
+- `/?api=/cities_in_romania.json` - Load Romanian cities (default icon, list enabled, zoom on select)
 - `/?api=/cities_in_romania.json&id=id_1` - Load demo data and focus on Cluj-Napoca (second record)
-- `/?api[]=/cities_in_romania.json&api[]=/world_cities.json` - Load both demo datasets and switch between them from the dropdown
-- `/?api[]=/cities_in_romania.json&api[]=/world_cities.json&selected=1` - Same as above, with the world cities selected
+- `/?api=/cultural_landmarks_paris.json` - Paris landmarks demonstrating `typeOfIcon: "text"`, custom `color` hexes, `images` galleries, and `isZoomOnSelectEnabled: true`
+- `/?api=/national_parks.json` - Iconic world national parks demonstrating `isListFilteredToViewport: true`, `isShowOnlyURLRecordEnabled: false`, and `typeOfIcon: "dot"`
+- `/?api=/space_launch_sites.json` - Global spaceports demonstrating `isListEnabled: false` (clean map view without bottom drawer) and `isAggressiveOptimizationEnabled: true`
+- `/?api[]=/cities_in_romania.json&api[]=/world_cities.json&api[]=/cultural_landmarks_paris.json&api[]=/national_parks.json&api[]=/space_launch_sites.json` - Load all demo datasets and switch between them from the dropdown
 - `/?api=https://your-api.com/pois.json&id=custom-poi-123` - Load from API and focus on specific record
 
 **Note:** If your data doesn't include `id` fields, the system will automatically generate them using the pattern `id_0`, `id_1`, `id_2`, etc., based on the array index.

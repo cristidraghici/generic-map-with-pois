@@ -1,0 +1,96 @@
+{
+  "title": "Cultural Landmarks of Paris",
+  "metadata": [
+    "Famous historical monuments and cultural institutions of Paris, France.",
+    "Showcasing text pin icons, custom marker colors, image galleries, and zoom-on-select."
+  ],
+  "config": {
+    "typeOfIcon": "text",
+    "isListEnabled": true,
+    "isZoomOnSelectEnabled": true,
+    "isListFilteredToViewport": false,
+    "isShowOnlyURLRecordEnabled": true,
+    "isAggressiveOptimizationEnabled": false
+  },
+  "records": [
+    {
+      "id": "eiffel-tower",
+      "title": "Eiffel Tower",
+      "latitude": 48.8584,
+      "longitude": 2.2945,
+      "color": "#D97706",
+      "description": "Constructed from 1887 to 1889 as the centerpiece of the 1889 World's Fair, the Eiffel Tower stands 330 meters tall on the Champ de Mars.",
+      "images": [
+        "https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1543349689-9a4d426bee8e?auto=format&fit=crop&w=800&q=80"
+      ]
+    },
+    {
+      "id": "louvre-museum",
+      "title": "Louvre Museum",
+      "latitude": 48.8606,
+      "longitude": 2.3376,
+      "color": "#2563EB",
+      "description": "The world's most-visited museum and a historic landmark housed in the Louvre Palace, celebrated for the Mona Lisa and Venus de Milo.",
+      "images": [
+        "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1565099824688-e93eb20fe622?auto=format&fit=crop&w=800&q=80"
+      ]
+    },
+    {
+      "id": "notre-dame",
+      "title": "Notre-Dame Cathedral",
+      "latitude": 48.853,
+      "longitude": 2.3499,
+      "color": "#DC2626",
+      "description": "A masterpiece of French Gothic architecture located on the Île de la Cité, renowned for its pioneering rib vaulting and flying buttresses.",
+      "images": [
+        "https://images.unsplash.com/photo-1478359844494-1092259077e4?auto=format&fit=crop&w=800&q=80"
+      ]
+    },
+    {
+      "id": "arc-de-triomphe",
+      "title": "Arc de Triomphe",
+      "latitude": 48.8738,
+      "longitude": 2.295,
+      "color": "#7C3AED",
+      "description": "Standing at the western end of the Champs-Élysées, honoring those who fought and died for France in the French Revolutionary and Napoleonic Wars.",
+      "images": [
+        "https://images.unsplash.com/photo-1509356843151-3e7d96241e11?auto=format&fit=crop&w=800&q=80"
+      ]
+    },
+    {
+      "id": "sacre-coeur",
+      "title": "Sacré-Cœur Basilica",
+      "latitude": 48.8867,
+      "longitude": 2.3431,
+      "color": "#059669",
+      "description": "Perched at the summit of the butte Montmartre, this Roman Catholic basilica offers panoramic vistas overlooking the Parisian basin.",
+      "images": [
+        "https://images.unsplash.com/photo-1549144511-f099e773c147?auto=format&fit=crop&w=800&q=80"
+      ]
+    },
+    {
+      "id": "musee-d-orsay",
+      "title": "Musée d'Orsay",
+      "latitude": 48.86,
+      "longitude": 2.3266,
+      "color": "#DB2777",
+      "description": "Installed in the former Gare d'Orsay railway station, holding the largest collection of Impressionist and Post-Impressionist masterpieces worldwide.",
+      "images": [
+        "https://images.unsplash.com/photo-1582560475093-ba66accbc424?auto=format&fit=crop&w=800&q=80"
+      ]
+    },
+    {
+      "id": "pantheon",
+      "title": "Panthéon",
+      "latitude": 48.8462,
+      "longitude": 2.3464,
+      "color": "#4B5563",
+      "description": "Located in the Latin Quarter, built originally as a church dedicated to Saint Genevieve and now serving as a secular mausoleum.",
+      "images": [
+        "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80"
+      ]
+    }
+  ]
+}

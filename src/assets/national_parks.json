@@ -1,0 +1,155 @@
+{
+  "title": "Iconic National Parks of the World",
+  "metadata": [
+    "A global curated selection of celebrated national parks across six continents.",
+    "Showcasing viewport-filtered record listing (pan the map to see the list dynamically update) and isShowOnlyURLRecordEnabled set to false."
+  ],
+  "config": {
+    "typeOfIcon": "dot",
+    "isListEnabled": true,
+    "isZoomOnSelectEnabled": false,
+    "isListFilteredToViewport": true,
+    "isShowOnlyURLRecordEnabled": false,
+    "isAggressiveOptimizationEnabled": false
+  },
+  "records": [
+    {
+      "id": "yellowstone",
+      "title": "Yellowstone National Park",
+      "latitude": 44.428,
+      "longitude": -110.5885,
+      "color": "#D97706",
+      "description": [
+        "Country: United States (Wyoming, Montana, Idaho)",
+        "Established: March 1, 1872 (World's first national park)",
+        "Features: Old Faithful geyser, Grand Prismatic Spring, sub-alpine forests",
+        "Wildlife: Grizzly bears, wolves, bison herds, and elk"
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1576485375217-d6a95e34d043?auto=format&fit=crop&w=800&q=80"
+      ]
+    },
+    {
+      "id": "yosemite",
+      "title": "Yosemite National Park",
+      "latitude": 37.8651,
+      "longitude": -119.5383,
+      "color": "#059669",
+      "description": [
+        "Country: United States (California)",
+        "Established: October 1, 1890",
+        "Features: El Capitan, Half Dome, ancient giant sequoias, Yosemite Falls",
+        "Designation: UNESCO World Heritage Site since 1984"
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&w=800&q=80"
+      ]
+    },
+    {
+      "id": "banff",
+      "title": "Banff National Park",
+      "latitude": 51.4968,
+      "longitude": -115.9281,
+      "color": "#0284C7",
+      "description": [
+        "Country: Canada (Alberta)",
+        "Established: 1885 (Canada's oldest national park)",
+        "Features: Glacial turquoise lakes (Lake Louise, Moraine Lake), Canadian Rockies peaks",
+        "Activities: Alpine hiking, skiing, hot springs, wildlife viewing"
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1503614472-8c93d56e92ce?auto=format&fit=crop&w=800&q=80"
+      ]
+    },
+    {
+      "id": "torres-del-paine",
+      "title": "Torres del Paine National Park",
+      "latitude": -51.2532,
+      "longitude": -72.8814,
+      "color": "#0D9488",
+      "description": [
+        "Country: Chile (Patagonia)",
+        "Established: May 13, 1959",
+        "Features: Three granite peaks of the Paine massif, Grey Glacier, azure lakes",
+        "Fauna: Guanacos, Andean condors, South Andean deer"
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1527004013197-933c4bb611b3?auto=format&fit=crop&w=800&q=80"
+      ]
+    },
+    {
+      "id": "plitvice-lakes",
+      "title": "Plitvice Lakes National Park",
+      "latitude": 44.8654,
+      "longitude": 15.582,
+      "color": "#10B981",
+      "description": [
+        "Country: Croatia",
+        "Established: April 8, 1949",
+        "Features: 16 cascading terraced lakes joined by waterfalls on travertine dams",
+        "Designation: Inscribed on UNESCO World Heritage list in 1979"
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=80"
+      ]
+    },
+    {
+      "id": "serengeti",
+      "title": "Serengeti National Park",
+      "latitude": -2.3333,
+      "longitude": 34.8333,
+      "color": "#EA580C",
+      "description": [
+        "Country: Tanzania",
+        "Established: 1951",
+        "Features: The annual Great Migration of over 1.5 million blue wildebeest and 250,000 zebras",
+        "Ecosystem: Vast savanna grasslands, acacia woodlands, rocky kopjes"
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=800&q=80"
+      ]
+    },
+    {
+      "id": "kruger",
+      "title": "Kruger National Park",
+      "latitude": -23.9884,
+      "longitude": 31.5547,
+      "color": "#65A30D",
+      "description": [
+        "Country: South Africa",
+        "Established: May 31, 1926",
+        "Area: 19,485 square kilometers",
+        "Wildlife: Dense populations of the Big Five game animals"
+      ]
+    },
+    {
+      "id": "fiordland",
+      "title": "Fiordland National Park",
+      "latitude": -45.4145,
+      "longitude": 167.7181,
+      "color": "#14B8A6",
+      "description": [
+        "Country: New Zealand (South Island)",
+        "Established: 1952",
+        "Features: Milford Sound, Doubtful Sound, glacier-carved fiords, temperate rainforests",
+        "Status: Core component of Te Wahipounamu World Heritage site"
+      ],
+      "images": [
+        "https://images.unsplash.com/photo-1507699622108-4be3abd695ad?auto=format&fit=crop&w=800&q=80"
+      ]
+    },
+    {
+      "id": "fuji-hakone-izu",
+      "title": "Fuji-Hakone-Izu National Park",
+      "latitude": 35.3606,
+      "longitude": 138.7274,
+      "color": "#8B5CF6",
+      "description": [
+        "Country: Japan (Honshu)",
+        "Established: February 1, 1936",
+        "Features: Mount Fuji, Hakone hot spring resorts, Five Fuji Lakes, Izu Peninsula",
+        "Characteristics: Most visited national park in Japan"
+      ]
+    }
+  ]
+}

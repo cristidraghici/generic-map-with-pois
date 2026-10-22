@@ -2,7 +2,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   ALLOWED_API_URL_PATTERNS,
   DEFAULT_CONFIG,
+  NATIONAL_PARKS_MOCK_DATA_PATH,
+  PARIS_LANDMARKS_MOCK_DATA_PATH,
   ROMANIAN_CITIES_MOCK_DATA_PATH,
+  SPACE_LAUNCH_SITES_MOCK_DATA_PATH,
   WORLD_CITIES_MOCK_DATA_PATH,
 } from '@/constants'
 import { toRecordId } from '@/utils/brandTypes'
@@ -11,6 +14,9 @@ import getDatasetLabel from '@/utils/getDatasetLabel'
 import processApiResponse from '@/utils/processApiResponse'
 import { resolveRelativePaths } from '@/utils/resolveRelativePaths'
 import mockRomanianCitiesData from '../assets/cities_in_romania.json'
+import mockParisLandmarksData from '../assets/cultural_landmarks_paris.json'
+import mockNationalParksData from '../assets/national_parks.json'
+import mockSpaceLaunchSitesData from '../assets/space_launch_sites.json'
 import mockWorldCitiesData from '../assets/world_cities.json'
 import { anySuccessfulResponseSchema } from '../schemas'
 import {
@@ -26,6 +32,12 @@ const MOCK_DATASETS: Record<string, CustomRecordWithMetadata> = {
     mockRomanianCitiesData as CustomRecordWithMetadata,
   [WORLD_CITIES_MOCK_DATA_PATH]:
     mockWorldCitiesData as CustomRecordWithMetadata,
+  [PARIS_LANDMARKS_MOCK_DATA_PATH]:
+    mockParisLandmarksData as CustomRecordWithMetadata,
+  [NATIONAL_PARKS_MOCK_DATA_PATH]:
+    mockNationalParksData as CustomRecordWithMetadata,
+  [SPACE_LAUNCH_SITES_MOCK_DATA_PATH]:
+    mockSpaceLaunchSitesData as CustomRecordWithMetadata,
 }
 
 /**
