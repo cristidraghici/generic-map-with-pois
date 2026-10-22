@@ -28,7 +28,7 @@ export const MiniMap = forwardRef<LeafletMap | null, MiniMapProps>(
 
     return (
       <div
-        className={`${className} mb-4 mt-4 h-40 w-full overflow-hidden rounded-md border border-gray-200 ${
+        className={`${className} mb-4 mt-4 h-40 w-full max-w-full overflow-hidden rounded-md border border-gray-200 pdf-page-break-avoid break-inside-avoid ${
           isPageBreakBeforeMediaInPDFEnabled ? 'pdf-page-break-before' : ''
         }`}
       >

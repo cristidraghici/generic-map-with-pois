@@ -71,3 +71,18 @@
     color: #1f2937; /* gray-800 */
   }
 }
+
+.pdf-page-break-before {
+  page-break-before: always;
+  break-before: page;
+}
+
+.pdf-page-break-after {
+  page-break-after: always;
+  break-after: page;
+}
+
+.pdf-page-break-avoid {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}

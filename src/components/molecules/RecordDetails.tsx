@@ -36,6 +36,7 @@ const RecordDetails: FunctionComponent<RecordDetailsProps> = ({
   latitude,
   longitude,
 }): JSX.Element => {
+  const containerRef = useRef<HTMLDivElement | null>(null)
   const miniMapRef = useRef<LeafletMap | null>(null)
   const [
     isPageBreakBeforeMediaInPDFEnabled,
@@ -43,7 +44,10 @@ const RecordDetails: FunctionComponent<RecordDetailsProps> = ({
   ] = useState(false)
 
   return (
-    <div className={`RecordDetails mb-4 overflow-hidden p-1 ${className}`}>
+    <div
+      ref={containerRef}
+      className={`RecordDetails mb-4 overflow-hidden p-1 ${className}`}
+    >
       <h3 className="mb-4 text-xl font-bold">{title}</h3>
 
       {!!description &&
@@ -92,23 +96,56 @@ const RecordDetails: FunctionComponent<RecordDetailsProps> = ({
             selector=".RecordDetails"
             name={id}
             onBeforeGenerate={() => {
-              const mapContainer = miniMapRef.current?.getContainer()
-              if (mapContainer) {
-                // Store the current width so we can restore it later
-                mapContainer.dataset.originalWidth = mapContainer.style.width
+              const container = containerRef.current
+              if (container) {
+                container.dataset.originalWidth = container.style.width
+                container.dataset.originalMaxWidth = container.style.maxWidth
+                container.style.width = '750px'
+                container.style.maxWidth = '750px'
+              }
 
-                // Temporarily enlarge the map before PDF capture
-                mapContainer.style.width = '800px'
+              const mapContainer = miniMapRef.current?.getContainer()
+              const mapWrapper = mapContainer?.parentElement
+              if (mapWrapper && mapContainer) {
+                mapWrapper.dataset.originalHeight = mapWrapper.style.height
+                mapWrapper.dataset.originalWidth = mapWrapper.style.width
+                mapWrapper.style.width = '100%'
+                mapWrapper.style.height = '320px'
+
+                mapContainer.dataset.originalHeight = mapContainer.style.height
+                mapContainer.dataset.originalWidth = mapContainer.style.width
+                mapContainer.style.width = '100%'
+                mapContainer.style.height = '320px'
+
                 miniMapRef.current?.invalidateSize()
               }
             }}
             onAfterGenerate={() => {
+              const container = containerRef.current
+              if (container) {
+                container.style.width = container.dataset.originalWidth || ''
+                container.style.maxWidth =
+                  container.dataset.originalMaxWidth || ''
+                delete container.dataset.originalWidth
+                delete container.dataset.originalMaxWidth
+              }
+
               const mapContainer = miniMapRef.current?.getContainer()
-              if (mapContainer) {
-                // Restore the original width
+              const mapWrapper = mapContainer?.parentElement
+              if (mapWrapper && mapContainer) {
+                mapWrapper.style.width = mapWrapper.dataset.originalWidth || ''
+                mapWrapper.style.height =
+                  mapWrapper.dataset.originalHeight || ''
+                delete mapWrapper.dataset.originalWidth
+                delete mapWrapper.dataset.originalHeight
+
                 mapContainer.style.width =
                   mapContainer.dataset.originalWidth || ''
+                mapContainer.style.height =
+                  mapContainer.dataset.originalHeight || ''
                 delete mapContainer.dataset.originalWidth
+                delete mapContainer.dataset.originalHeight
+
                 miniMapRef.current?.invalidateSize()
               }
             }}

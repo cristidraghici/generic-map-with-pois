@@ -5,8 +5,8 @@ import { sanitizeFileName } from '@/utils/files'
 interface DownloadPDFButtonProps {
   selector: string
   name?: string
-  onBeforeGenerate?: () => void
-  onAfterGenerate?: () => void
+  onBeforeGenerate?: () => void | Promise<void>
+  onAfterGenerate?: () => void | Promise<void>
   togglePageBreakBeforeMediaInPDF?: () => void
   isPageBreakBeforeMediaInPDFEnabled?: boolean
 }
@@ -24,6 +24,9 @@ export const DownloadPDFButton: FunctionComponent<DownloadPDFButtonProps> = ({
   const downloadPDF = async () => {
     setIsGenerating(true)
 
+    const hiddenButtons: HTMLElement[] = []
+    let hasRunBefore = false
+
     try {
       const element = document.querySelector(selector) as HTMLElement
       if (!element) {
@@ -35,10 +38,9 @@ export const DownloadPDFButton: FunctionComponent<DownloadPDFButtonProps> = ({
       const actionButtons = element.querySelectorAll(
         '.RecordDetailsActionButtons',
       )
-      const hiddenButtons: HTMLElement[] = []
 
       actionButtons.forEach((button) => {
-        if (button instanceof HTMLDivElement) {
+        if (button instanceof HTMLElement) {
           button.style.display = 'none'
           hiddenButtons.push(button)
         }
@@ -69,10 +71,11 @@ export const DownloadPDFButton: FunctionComponent<DownloadPDFButtonProps> = ({
       }
 
       if (onBeforeGenerate) {
-        onBeforeGenerate()
+        await Promise.resolve(onBeforeGenerate())
+        hasRunBefore = true
 
         // Wait a moment to ensure any UI updates are rendered
-        await new Promise((resolve) => setTimeout(resolve, 200))
+        await new Promise((resolve) => setTimeout(resolve, 300))
       }
 
       const { default: html2pdf } = await import('html2pdf.js')
@@ -80,18 +83,18 @@ export const DownloadPDFButton: FunctionComponent<DownloadPDFButtonProps> = ({
 
       // Wait a moment to ensure the PDF has been fully processed
       await new Promise((resolve) => setTimeout(resolve, 100))
-
-      if (onAfterGenerate) {
-        onAfterGenerate()
+    } catch (error) {
+      console.error('Error generating PDF:', error)
+    } finally {
+      if (hasRunBefore && onAfterGenerate) {
+        await Promise.resolve(onAfterGenerate())
       }
 
       // Show buttons again after PDF generation
       hiddenButtons.forEach((button) => {
         button.style.display = ''
       })
-    } catch (error) {
-      console.error('Error generating PDF:', error)
-    } finally {
+
       setIsGenerating(false)
     }
   }

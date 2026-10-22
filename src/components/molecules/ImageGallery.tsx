@@ -66,7 +66,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
           {images.map((image, index) => (
             <li
               key={image}
-              className={`w-full cursor-pointer ${
+              className={`w-full cursor-pointer pdf-page-break-avoid break-inside-avoid ${
                 isPageBreakBeforeMediaInPDFEnabled
                   ? 'pdf-page-break-before'
                   : ''
@@ -80,7 +80,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
                 <img
                   src={image}
                   alt=""
-                  className="h-auto w-full rounded shadow"
+                  className="mx-auto h-auto max-h-[920px] w-auto max-w-full rounded shadow object-contain"
                 />
               </button>
             </li>
