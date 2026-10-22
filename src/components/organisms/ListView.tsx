@@ -1,4 +1,4 @@
-import { PropsWithChildren, useState } from 'react'
+import { PropsWithChildren, useEffect, useState } from 'react'
 import Button from '@/components/atoms/Button'
 import RecordDetails from '@/components/molecules/RecordDetails'
 import { CustomRecord } from '@/types'
@@ -12,6 +12,11 @@ const ITEMS_PER_PAGE = 10 // Number of items to show per page
 
 const ListView = ({ records = [], onRecordSelect }: ListViewProps) => {
   const [visibleItemsCount, setVisibleItemsCount] = useState(ITEMS_PER_PAGE)
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: reset pagination when records change
+  useEffect(() => {
+    setVisibleItemsCount(ITEMS_PER_PAGE)
+  }, [records])
 
   return (
     <div className="flex h-[50vh] flex-col bg-gray-100">

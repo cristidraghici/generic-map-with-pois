@@ -4,6 +4,7 @@ import { ReactComponent as IconMinusSVG } from '@/assets/icons/minus.svg'
 
 import { ReactComponent as IconPlusSVG } from '@/assets/icons/plus.svg'
 import { ReactComponent as IconRefreshSVG } from '@/assets/icons/refresh.svg'
+import { linkifyText } from '@/utils/linkifyText'
 import Modal from '../atoms/Modal'
 import ButtonGroup from '../molecules/ButtonGroup'
 import ButtonWithTooltip from '../molecules/ButtonWithTooltip'
@@ -70,7 +71,7 @@ const MapControls: FunctionComponent<MapControlsProps> = ({
           <Modal isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)}>
             {!!metadata &&
               (!Array.isArray(metadata) ? (
-                <div className="text-gray-700">{metadata}</div>
+                <div className="text-gray-700">{linkifyText(metadata)}</div>
               ) : (
                 <ul className="mt-2 space-y-3 text-gray-700 [&>*:last-child]:border-0">
                   {metadata.map((item, key) => (
@@ -78,7 +79,7 @@ const MapControls: FunctionComponent<MapControlsProps> = ({
                       className="break-words border-b border-gray-200 pb-3"
                       key={key}
                     >
-                      {item}
+                      {linkifyText(item)}
                     </li>
                   ))}
                 </ul>

@@ -1,8 +1,8 @@
 import type { Map as LeafletMap } from 'leaflet'
 import { forwardRef } from 'react'
 import { MapContainer, TileLayer } from 'react-leaflet'
-import { MARKER_COLORS } from '@/constants'
-import MarkerElement from '../molecules/MarkerElement'
+import { MAP_TILE_LAYER, MARKER_COLORS } from '@/constants'
+import MarkerElement from './MarkerElement'
 import 'leaflet/dist/leaflet.css'
 
 interface MiniMapProps {
@@ -44,10 +44,7 @@ export const MiniMap = forwardRef<LeafletMap | null, MiniMapProps>(
           touchZoom={false}
           className="h-full w-full"
         >
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          />
+          <TileLayer {...MAP_TILE_LAYER} />
 
           <MarkerElement
             record={{ latitude, longitude }}

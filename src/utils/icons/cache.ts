@@ -24,18 +24,6 @@ class IconCache {
     }
     this.cache.set(key, icon)
   }
-
-  has(key: string): boolean {
-    return this.cache.has(key)
-  }
-
-  clear() {
-    this.cache.clear()
-  }
-
-  size() {
-    return this.cache.size
-  }
 }
 
 export const iconCacheManager = new IconCache()

@@ -42,6 +42,8 @@ const PlainTooltip: FunctionComponent<
   }, [isHovered, msDelay])
 
   useEffect(() => {
+    if (!isHovered) return
+
     const updateMousePosition = (event: MouseEvent) => {
       lastMousePosition.current = { x: event.clientX, y: event.clientY }
     }
@@ -51,7 +53,7 @@ const PlainTooltip: FunctionComponent<
     return () => {
       window.removeEventListener('mousemove', updateMousePosition)
     }
-  }, [])
+  }, [isHovered])
 
   useEffect(() => {
     if (!showTooltip) return

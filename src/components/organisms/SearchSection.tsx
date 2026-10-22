@@ -1,9 +1,9 @@
 import { FunctionComponent } from 'react'
+import { AVAILABLE_DATASETS, WORLD_CITIES_MOCK_DATA_PATH } from '@/constants'
 import ConditionalElement from '../atoms/ConditionalElement'
 import SearchField from '../atoms/SearchField'
 
 interface SearchSectionProps {
-  search: string
   loading: boolean
   error: string | null
   hasUrl: boolean
@@ -29,25 +29,28 @@ const SearchSection: FunctionComponent<SearchSectionProps> = ({
         can use the default meanwhile:
         <div className="pt-4">
           <ul>
-            <li>
-              <a href="?api=/cities_in_romania.json">cities_in_romania.json</a>
-            </li>
-            <li>
-              <a
-                href="?api=/world_cities.json"
-                onClick={(e) => {
-                  if (
-                    !window.confirm(
-                      'Are you sure you want to load the world cities points? This can take a while.',
-                    )
-                  ) {
-                    e.preventDefault()
+            {AVAILABLE_DATASETS.map((dataset) => (
+              <li key={dataset.value}>
+                <a
+                  href={`?api=${dataset.value}`}
+                  onClick={
+                    dataset.value === WORLD_CITIES_MOCK_DATA_PATH
+                      ? (e) => {
+                          if (
+                            !window.confirm(
+                              'Are you sure you want to load the world cities points? This can take a while.',
+                            )
+                          ) {
+                            e.preventDefault()
+                          }
+                        }
+                      : undefined
                   }
-                }}
-              >
-                world_cities.json
-              </a>
-            </li>
+                >
+                  {dataset.label}
+                </a>
+              </li>
+            ))}
           </ul>
         </div>
       </ConditionalElement>

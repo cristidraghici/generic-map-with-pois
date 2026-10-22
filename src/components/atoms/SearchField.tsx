@@ -22,17 +22,23 @@ const SearchField: FunctionComponent<SearchFieldProps> = ({
   ...rest
 }) => {
   const [value, setValue] = useState('')
-  const inputRef = useRef<HTMLInputElement>(null)
+  const [isFocused, setIsFocused] = useState(false)
+  const onInputChangeRef = useRef(onInputChange)
+  onInputChangeRef.current = onInputChange
 
-  const debouncedInputChange = debounce(
-    (value: string) => onInputChange?.(value),
-    100,
+  const debouncedInputChange = useMemo(
+    () =>
+      debounce(
+        (nextValue: string) => onInputChangeRef.current?.(nextValue),
+        100,
+      ),
+    [],
   )
 
   const handleSetValue = useCallback(
-    (value: string) => {
-      debouncedInputChange(value)
-      setValue(value)
+    (nextValue: string) => {
+      debouncedInputChange(nextValue)
+      setValue(nextValue)
     },
     [debouncedInputChange],
   )
@@ -42,17 +48,18 @@ const SearchField: FunctionComponent<SearchFieldProps> = ({
     [handleSetValue],
   )
 
-  useKeyPress(keyActions, inputRef.current === document.activeElement)
+  useKeyPress(keyActions, isFocused)
 
   return (
     <div className={`relative ${className}`}>
       <input
-        ref={inputRef}
         value={value}
         type="text"
         className="w-full rounded-md border-[2px] border-gray-800 border-opacity-50 bg-white p-1
             pl-8 pr-8 hover:bg-gray-100 focus:border-gray-800 focus:outline-none"
         onChange={(e) => handleSetValue(e.target.value)}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         {...rest}
       />
       <div className="absolute inset-y-0 left-0 flex items-center pl-2 text-black">

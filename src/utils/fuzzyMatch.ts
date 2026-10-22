@@ -9,11 +9,11 @@ import levenshtein from './levenshtein'
 export default function fuzzyMatch(
   text: string,
   query: string,
-  isCaseSensitive: boolean = true,
+  isCaseSensitive: boolean = false,
 ): boolean {
   if (!query) return true
-  const q = isCaseSensitive ? query.trim().toLowerCase() : query.trim()
-  const t = isCaseSensitive ? text.toLowerCase() : text.trim()
+  const q = isCaseSensitive ? query.trim() : query.trim().toLowerCase()
+  const t = isCaseSensitive ? text.trim() : text.toLowerCase()
 
   // fast path: exact substring
   if (t.includes(q)) return true

@@ -28,15 +28,16 @@ const MarkerElement: FunctionComponent<
   ...rest
 }) => {
   const iconEl = useMemo(() => {
-    const cacheId = `${icon}-${color}-${title}`
-
-    if (icon === 'text') {
-      const el = createTextIcon(title, color)
-      iconCacheManager.set(cacheId, el)
-      return el
+    const cacheId = `${icon}-${color}-${title ?? ''}`
+    const cachedIcon = iconCacheManager.get(cacheId)
+    if (cachedIcon) {
+      return cachedIcon
     }
 
-    const el = createSvgIcon(icon, color)
+    const el =
+      icon === 'text'
+        ? createTextIcon(title, color)
+        : createSvgIcon(icon, color)
     iconCacheManager.set(cacheId, el)
     return el
   }, [icon, color, title])

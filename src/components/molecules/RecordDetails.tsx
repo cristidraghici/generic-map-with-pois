@@ -9,9 +9,9 @@ import {
 import { linkifyText } from '@/utils/linkifyText'
 import { CustomRecord } from '../../types'
 import { DownloadPDFButton } from '../atoms/DownloadPDFButton'
-import { MiniMap } from '../atoms/MiniMap'
 import { ShareableLinkSection } from '../atoms/ShareableLinkSection'
 import ImageGallery from './ImageGallery'
+import { MiniMap } from './MiniMap'
 
 type RecordDetailsProps = PropsWithChildren<
   ComponentProps<'div'> &
@@ -19,7 +19,6 @@ type RecordDetailsProps = PropsWithChildren<
       maxLines?: number
       showImages?: boolean
       showMinimap?: boolean
-      showTitle?: boolean
       showActions?: boolean
     }
 >
@@ -49,7 +48,7 @@ const RecordDetails: FunctionComponent<RecordDetailsProps> = ({
 
       {!!description &&
         (!Array.isArray(description) ? (
-          <div className="text-gray-700">{description}</div>
+          <div className="text-gray-700">{linkifyText(description)}</div>
         ) : (
           <ul className="mt-2 space-y-3 text-gray-700 [&>*:last-child]:border-0">
             {description

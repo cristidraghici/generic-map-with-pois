@@ -1,4 +1,3 @@
-import html2pdf from 'html2pdf.js'
 import { FunctionComponent, useState } from 'react'
 import { ReactComponent as IconDownloadSVG } from '@/assets/icons/download.svg'
 import { sanitizeFileName } from '@/utils/files'
@@ -48,7 +47,7 @@ export const DownloadPDFButton: FunctionComponent<DownloadPDFButtonProps> = ({
       const options = {
         margin: 0.5,
         filename: `${sanitizeFileName(name)}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
+        image: { type: 'jpeg' as const, quality: 0.98 },
         html2canvas: {
           scale: 2,
           useCORS: true,
@@ -76,6 +75,7 @@ export const DownloadPDFButton: FunctionComponent<DownloadPDFButtonProps> = ({
         await new Promise((resolve) => setTimeout(resolve, 200))
       }
 
+      const { default: html2pdf } = await import('html2pdf.js')
       await html2pdf().set(options).from(element).save()
 
       // Wait a moment to ensure the PDF has been fully processed

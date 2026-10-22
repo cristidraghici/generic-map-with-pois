@@ -8,6 +8,7 @@ const useMap = () => {
   const [currentMapBounds, setCurrentMapBounds] = useState<LatLngBounds | null>(
     null,
   )
+  const [currentZoom, setCurrentZoom] = useState<number>(MAP_CONFIG.ZOOM)
   const [map, setMap] = useState<MapType | null>(null)
 
   const [isZoomInDisabled, setIsZoomInDisabled] = useState(false)
@@ -18,11 +19,12 @@ const useMap = () => {
       const bounds = map.getBounds()
       setCurrentMapBounds(bounds)
 
-      const currentZoom = map.getZoom()
+      const zoom = map.getZoom()
       const maxZoom = map.getMaxZoom()
 
-      setIsZoomOutDisabled(currentZoom === 0)
-      setIsZoomInDisabled(currentZoom === maxZoom)
+      setCurrentZoom(zoom)
+      setIsZoomOutDisabled(zoom === 0)
+      setIsZoomInDisabled(zoom === maxZoom)
     }, 100),
   )
   const throttledMapRefreshRef = useRef(
@@ -73,12 +75,12 @@ const useMap = () => {
 
   const handleSetBounds = useCallback(
     (coords: LatLngTuple[]) => {
-      if (!map || !coords) return
+      if (!map || !coords || coords.length === 0) return
 
       const bounds = L.latLngBounds(coords).pad(MAP_CONFIG.BOUNDS_PADDING)
 
-      map.fitBounds(bounds)
       map.setMaxBounds(bounds)
+      map.fitBounds(bounds)
     },
     [map],
   )
@@ -93,6 +95,7 @@ const useMap = () => {
     handleZoomOut,
     handleSetBounds,
     currentMapBounds,
+    currentZoom,
   }
 }
 

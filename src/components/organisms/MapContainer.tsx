@@ -7,10 +7,7 @@ import RecordDetails from '@/components/molecules/RecordDetails'
 import { MAP_CONFIG, MAP_TILE_LAYER, MARKER_COLORS } from '@/constants'
 import { Config, CustomRecord } from '@/types'
 import createSvgIcon from '@/utils/icons/createSvgIcon'
-import {
-  getOptimalClusterRadius,
-  performanceMonitor,
-} from '@/utils/performance'
+import { getOptimalClusterRadius } from '@/utils/performance'
 import 'leaflet/dist/leaflet.css'
 
 // Fix for github pages not showing the icon
@@ -65,18 +62,9 @@ const MapContainer = ({
     [records.length],
   )
 
-  const startTime = performance.now()
-
   return (
     <LeafletMapContainer
-      ref={(map) => {
-        setMap(map)
-
-        if (map) {
-          const renderTime = performance.now() - startTime
-          performanceMonitor.logRenderTime(renderTime, records.length)
-        }
-      }}
+      ref={setMap}
       center={MAP_CONFIG.CENTER}
       zoom={MAP_CONFIG.ZOOM}
       style={{ height: '100%', width: '100%' }}

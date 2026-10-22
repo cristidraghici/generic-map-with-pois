@@ -1,20 +1,25 @@
 import L from 'leaflet'
 
+let measureCanvas: HTMLCanvasElement | null = null
+
+function measureTextWidth(text: string, font: string): number {
+  if (typeof document === 'undefined') {
+    return text.length * 8
+  }
+  if (!measureCanvas) {
+    measureCanvas = document.createElement('canvas')
+  }
+  const context = measureCanvas.getContext('2d')
+  if (!context) {
+    return text.length * 8
+  }
+  context.font = font
+  return Math.ceil(context.measureText(text).width)
+}
+
 function createTextIcon(title = '', color = '#3B82F6') {
-  // Temporary DOM element to measure text width
-  const tempDiv = document.createElement('div')
-  tempDiv.style.position = 'absolute'
-  tempDiv.style.visibility = 'hidden'
-  tempDiv.style.height = '20px'
-  tempDiv.style.padding = '0 8px' // px-2 in Tailwind = 0.5rem = 8px
-  tempDiv.style.font = '14px sans-serif' // match the text style used
-  tempDiv.innerText = title
-
-  document.body.appendChild(tempDiv)
-  const textWidth = tempDiv.offsetWidth
-  document.body.removeChild(tempDiv)
-
-  const iconWidth = textWidth
+  // px-2 in Tailwind = 0.5rem * 2 = 16px horizontal padding
+  const iconWidth = measureTextWidth(title, '14px sans-serif') + 16
   const iconHeight = 24
 
   const icon = L.divIcon({

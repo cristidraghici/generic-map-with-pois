@@ -23,10 +23,8 @@ const Viewport = () => {
 
   const { api, id } = useURLParams()
 
-  const { records, metadata, config, loading, error, reload } = useFetchData(
-    api,
-    search,
-  )
+  const { allRecords, records, metadata, config, loading, error, reload } =
+    useFetchData(api, search)
 
   const {
     map,
@@ -38,17 +36,21 @@ const Viewport = () => {
     handleZoomOut,
     handleSetBounds,
     currentMapBounds,
+    currentZoom,
   } = useMap()
 
   useEffect(() => {
-    if (!map || !records || records.length === 0) return
+    if (!map || !allRecords || allRecords.length === 0) return
 
-    const coords = records
-      .filter(({ latitude, longitude }) => latitude && longitude)
+    const coords = allRecords
+      .filter(
+        ({ latitude, longitude }) =>
+          Number.isFinite(latitude) && Number.isFinite(longitude),
+      )
       .map(({ latitude, longitude }) => [latitude, longitude] as LatLngTuple)
 
     handleSetBounds(coords)
-  }, [map, records, handleSetBounds])
+  }, [map, allRecords, handleSetBounds])
 
   /**
    * Get ID from URL parameter (if exists)
@@ -57,8 +59,6 @@ const Viewport = () => {
     if (!id) return null
     return id
   }, [id])
-
-  const zoomLevel = useMemo(() => map?.getZoom() || 0, [map])
 
   /**
    * Filter records based on the current map viewport bounds
@@ -70,13 +70,13 @@ const Viewport = () => {
       return records.filter((record) => record.id === idFromUrl)
 
     if (config.isAggressiveOptimizationEnabled) {
-      return reduceVisibleRecords(records, currentMapBounds, zoomLevel)
+      return reduceVisibleRecords(records, currentMapBounds, currentZoom)
     }
 
     return records.filter((record) =>
       currentMapBounds.contains([record.latitude, record.longitude]),
     )
-  }, [records, currentMapBounds, idFromUrl, config, zoomLevel])
+  }, [records, currentMapBounds, idFromUrl, config, currentZoom])
 
   const handleRecordSelect = useCallback(
     (record: CustomRecord | null) => {
@@ -116,11 +116,10 @@ const Viewport = () => {
   return (
     <>
       <SearchSection
-        search={search}
         loading={loading}
         error={error}
         hasUrl={!!api}
-        onSearchChange={(value: string) => setSearch(value)}
+        onSearchChange={setSearch}
       />
 
       <HorizontalViewportSplit

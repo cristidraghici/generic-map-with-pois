@@ -2,11 +2,7 @@ import { DEFAULT_CONFIG } from '@/constants'
 import { AnySuccessfulResponse } from '@/types'
 
 const processApiResponse = (response: AnySuccessfulResponse) => {
-  const isRecordList = Array.isArray(response)
-  const isDataWithMetaAndConfig =
-    'metadata' in response && 'config' in response && 'records' in response
-
-  if (isRecordList) {
+  if (Array.isArray(response)) {
     return {
       metadata: '',
       config: DEFAULT_CONFIG,
@@ -14,7 +10,7 @@ const processApiResponse = (response: AnySuccessfulResponse) => {
     }
   }
 
-  if (isDataWithMetaAndConfig) {
+  if ('records' in response) {
     return {
       ...response,
       config: { ...DEFAULT_CONFIG, ...response.config },

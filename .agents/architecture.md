@@ -33,8 +33,8 @@ generic-map-with-pois/
 ├── src/                        # Application source code
 │   ├── assets/                 # Icons (SVGs) and local JSON mock datasets
 │   ├── components/             # Atomic Design component hierarchy
-│   │   ├── atoms/              # Base primitives (Button, Modal, MiniMap, SearchField, etc.)
-│   │   ├── molecules/          # Composite controls (ButtonGroup, MarkerElement, RecordDetails, Drawer, etc.)
+│   │   ├── atoms/              # Base primitives (Button, Modal, SearchField, etc.)
+│   │   ├── molecules/          # Composite controls (ButtonGroup, MarkerElement, MiniMap, RecordDetails, Drawer, etc.)
 │   │   ├── organisms/          # Complex feature blocks (MapContainer, MapControls, ListView, SearchSection)
 │   │   └── templates/          # Layout assembly (Viewport.tsx)
 │   ├── hooks/                  # Reusable hooks (useMap, useFetchData, useURLParams, useKeyPress)

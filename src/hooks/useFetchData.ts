@@ -19,6 +19,13 @@ import {
   Metadata,
 } from '../types'
 
+const MOCK_DATASETS: Record<string, CustomRecordWithMetadata> = {
+  [ROMANIAN_CITIES_MOCK_DATA_PATH]:
+    mockRomanianCitiesData as CustomRecordWithMetadata,
+  [WORLD_CITIES_MOCK_DATA_PATH]:
+    mockWorldCitiesData as CustomRecordWithMetadata,
+}
+
 const isURLAllowed = (urlToTest: string): boolean => {
   return ALLOWED_API_URL_PATTERNS.some((pattern) => pattern.test(urlToTest))
 }
@@ -30,7 +37,7 @@ const useFetchData = (url?: string, search?: string) => {
 
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
-  const [_reloadCounter, setReloadCounter] = useState(0)
+  const [reloadCounter, setReloadCounter] = useState(0)
 
   const handleSetRecords = useCallback((records: CustomRecord[]) => {
     const recordsWithIds = records.map((record, index) => ({
@@ -49,36 +56,22 @@ const useFetchData = (url?: string, search?: string) => {
         : record.description || ''
 
       const searchableText = `${record.title} ${descriptionText}`
-      return fuzzyMatch(searchableText, search, true)
+      return fuzzyMatch(searchableText, search)
     })
   }, [records, search])
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: reloadCounter triggers manual data refresh
   useEffect(() => {
     if (!url) return
 
-    if (url === ROMANIAN_CITIES_MOCK_DATA_PATH) {
-      const {
-        records,
-        metadata,
-        config = DEFAULT_CONFIG,
-      } = processApiResponse(mockRomanianCitiesData as CustomRecordWithMetadata)
+    const mockDataset = MOCK_DATASETS[url]
+    if (mockDataset) {
+      const { records, metadata, config } = processApiResponse(mockDataset)
 
       handleSetRecords(records)
       setMetadata(metadata)
       setConfig(config)
-      return
-    }
-
-    if (url === WORLD_CITIES_MOCK_DATA_PATH) {
-      const {
-        records,
-        metadata,
-        config = DEFAULT_CONFIG,
-      } = processApiResponse(mockWorldCitiesData as CustomRecordWithMetadata)
-
-      handleSetRecords(records)
-      setMetadata(metadata)
-      setConfig(config)
+      setError(null)
       return
     }
 
@@ -106,12 +99,12 @@ const useFetchData = (url?: string, search?: string) => {
         }
 
         // Resolve relative paths in the JSON data based on the API URL
-        const resolvedData = resolveRelativePaths(data, url)
+        const resolvedData = resolveRelativePaths(validatedResponse.data, url)
         const { records, metadata, config } = processApiResponse(resolvedData)
 
         handleSetRecords(records)
         setMetadata(metadata)
-        setConfig({ ...DEFAULT_CONFIG, ...config })
+        setConfig(config)
       } catch (error) {
         if (error instanceof Error && error.name === 'AbortError') return
         setError(
@@ -125,11 +118,12 @@ const useFetchData = (url?: string, search?: string) => {
     fetchData()
 
     return () => controller.abort()
-  }, [url, handleSetRecords])
+  }, [url, handleSetRecords, reloadCounter])
 
   const reload = useCallback(() => setReloadCounter((prev) => prev + 1), [])
 
   return {
+    allRecords: records,
     records: filteredRecords,
     metadata,
     config,

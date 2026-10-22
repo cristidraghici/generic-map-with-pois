@@ -1,21 +1,24 @@
 import React from 'react'
 
+const URL_PATTERN = 'https?:\\/\\/[^\\s]+'
+const EMAIL_PATTERN = '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}'
+
+const COMBINED_SPLIT_REGEX = new RegExp(
+  `(${URL_PATTERN}|${EMAIL_PATTERN})`,
+  'g',
+)
+const URL_TEST_REGEX = new RegExp(`^${URL_PATTERN}$`)
+const EMAIL_TEST_REGEX = new RegExp(`^${EMAIL_PATTERN}$`)
+
 export function linkifyText(text: string): React.ReactNode {
   if (!text) return null
 
-  const urlRegex = /(https?:\/\/[^\s]+)/g
-  const emailRegex = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g
-  const combinedRegex = new RegExp(
-    `${urlRegex.source}|${emailRegex.source}`,
-    'g',
-  )
-
-  const parts = text.split(combinedRegex).filter(Boolean)
+  const parts = text.split(COMBINED_SPLIT_REGEX).filter(Boolean)
 
   return parts.map((part, index) => {
     const str = String(part)
 
-    if (str.match(urlRegex)) {
+    if (URL_TEST_REGEX.test(str)) {
       return (
         <a
           key={index}
@@ -29,7 +32,7 @@ export function linkifyText(text: string): React.ReactNode {
       )
     }
 
-    if (str.match(emailRegex)) {
+    if (EMAIL_TEST_REGEX.test(str)) {
       return (
         <a
           key={index}
