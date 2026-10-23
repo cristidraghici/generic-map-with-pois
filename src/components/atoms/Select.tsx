@@ -31,6 +31,9 @@ const Select: FunctionComponent<SelectProps> = ({
             pl-2 pr-8 text-gray-800 hover:bg-gray-100 focus:border-gray-800 focus:outline-none cursor-pointer"
         {...rest}
       >
+        <button type="button">
+          <selectedcontent />
+        </button>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}

@@ -12,6 +12,14 @@
 }
 
 /*
+ * Fallback for browsers without appearance: base-select.
+ * Hide the inner <button> so only native <select> UI is visible.
+ */
+.custom-select > button {
+  display: none;
+}
+
+/*
  * Progressive enhancement for the native select (customizable <select>).
  * Browsers without support keep the native dropdown styled by Tailwind classes.
  * Colors and sizes mirror the Tailwind tokens used by the search input.
@@ -20,6 +28,27 @@
   .custom-select {
     appearance: base-select;
     position: relative;
+  }
+
+  .custom-select > button {
+    all: unset;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    cursor: pointer;
+  }
+
+  /* biome-ignore lint/correctness/noUnknownTypeSelector: customizable select content element */
+  .custom-select selectedcontent {
+    display: block;
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
   }
 
   /* biome-ignore lint/correctness/noUnknownPseudoElement: customizable select picker */
