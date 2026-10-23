@@ -19,6 +19,7 @@
 @supports (appearance: base-select) {
   .custom-select {
     appearance: base-select;
+    position: relative;
   }
 
   /* biome-ignore lint/correctness/noUnknownPseudoElement: customizable select picker */
@@ -28,8 +29,13 @@
 
   /* biome-ignore lint/correctness/noUnknownPseudoElement: customizable select arrow */
   .custom-select::picker-icon {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    translate: 0 -50%;
     color: #1f2937; /* gray-800 */
     transition: rotate 0.2s ease;
+    pointer-events: none;
   }
 
   /* biome-ignore lint/correctness/noUnknownPseudoElement: customizable select arrow */
@@ -54,6 +60,7 @@
     border-radius: 0.25rem;
     color: #1f2937; /* gray-800 */
     cursor: pointer;
+    white-space: normal;
   }
 
   .custom-select option:hover,

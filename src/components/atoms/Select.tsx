@@ -28,7 +28,7 @@ const Select: FunctionComponent<SelectProps> = ({
       <select
         id={selectId}
         className="custom-select w-full truncate rounded-md border-[2px] border-gray-800 border-opacity-50 bg-white p-1
-            pl-2 text-gray-800 hover:bg-gray-100 focus:border-gray-800 focus:outline-none cursor-pointer"
+            pl-2 pr-8 text-gray-800 hover:bg-gray-100 focus:border-gray-800 focus:outline-none cursor-pointer"
         {...rest}
       >
         {options.map((option) => (
