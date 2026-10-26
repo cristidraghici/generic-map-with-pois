@@ -25,7 +25,7 @@ export function linkifyText(text: string): React.ReactNode {
           href={str}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-600 underline"
+          className="rounded text-blue-600 underline transition-colors hover:text-blue-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
         >
           {str}
         </a>
@@ -37,7 +37,7 @@ export function linkifyText(text: string): React.ReactNode {
         <a
           key={index}
           href={`mailto:${str}`}
-          className="text-blue-600 underline"
+          className="rounded text-blue-600 underline transition-colors hover:text-blue-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
         >
           {str}
         </a>

@@ -42,7 +42,7 @@ const MapControls: FunctionComponent<MapControlsProps> = ({
 
   return (
     <>
-      <div className="absolute left-[10px] top-[10px] z-[998] flex flex-col gap-2.5">
+      <div className="absolute left-3 top-3 z-[998] flex flex-col gap-2">
         <ButtonGroup>
           <ButtonWithTooltip
             tooltip="Zoom in"
@@ -109,7 +109,7 @@ const MapControls: FunctionComponent<MapControlsProps> = ({
 
       {hasMultipleLayers && (
         <Modal isOpen={isLayersOpen} onClose={() => setIsLayersOpen(false)}>
-          <div className="p-1">
+          <div>
             <h3 className="mb-4 text-base font-semibold text-gray-800">
               Map Layers
             </h3>
@@ -142,9 +142,11 @@ const MapControls: FunctionComponent<MapControlsProps> = ({
       {metadata && (
         <Modal isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)}>
           {!Array.isArray(metadata) ? (
-            <div className="text-gray-700">{linkifyText(metadata)}</div>
+            <div className="text-sm leading-relaxed text-gray-700">
+              {linkifyText(metadata)}
+            </div>
           ) : (
-            <ul className="mt-2 space-y-3 text-gray-700 [&>*:last-child]:border-0">
+            <ul className="mt-2 space-y-3 text-sm leading-relaxed text-gray-700 [&>*:last-child]:border-0">
               {metadata.map((item, key) => (
                 <li
                   className="break-words border-b border-gray-200 pb-3"

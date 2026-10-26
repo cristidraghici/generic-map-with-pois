@@ -104,7 +104,7 @@ export const DownloadPDFButton: FunctionComponent<DownloadPDFButtonProps> = ({
       <div className="flex items-center justify-between gap-2 rounded-lg pt-4 transition">
         <label
           htmlFor="page-break-before-media-toggle"
-          className="select-none text-sm font-medium text-gray-600"
+          className="select-none text-xs font-medium text-gray-700"
         >
           Page break before media
         </label>
@@ -130,7 +130,7 @@ export const DownloadPDFButton: FunctionComponent<DownloadPDFButtonProps> = ({
           disabled={isGenerating}
           className={`mt-4 inline-flex items-center rounded-md bg-green-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1`}
         >
-          <IconDownloadSVG className="mr-1.5 h-3 w-3" /> Download PDF
+          <IconDownloadSVG className="mr-1.5 h-3.5 w-3.5" /> Download PDF
         </button>
       </div>
     </>

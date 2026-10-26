@@ -45,12 +45,11 @@ const SearchSection: FunctionComponent<SearchSectionProps> = ({
   )
 
   return (
-    <div className="absolute right-0 top-0 z-[998]  w-96 max-w-full p-2 pl-[50px]">
-      <SearchField className="mb-2" onInputChange={onSearchChange} />
+    <div className="absolute right-3 top-3 z-[998] flex w-96 max-w-[calc(100%-4.5rem)] flex-col gap-2">
+      <SearchField onInputChange={onSearchChange} />
 
       {datasets.length > 1 && (
         <Select
-          className="mb-2"
           label="Select dataset"
           name="dataset"
           options={datasetSelectOptions}
@@ -61,7 +60,6 @@ const SearchSection: FunctionComponent<SearchSectionProps> = ({
 
       {filters.length > 0 && onFilterChange && onClearFilters && (
         <FilterAccordion
-          className="mb-2"
           filters={filters}
           activeFilters={activeFilters}
           onFilterChange={onFilterChange}
@@ -72,15 +70,16 @@ const SearchSection: FunctionComponent<SearchSectionProps> = ({
       <ConditionalElement
         as="div"
         rcIf={!hasUrl}
-        className="rounded-md bg-white p-2 text-gray-800"
+        className="rounded-md border-[2px] border-gray-800 border-opacity-50 bg-white p-3 text-xs text-gray-700 shadow-md"
       >
         It appears you have not specified an <strong>?api=</strong> param. You
         can use the default meanwhile:
-        <div className="pt-4">
-          <ul>
+        <div className="pt-3">
+          <ul className="space-y-1">
             {AVAILABLE_DATASETS.map((dataset) => (
               <li key={dataset.value}>
                 <a
+                  className="text-blue-600 underline transition-colors hover:text-blue-800"
                   href={`?api=${dataset.value}`}
                   onClick={
                     dataset.value === WORLD_CITIES_MOCK_DATA_PATH
@@ -107,7 +106,7 @@ const SearchSection: FunctionComponent<SearchSectionProps> = ({
       <ConditionalElement
         as="div"
         rcIf={loading}
-        className="rounded-md bg-white p-2 text-gray-800"
+        className="rounded-md border-[2px] border-gray-800 border-opacity-50 bg-white p-3 text-xs font-medium text-gray-700 shadow-md"
       >
         The data for the map is loading...
       </ConditionalElement>
@@ -115,7 +114,7 @@ const SearchSection: FunctionComponent<SearchSectionProps> = ({
       <ConditionalElement
         as="div"
         rcIf={!loading && !!error}
-        className="rounded-md border-red-500 bg-white p-2 text-red-800"
+        className="rounded-md border border-red-300 bg-red-50 p-3 text-xs font-medium text-red-800 shadow-md"
       >
         {error}
       </ConditionalElement>

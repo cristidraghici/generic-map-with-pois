@@ -36,7 +36,7 @@ const NumericRangeFilter: FunctionComponent<NumericRangeFilterProps> = ({
                 max: maxVal,
               })
             }
-            className="w-full rounded-md border-[2px] border-gray-800 border-opacity-50 bg-white px-2 py-1 text-xs text-gray-800 placeholder-gray-400 focus:border-gray-800 focus:outline-none"
+            className="w-full rounded-md border-[2px] border-gray-800 border-opacity-50 bg-white bg-clip-padding px-2 py-1 text-xs text-gray-800 placeholder-gray-400 focus:border-gray-800 focus:outline-none"
           />
         </div>
         <span className="text-xs text-gray-500">–</span>
@@ -52,7 +52,7 @@ const NumericRangeFilter: FunctionComponent<NumericRangeFilterProps> = ({
                 max: e.target.value !== '' ? e.target.value : undefined,
               })
             }
-            className="w-full rounded-md border-[2px] border-gray-800 border-opacity-50 bg-white px-2 py-1 text-xs text-gray-800 placeholder-gray-400 focus:border-gray-800 focus:outline-none"
+            className="w-full rounded-md border-[2px] border-gray-800 border-opacity-50 bg-white bg-clip-padding px-2 py-1 text-xs text-gray-800 placeholder-gray-400 focus:border-gray-800 focus:outline-none"
           />
         </div>
       </div>

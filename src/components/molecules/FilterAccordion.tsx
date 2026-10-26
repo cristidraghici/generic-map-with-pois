@@ -1,4 +1,4 @@
-import { FunctionComponent, useState } from 'react'
+import { FunctionComponent, useEffect, useRef, useState } from 'react'
 import { FilterDefinition } from '@/types'
 import {
   ActiveFilters,
@@ -24,7 +24,37 @@ const FilterAccordion: FunctionComponent<FilterAccordionProps> = ({
   className = '',
 }) => {
   const [isOpen, setIsOpen] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
   const activeCount = getActiveFilterCount(filters, activeFilters)
+
+  useEffect(() => {
+    if (!isOpen) return
+
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false)
+      }
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('touchstart', handleClickOutside)
+    document.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('touchstart', handleClickOutside)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isOpen])
 
   if (!filters || filters.length === 0) {
     return null
@@ -46,12 +76,12 @@ const FilterAccordion: FunctionComponent<FilterAccordionProps> = ({
   }
 
   return (
-    <div className={`w-full ${className}`}>
+    <div ref={containerRef} className={`w-full ${className}`}>
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         aria-expanded={isOpen}
-        className="flex w-full cursor-pointer items-center justify-between rounded-md border-[2px] border-gray-800 border-opacity-50 bg-white p-1 pl-2 pr-3 text-sm text-gray-800 hover:bg-gray-100 focus:border-gray-800 focus:outline-none"
+        className="flex w-full cursor-pointer items-center justify-between rounded-md border-[2px] border-gray-800 border-opacity-50 bg-white bg-clip-padding py-1.5 pl-3 pr-3 text-sm leading-5 text-gray-800 hover:bg-gray-100 focus:border-gray-800 focus:outline-none"
       >
         <div className="flex items-center">
           <span className="font-medium">Filters</span>
@@ -80,7 +110,7 @@ const FilterAccordion: FunctionComponent<FilterAccordionProps> = ({
       </button>
 
       {isOpen && (
-        <div className="mt-1 max-h-80 space-y-3 overflow-y-auto rounded-md border-[2px] border-gray-800 border-opacity-50 bg-white p-3 shadow-md">
+        <div className="mt-1 max-h-80 space-y-3 overflow-y-auto rounded-md border-[2px] border-gray-800 border-opacity-50 bg-white bg-clip-padding p-3 shadow-md">
           {filters.map((filter) => {
             const filterVal = activeFilters[filter.id]
 
@@ -162,7 +192,7 @@ const FilterAccordion: FunctionComponent<FilterAccordionProps> = ({
               type="button"
               disabled={activeCount === 0}
               onClick={onClearFilters}
-              className={`w-full rounded border border-gray-300 py-1 text-center text-xs font-medium transition-colors ${
+              className={`w-full rounded-md border border-gray-300 px-3 py-1.5 text-center text-xs font-medium transition-colors ${
                 activeCount > 0
                   ? 'bg-gray-100 text-gray-800 hover:bg-gray-200'
                   : 'cursor-not-allowed text-gray-400 opacity-50'

@@ -24,6 +24,7 @@ Interactive POI mapping web application built with React 18, TypeScript, Vite, L
 ## Reference Documentation & Skills (Progressive Disclosure)
 Refer to the following specialized guides as needed for detailed implementation:
 - **System Architecture & Data Contracts**: [.agents/architecture.md](.agents/architecture.md)
+- **Design System & UI Style Guide**: [.agents/skills/design-system.md](.agents/skills/design-system.md)
 - **Map & Geospatial Implementation**: [.agents/skills/leaflet-maps.md](.agents/skills/leaflet-maps.md)
 - **React Components & Tailwind Styling**: [.agents/skills/react-components.md](.agents/skills/react-components.md)
 - **Zod Validation & Security**: [.agents/skills/zod-validation.md](.agents/skills/zod-validation.md)

@@ -55,23 +55,28 @@ const SearchField: FunctionComponent<SearchFieldProps> = ({
       <input
         value={value}
         type="text"
-        className="w-full rounded-md border-[2px] border-gray-800 border-opacity-50 bg-white p-1
-            pl-8 pr-8 hover:bg-gray-100 focus:border-gray-800 focus:outline-none"
+        className="w-full rounded-md border-[2px] border-gray-800 border-opacity-50 bg-white bg-clip-padding py-1.5 pl-8 pr-8 text-sm leading-5 hover:bg-gray-100 focus:border-gray-800 focus:outline-none"
         onChange={(e) => handleSetValue(e.target.value)}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         {...rest}
       />
-      <div className="absolute inset-y-0 left-0 flex items-center pl-2 text-black">
-        <IconSearchSVG className="fill-gray-800" width={20} />
+      <div className="absolute inset-y-0 left-0 flex items-center pl-2.5 text-gray-500">
+        <IconSearchSVG className="fill-gray-600" width={20} height={20} />
       </div>
       {value.length > 0 && (
-        <div
-          className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-2 text-black"
+        <button
+          type="button"
+          aria-label="Clear search"
+          className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-2.5 text-gray-400 hover:text-gray-700 focus:outline-none"
           onClick={() => handleSetValue('')}
         >
-          <IconCloseSVG className="fill-gray-800" width={20} />
-        </div>
+          <IconCloseSVG
+            className="fill-current transition-colors"
+            width={20}
+            height={20}
+          />
+        </button>
       )}
     </div>
   )

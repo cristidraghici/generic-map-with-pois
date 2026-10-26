@@ -19,6 +19,7 @@ Project: **generic-map-with-pois** (React 18 + TypeScript 5 + Vite + Leaflet + T
 ## Skills & Architecture Index (Progressive Disclosure)
 Consult detailed skill guides only when addressing relevant tasks:
 - **Architecture & Module Guide**: [.agents/architecture.md](.agents/architecture.md)
+- **Design System & UI Style Guide**: [.agents/skills/design-system.md](.agents/skills/design-system.md)
 - **Map & Geospatial Features**: [.agents/skills/leaflet-maps.md](.agents/skills/leaflet-maps.md)
 - **React Components & Tailwind UI**: [.agents/skills/react-components.md](.agents/skills/react-components.md)
 - **Zod Validation & Security**: [.agents/skills/zod-validation.md](.agents/skills/zod-validation.md)

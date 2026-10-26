@@ -252,6 +252,16 @@ type FlatResponse = PointOfInterest[];
 - `npm i`
 - `npm run dev`
 
+## Architecture & Developer Skills
+
+For in-depth architectural specifications and progressive disclosure guides:
+- [System Architecture](.agents/architecture.md)
+- [Design System & UI Style Guide](.agents/skills/design-system.md)
+- [Leaflet Maps & Geospatial Implementation](.agents/skills/leaflet-maps.md)
+- [React Components & Atomic Design](.agents/skills/react-components.md)
+- [Zod Validation & Security](.agents/skills/zod-validation.md)
+- [Biome Quality Pipeline](.agents/skills/tooling-biome.md)
+
 ## Development
 
 ### Code Formatting and Linting

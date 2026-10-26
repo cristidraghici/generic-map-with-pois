@@ -67,9 +67,9 @@ All custom hooks reside in [`src/hooks/`](file:///Users/cristi/Code/generic-map-
 
 ---
 
-## 4. Styling Conventions with Tailwind CSS
+## 4. Styling Conventions & Design System
 
-Utility classes must follow a consistent ordering pattern for maintainability:
+Components must adhere strictly to the project's [Design System & UI Style Guide](design-system.md). Utility classes must follow a consistent ordering pattern for maintainability:
 
 1. **Layout & Display**: `flex`, `grid`, `block`, `relative`, `absolute`, `fixed`, `z-10`
 2. **Box Model & Spacing**: `p-4`, `px-2`, `m-auto`, `space-y-2`, `gap-3`

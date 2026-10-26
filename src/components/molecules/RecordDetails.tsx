@@ -46,15 +46,17 @@ const RecordDetails: FunctionComponent<RecordDetailsProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`RecordDetails mb-4 overflow-hidden p-1 ${className}`}
+      className={`RecordDetails overflow-hidden ${className}`}
     >
-      <h3 className="mb-4 text-xl font-bold">{title}</h3>
+      <h3 className="mb-4 text-xl font-bold text-gray-900">{title}</h3>
 
       {!!description &&
         (!Array.isArray(description) ? (
-          <div className="text-gray-700">{linkifyText(description)}</div>
+          <div className="text-sm leading-relaxed text-gray-700">
+            {linkifyText(description)}
+          </div>
         ) : (
-          <ul className="mt-2 space-y-3 text-gray-700 [&>*:last-child]:border-0">
+          <ul className="mt-2 space-y-3 text-sm leading-relaxed text-gray-700 [&>*:last-child]:border-0">
             {description
               .filter((_, key) => (maxLines > 0 ? key < maxLines : true))
               .map((item, key) => (

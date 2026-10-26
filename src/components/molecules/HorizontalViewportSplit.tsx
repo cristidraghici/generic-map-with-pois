@@ -49,7 +49,7 @@ const HorizontalViewportSplit = ({
       </div>
 
       <div className="relative w-full">
-        <ButtonGroup className="absolute -top-[40px] left-[10px] z-[998]">
+        <ButtonGroup className="absolute -top-10 left-3 z-[998]">
           <ButtonWithTooltip
             tooltip="Toggle the split view"
             variant="transparent"

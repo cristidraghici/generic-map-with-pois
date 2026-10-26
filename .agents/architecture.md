@@ -187,5 +187,13 @@ anySuccessfulResponseSchema = z.union([
 | `npm run check:tsc` | Run TypeScript strict compiler typecheck without emitting output |
 | `npm run format` | Format repository files using Biome |
 | `npm run lint` | Run Biome linter across project files |
-| `npm run svgo` | Optimize SVG assets in `src/assets` |
-| `npm run preview` | Locally preview the built production bundle |
+---
+
+## 6. Reference Skills & Progressive Disclosure
+
+Consult the specialized skill guides in `.agents/skills/` for detailed domain patterns:
+- **Design System & UI Style Guide**: [`.agents/skills/design-system.md`](file:///.agents/skills/design-system.md)
+- **Map & Geospatial Implementation**: [`.agents/skills/leaflet-maps.md`](file:///.agents/skills/leaflet-maps.md)
+- **React Components & Atomic Architecture**: [`.agents/skills/react-components.md`](file:///.agents/skills/react-components.md)
+- **Zod Validation & Data Contracts**: [`.agents/skills/zod-validation.md`](file:///.agents/skills/zod-validation.md)
+- **Biome Toolchain & TypeScript**: [`.agents/skills/tooling-biome.md`](file:///.agents/skills/tooling-biome.md)

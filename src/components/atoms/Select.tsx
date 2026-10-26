@@ -44,7 +44,7 @@ const Select: FunctionComponent<SelectProps> = ({
   useEffect(() => {
     if (!isOpen) return
 
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       if (
         containerRef.current &&
         !containerRef.current.contains(event.target as Node)
@@ -60,10 +60,12 @@ const Select: FunctionComponent<SelectProps> = ({
     }
 
     document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('touchstart', handleClickOutside)
     document.addEventListener('keydown', handleKeyDown)
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('touchstart', handleClickOutside)
       document.removeEventListener('keydown', handleKeyDown)
     }
   }, [isOpen])
@@ -90,7 +92,7 @@ const Select: FunctionComponent<SelectProps> = ({
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`flex w-full cursor-pointer items-center justify-between rounded-md border-[2px] border-gray-800 border-opacity-50 bg-white p-1 pl-2 pr-3 text-sm text-gray-800 hover:bg-gray-100 focus:border-gray-800 focus:outline-none ${
+        className={`flex w-full cursor-pointer items-center justify-between rounded-md border-[2px] border-gray-800 border-opacity-50 bg-white bg-clip-padding py-1.5 pl-3 pr-3 text-sm leading-5 text-gray-800 hover:bg-gray-100 focus:border-gray-800 focus:outline-none ${
           disabled ? 'cursor-not-allowed opacity-50' : ''
         }`}
       >
@@ -119,7 +121,7 @@ const Select: FunctionComponent<SelectProps> = ({
         <div
           role="listbox"
           aria-labelledby={selectId}
-          className="absolute left-0 top-full z-50 mt-1 max-h-60 w-full overflow-y-auto rounded-md border-[2px] border-gray-800 border-opacity-50 bg-white p-1 shadow-md"
+          className="absolute left-0 top-full z-50 mt-1 max-h-60 w-full overflow-y-auto rounded-md border-[2px] border-gray-800 border-opacity-50 bg-white bg-clip-padding p-1 shadow-md"
         >
           {options.map((option) => {
             const isSelected = String(option.value) === String(value)

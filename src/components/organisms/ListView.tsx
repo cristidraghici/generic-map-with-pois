@@ -26,7 +26,7 @@ const ListView = ({ records = [], onRecordSelect }: ListViewProps) => {
             <li key={record.id} className="flex">
               <button
                 type="button"
-                className="flex h-full w-full max-w-[300px] flex-col justify-between rounded-lg border border-gray-200 bg-white p-4 text-left shadow-md transition-all duration-200 hover:bg-gray-50 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+                className="flex h-full w-full max-w-[300px] flex-col justify-between rounded-lg border border-gray-200 bg-white bg-clip-padding p-4 text-left shadow-md transition-all duration-200 hover:bg-gray-50 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
                 onClick={() => onRecordSelect(record)}
               >
                 <RecordDetails
@@ -44,8 +44,8 @@ const ListView = ({ records = [], onRecordSelect }: ListViewProps) => {
         {visibleItemsCount < records.length && (
           <div className="flex justify-center p-4 text-center">
             <Button
-              variant="default"
-              className="relative rounded-md bg-gray-500 px-4 py-2 text-black hover:bg-gray-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+              variant="dark"
+              className="relative rounded-md px-4 py-2 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-offset-2"
               onClick={() =>
                 setVisibleItemsCount((prev) =>
                   Math.min(prev + ITEMS_PER_PAGE, records.length),

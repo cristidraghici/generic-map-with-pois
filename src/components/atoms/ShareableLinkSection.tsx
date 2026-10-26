@@ -12,9 +12,9 @@ export const ShareableLinkSection: FunctionComponent<
   const [copySuccess, setCopySuccess] = useState(false)
 
   return (
-    <div className="mt-4 pt-4">
+    <div className="mt-4 border-t border-gray-200 pt-4">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-gray-600">
+        <span className="text-xs font-semibold text-gray-800">
           Share this location
         </span>
         <button
@@ -46,7 +46,7 @@ export const ShareableLinkSection: FunctionComponent<
           {copySuccess ? (
             <>
               <svg
-                className="mr-1.5 h-3 w-3"
+                className="mr-1.5 h-3.5 w-3.5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -62,7 +62,7 @@ export const ShareableLinkSection: FunctionComponent<
             </>
           ) : (
             <>
-              <CopyIconSVG className="mr-1.5 h-3 w-3" />
+              <CopyIconSVG className="mr-1.5 h-3.5 w-3.5" />
               Copy Link
             </>
           )}
@@ -73,7 +73,7 @@ export const ShareableLinkSection: FunctionComponent<
           type="text"
           value={generateShareableUrl(id)}
           readOnly
-          className="w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-1.5 text-xs text-gray-600 focus:border-blue-500 focus:outline-none"
+          className="w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-1.5 text-xs text-gray-800 focus:border-blue-500 focus:outline-none"
           onClick={(e) => (e.target as HTMLInputElement).select()}
         />
       </div>

@@ -47,6 +47,7 @@ Interactive Points of Interest (POI) map application built with React 18, TypeSc
 ## Detailed References
 For in-depth architectural and implementation guides, see:
 - Architecture & Data Contracts: `.agents/architecture.md`
+- Design System & UI Style Guide: `.agents/skills/design-system.md`
 - Leaflet & Maps Skill: `.agents/skills/leaflet-maps.md`
 - React Components & Tailwind Skill: `.agents/skills/react-components.md`
 - Zod Validation Skill: `.agents/skills/zod-validation.md`
