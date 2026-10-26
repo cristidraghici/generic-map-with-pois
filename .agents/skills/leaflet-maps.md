@@ -76,7 +76,7 @@ Render markers inside `<MarkerClusterGroup>` within [`MapContainer.tsx`](file://
 ```
 
 - Custom icons: Use Leaflet's `L.divIcon` or `L.icon` with SVG templates (`dot`, `default`, `text`). Escape HTML in text icons and sanitize CSS color strings via `escapeHtml` and `sanitizeCssColor` in [`createTextIcon.ts`](file:///Users/cristi/Code/generic-map-with-pois/src/utils/icons/createTextIcon.ts).
-- Memoization & Lazy Tooltips: Pass referentially stable props (`record`, `onSelect`, `color`, `icon`, `showTooltip`) to [`MarkerElement`](file:///Users/cristi/Code/generic-map-with-pois/src/components/molecules/MarkerElement.tsx) so `React.memo` prevents unnecessary re-renders, and defer mounting `<RecordDetails>` inside `<Tooltip>` until `tooltipopen` fires.
+- Memoization & Lazy Tooltips: Pass referentially stable props (`record`, `onSelect`, `color`, `icon`, `showTooltip`) to [`MarkerElement`](file:///Users/cristi/Code/generic-map-with-pois/src/components/molecules/MarkerElement.tsx) and memoize the `[latitude, longitude]` `position` tuple inside `MarkerElement`. `react-leaflet`'s `Marker` checks `props.position !== prevProps.position` by reference and calls `marker.setLatLng()`, which fires Leaflet's `'move'` event and causes `MarkerClusterGroup` to unspiderfy and remove/re-add the marker. `react-leaflet`'s `<Tooltip>` lazily portals `<RecordDetails>` only when the tooltip container node is created on hover.
 
 ### 3.3 Coordinate Conventions
 - Leaflet functions expect tuples: `[lat, lng]` (or `L.latLng(lat, lng)`).

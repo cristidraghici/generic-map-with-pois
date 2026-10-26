@@ -1,10 +1,4 @@
-import {
-  FunctionComponent,
-  memo,
-  PropsWithChildren,
-  useMemo,
-  useState,
-} from 'react'
+import { FunctionComponent, memo, PropsWithChildren, useMemo } from 'react'
 import { Marker, MarkerProps, Tooltip } from 'react-leaflet'
 import { MARKER_COLORS } from '@/constants'
 import { Config, CustomRecord } from '@/types'
@@ -39,7 +33,6 @@ const MarkerElement: FunctionComponent<
   ...rest
 }) => {
   const { latitude, longitude, title } = record
-  const [isTooltipOpen, setIsTooltipOpen] = useState(false)
 
   const iconEl = useMemo(() => {
     const cacheId = `${icon}-${color}-${title ?? ''}`
@@ -56,46 +49,40 @@ const MarkerElement: FunctionComponent<
     return el
   }, [icon, color, title])
 
+  const position = useMemo<[number, number]>(
+    () => [latitude, longitude],
+    [latitude, longitude],
+  )
+
   const eventHandlers = useMemo(
     () => ({
       click: () => {
         onClick?.()
-        if (onSelect && title !== undefined) {
-          onSelect(record as CustomRecord)
-        }
-      },
-      tooltipopen: () => {
-        setIsTooltipOpen(true)
-      },
-      tooltipclose: () => {
-        setIsTooltipOpen(false)
+        onSelect?.(record as CustomRecord)
       },
     }),
-    [onClick, onSelect, record, title],
+    [onClick, onSelect, record],
   )
 
   return (
     <Marker
       eventHandlers={eventHandlers}
       icon={iconEl}
-      position={[latitude, longitude]}
+      position={position}
       {...rest}
     >
       {(showTooltip || children) && (
         <Tooltip direction={icon === 'text' ? 'top' : 'auto'}>
-          {children ??
-            (isTooltipOpen && title !== undefined ? (
-              <RecordDetails
-                className="max-w-[300px]"
-                {...(record as CustomRecord)}
-                maxLines={5}
-                showImages={false}
-                showMinimap={false}
-                showActions={false}
-              />
-            ) : (
-              <span className="font-semibold text-gray-900">{title}</span>
-            ))}
+          {children ?? (
+            <RecordDetails
+              className="max-w-[300px]"
+              {...(record as CustomRecord)}
+              maxLines={5}
+              showImages={false}
+              showMinimap={false}
+              showActions={false}
+            />
+          )}
         </Tooltip>
       )}
     </Marker>

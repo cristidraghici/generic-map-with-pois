@@ -43,7 +43,6 @@ const Modal: FunctionComponent<PropsWithChildren<ModalProps>> = ({
         role="dialog"
         aria-modal={isOpen}
         aria-hidden={!isOpen}
-        {...(!isOpen ? ({ inert: '' } as Record<string, string>) : {})}
         {...rest}
         className={`fixed inset-0 z-[999] flex items-center justify-center p-3 transition-opacity duration-300 ${className} ${
           isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'

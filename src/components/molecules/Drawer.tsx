@@ -38,7 +38,6 @@ const Drawer: FunctionComponent<PropsWithChildren<DrawerProps>> = ({
         role="dialog"
         aria-modal={isOpen}
         aria-hidden={!isOpen}
-        {...(!isOpen ? ({ inert: '' } as Record<string, string>) : {})}
         className={`${className} fixed inset-y-0 z-[999] w-96 max-w-[calc(100%-0.5rem)] bg-white shadow-xl transition-transform duration-300 ease-in-out ${
           side === 'right' ? 'right-0' : 'left-0'
         } ${
