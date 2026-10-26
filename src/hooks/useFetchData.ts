@@ -201,7 +201,7 @@ const useFetchData = (
           return
         }
 
-        const response = await fetch(url, { signal })
+        const response = await fetch(url, { signal, credentials: 'omit' })
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }

@@ -7,6 +7,17 @@ const EMPTY_RUNTIME_CONFIG: RuntimeConfig = {
   allowedApiPatterns: [],
 }
 
+const RESERVED_JSON_FILENAMES = new Set([
+  'config.json',
+  'config.example.json',
+  'package.json',
+  'package-lock.json',
+  'tsconfig.json',
+  'tsconfig.node.json',
+  'biome.json',
+  '.lintstagedrc.json',
+])
+
 let runtimeConfigPromise: Promise<RuntimeConfig> | null = null
 
 /**
@@ -21,7 +32,7 @@ export const loadRuntimeConfig = (): Promise<RuntimeConfig> => {
   const baseUrl = import.meta.env.BASE_URL || '/'
   const configUrl = `${baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`}config.json`
 
-  runtimeConfigPromise = fetch(configUrl)
+  runtimeConfigPromise = fetch(configUrl, { credentials: 'omit' })
     .then(async (response) => {
       if (!response.ok) {
         return EMPTY_RUNTIME_CONFIG
@@ -33,6 +44,48 @@ export const loadRuntimeConfig = (): Promise<RuntimeConfig> => {
     .catch(() => EMPTY_RUNTIME_CONFIG)
 
   return runtimeConfigPromise
+}
+
+/**
+ * Verifies that a same-origin URL points to a public `.json` dataset file
+ * and not a hidden dotfile, path-traversal sequence, or reserved config file.
+ */
+const isSafeSameOriginJsonPath = (
+  rawInput: string,
+  candidateUrl: URL,
+): boolean => {
+  // Reject explicit parent-directory traversal in raw input
+  if (/(?:^|[\\/])\.\.(?:[\\/?#]|$)/.test(rawInput)) {
+    return false
+  }
+
+  let decodedPathname: string
+  try {
+    decodedPathname = decodeURIComponent(candidateUrl.pathname)
+  } catch {
+    return false
+  }
+
+  if (!decodedPathname.toLowerCase().endsWith('.json')) {
+    return false
+  }
+
+  const segments = decodedPathname.split('/').filter(Boolean)
+  if (segments.length === 0) {
+    return false
+  }
+
+  // Block hidden dot-files or dot-directories (e.g. /.env, /.git/, /.. )
+  if (segments.some((segment) => segment.startsWith('.'))) {
+    return false
+  }
+
+  const fileName = segments[segments.length - 1].toLowerCase()
+  if (RESERVED_JSON_FILENAMES.has(fileName)) {
+    return false
+  }
+
+  return true
 }
 
 type OriginLike = {
@@ -107,8 +160,12 @@ export const isApiUrlAllowed = (
     return false
   }
 
-  // 1. Same-origin URLs (e.g. `?api=all.json` on the current host) are always trusted
-  if (typeof window !== 'undefined' && isSameOriginWith(candidateUrl, window)) {
+  // 1. Same-origin `.json` dataset URLs (e.g. `?api=all.json` on the current host)
+  if (
+    typeof window !== 'undefined' &&
+    isSameOriginWith(candidateUrl, window) &&
+    isSafeSameOriginJsonPath(trimmed, candidateUrl)
+  ) {
     return true
   }
 

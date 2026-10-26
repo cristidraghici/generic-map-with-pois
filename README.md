@@ -247,7 +247,7 @@ type FlatResponse = PointOfInterest[];
 
 ### Allowing Custom API URLs (`config.json`)
 
-- **Same-origin files** (such as `?api=all.json` or `?api=/data/pois.json` hosted on the same domain as the app) are **allowed automatically**.
+- **Same-origin `.json` files** (such as `?api=all.json` or `?api=/data/pois.json` hosted on the same domain as the app) are **allowed automatically**, while hidden dot-files, `..` traversal segments, and reserved files (`config.json`, `package.json`, etc.) are blocked and requests are sent with `credentials: 'omit'`.
 - **External URLs** are checked against `ALLOWED_API_URL_PATTERNS` in [`src/constants.ts`](src/constants.ts) and an optional, git-ignored `public/config.json` file (automatically generated from [`public/config.example.json`](public/config.example.json) during `npm run dev` / `npm run build`, and silently ignored if missing at runtime):
 
 ```json

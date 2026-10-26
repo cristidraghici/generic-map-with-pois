@@ -151,9 +151,10 @@ runtimeConfigSchema = z.object({
 
 ### 3.3 Security & Safe Fetching
 - URLs passed to `?api=` are validated by [`validateApiUrl.ts`](file:///Users/cristi/Code/generic-map-with-pois/src/utils/validateApiUrl.ts):
-  1. Relative and same-origin URLs (e.g. `?api=all.json`, `?api=/data/pois.json`) resolved against `window.location.href` are automatically allowed on the deployment origin (`Origin.from().isSameOrigin()` with `URL.origin` fallback).
+  1. Relative and same-origin `.json` URLs (e.g. `?api=all.json`, `?api=/data/pois.json`) resolved against `window.location.href` are automatically allowed on the deployment origin (`Origin.from().isSameOrigin()` with `URL.origin` fallback), provided they end in `.json`, contain no `..` or hidden dot-segments, and are not reserved config files (e.g. `config.json`, `package.json`).
   2. External URLs are checked against `ALLOWED_API_URL_PATTERNS` in [`constants.ts`](file:///Users/cristi/Code/generic-map-with-pois/src/constants.ts).
   3. Additional origins (`allowedApiOrigins`) and regex patterns (`allowedApiPatterns`) can be configured per deployment via an untracked `public/config.json` (auto-created from [`public/config.example.json`](file:///Users/cristi/Code/generic-map-with-pois/public/config.example.json) during dev/build and silently ignored at runtime if absent).
+  4. All dataset `fetch()` calls pass `credentials: 'omit'` so session cookies are never sent to data endpoints.
 - No `dangerouslySetInnerHTML`. User strings and descriptions are safely sanitized and converted to active links via [`linkifyText.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/utils/linkifyText.tsx), and Leaflet `divIcon` HTML templates escape titles and sanitize CSS colors in [`createTextIcon.ts`](file:///Users/cristi/Code/generic-map-with-pois/src/utils/icons/createTextIcon.ts) and [`createSvgIcon.ts`](file:///Users/cristi/Code/generic-map-with-pois/src/utils/icons/createSvgIcon.ts).
 
 ### 3.4 Source-Defined Interactive Filters
