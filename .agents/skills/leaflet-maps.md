@@ -61,21 +61,22 @@ const {
 Render markers inside `<MarkerClusterGroup>` within [`MapContainer.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/components/organisms/MapContainer.tsx):
 
 ```tsx
-<MarkerClusterGroup chunkedLoading maxClusterRadius={50}>
+<MarkerClusterGroup {...clusterOptions}>
   {records.map((record) => (
     <MarkerElement
       key={record.id}
-      marker={record}
-      color={record.color}
-      typeOfIcon={config.typeOfIcon}
-      onClick={() => onSelectRecord(record)}
+      record={record}
+      color={resolvedColor}
+      icon={resolvedIcon}
+      onSelect={onRecordSelect}
+      showTooltip
     />
   ))}
 </MarkerClusterGroup>
 ```
 
-- Custom icons: Use Leaflet's `L.divIcon` or `L.icon` with SVG templates (`dot`, `default`, `text`). Ensure anchor points (`iconAnchor`, `popupAnchor`) match the visual center.
-- Pass `record.color` dynamically to customize pin themes.
+- Custom icons: Use Leaflet's `L.divIcon` or `L.icon` with SVG templates (`dot`, `default`, `text`). Escape HTML in text icons and sanitize CSS color strings via `escapeHtml` and `sanitizeCssColor` in [`createTextIcon.ts`](file:///Users/cristi/Code/generic-map-with-pois/src/utils/icons/createTextIcon.ts).
+- Memoization & Lazy Tooltips: Pass referentially stable props (`record`, `onSelect`, `color`, `icon`, `showTooltip`) to [`MarkerElement`](file:///Users/cristi/Code/generic-map-with-pois/src/components/molecules/MarkerElement.tsx) so `React.memo` prevents unnecessary re-renders, and defer mounting `<RecordDetails>` inside `<Tooltip>` until `tooltipopen` fires.
 
 ### 3.3 Coordinate Conventions
 - Leaflet functions expect tuples: `[lat, lng]` (or `L.latLng(lat, lng)`).

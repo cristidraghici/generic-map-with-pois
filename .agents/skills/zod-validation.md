@@ -58,8 +58,8 @@ export const recordIdSchema = z.string().brand('recordId')
 export const customRecordSchema = z
   .object({
     id: recordIdSchema.optional(),
-    latitude: z.number(),
-    longitude: z.number(),
+    latitude: z.number().min(-90).max(90),
+    longitude: z.number().min(-180).max(180),
     title: z.string(),
     description: z.union([z.string(), z.string().array()]).optional(),
     images: z.string().array().optional(),
@@ -115,15 +115,15 @@ export const anySuccessfulResponseSchema = z.union([
 When fetching data from an external API or static JSON:
 
 1. **URL Allowlist Check**:
-   Validate API endpoints against [`ALLOWED_API_URL_PATTERNS`](file:///Users/cristi/Code/generic-map-with-pois/src/constants.ts):
+   Validate API endpoints with `new URL()` (`http:` / `https:`) and against [`ALLOWED_API_URL_PATTERNS`](file:///Users/cristi/Code/generic-map-with-pois/src/constants.ts):
    ```typescript
    export const ALLOWED_API_URL_PATTERNS: RegExp[] = [
-     /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
-     /^(https?:\/\/)?(localhost|127\.0\.0\.1)(:\d+)?([/\w .-]*)*\/?$/,
+     /^https?:\/\/[\da-z.-]+\.[a-z]{2,24}(?:\/[\w ./?%&=-]*)?$/i,
+     /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(?:\/[\w ./?%&=-]*)?$/i,
    ]
    ```
 2. **Schema Parsing**:
-   Use `anySuccessfulResponseSchema.safeParse(json)`. If validation fails, capture errors without crashing the application.
+   Use `anySuccessfulResponseSchema.safeParse(json)` for both remote APIs and lazy-loaded mock datasets. If validation fails, capture errors without crashing the application.
 3. **ID Harmonization**:
    In [`processApiResponse.ts`](file:///Users/cristi/Code/generic-map-with-pois/src/utils/processApiResponse.ts), records lacking an `id` field are assigned branded indices (`id_0`, `id_1`, etc.) so markers and keys stay stable.
 

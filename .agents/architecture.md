@@ -78,8 +78,8 @@ filterDefinitionSchema = z.object({
 // Custom Record Schema
 customRecordSchema = z.object({
   id: z.string().brand('recordId').optional(),
-  latitude: z.number(),
-  longitude: z.number(),
+  latitude: z.number().min(-90).max(90),
+  longitude: z.number().min(-180).max(180),
   title: z.string(),
   description: z.union([z.string(), z.string().array()]).optional(),
   images: z.string().array().optional(),
@@ -137,15 +137,15 @@ anySuccessfulResponseSchema = z.union([
 - For multi-layer responses, `src/utils/processApiResponse.ts` normalizes layers, associates each record with its `layerId`, inherits the global map config from the first layer (falling back to `DEFAULT_CONFIG`), and `src/components/organisms/MapControls.tsx` renders a layer selection modal. Visible layers are managed in React state, synchronizing the map, search, and list view without re-fitting bounds.
 
 ### 3.2 URL Parameters & Routing
-- `?api=<url>`: Target data source (validated against `ALLOWED_API_URL_PATTERNS`).
-- `?api[]=<url>` (repeatable, may be mixed with `?api=`): Multiple data sources. All are fetched in parallel by [`useFetchData`](file:///Users/cristi/Code/generic-map-with-pois/src/hooks/useFetchData.ts) and kept in memory; when 2+ are provided, a dataset dropdown is shown below the search input. Option labels resolve as: envelope `title` → first `metadata` entry → raw URL.
+- `?api=<url>`: Target data source (validated against `ALLOWED_API_URL_PATTERNS`). Built-in mock datasets in `src/assets/` are lazy-loaded on demand via dynamic `import()` chunks and validated through `anySuccessfulResponseSchema`.
+- `?api[]=<url>` (repeatable, may be mixed with `?api=`): Multiple data sources. All are fetched in parallel by [`useFetchData`](file:///Users/cristi/Code/generic-map-with-pois/src/hooks/useFetchData.ts) and kept in memory with pre-indexed search tokens; when 2+ are provided, a dataset dropdown is shown below the search input. Option labels resolve as: envelope `title` → first `metadata` entry → raw URL.
 - `?selected=<index>`: Zero-based index of the active dataset (defaults to `0`). Switching datasets clears the search, closes the drawer, and removes `?id=`.
 - `?id=<recordId>`: Selects and highlights a specific POI on initial load and opens its `RecordDetails` drawer.
 - Sync mechanism: Managed via [`useURLParams`](file:///Users/cristi/Code/generic-map-with-pois/src/hooks/useURLParams.ts) (`params`, `listParams`, `updateParams`), updating query strings via `history.replaceState` without page reloads.
 
 ### 3.3 Security & Safe Fetching
-- URLs passed to `?api=` are strictly tested against `ALLOWED_API_URL_PATTERNS` in [`constants.ts`](file:///Users/cristi/Code/generic-map-with-pois/src/constants.ts). Only approved domains (e.g. GitHub Pages) and localhost/127.0.0.1 for local development are accepted.
-- No `dangerouslySetInnerHTML`. User strings and descriptions are safely sanitized and converted to active links via [`linkifyText.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/utils/linkifyText.tsx).
+- URLs passed to `?api=` are parsed with `new URL()` and strictly tested against linear-time `ALLOWED_API_URL_PATTERNS` in [`constants.ts`](file:///Users/cristi/Code/generic-map-with-pois/src/constants.ts). Only approved domains (e.g. GitHub Pages) and localhost/127.0.0.1 for local development are accepted.
+- No `dangerouslySetInnerHTML`. User strings and descriptions are safely sanitized and converted to active links via [`linkifyText.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/utils/linkifyText.tsx), and Leaflet `divIcon` HTML templates escape titles and sanitize CSS colors in [`createTextIcon.ts`](file:///Users/cristi/Code/generic-map-with-pois/src/utils/icons/createTextIcon.ts) and [`createSvgIcon.ts`](file:///Users/cristi/Code/generic-map-with-pois/src/utils/icons/createSvgIcon.ts).
 
 ### 3.4 Source-Defined Interactive Filters
 - Sources can declare a `filters` array in their envelope or layers. Supported types: `checkbox` (multi-select pill toggles), `select` (single-select options), and `range` (min/max numeric inputs that convert string numbers).

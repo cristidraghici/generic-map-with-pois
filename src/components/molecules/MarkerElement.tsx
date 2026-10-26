@@ -1,10 +1,17 @@
-import { FunctionComponent, memo, PropsWithChildren, useMemo } from 'react'
+import {
+  FunctionComponent,
+  memo,
+  PropsWithChildren,
+  useMemo,
+  useState,
+} from 'react'
 import { Marker, MarkerProps, Tooltip } from 'react-leaflet'
 import { MARKER_COLORS } from '@/constants'
 import { Config, CustomRecord } from '@/types'
 import { iconCacheManager } from '@/utils/icons/cache'
 import createSvgIcon from '@/utils/icons/createSvgIcon'
 import createTextIcon from '@/utils/icons/createTextIcon'
+import RecordDetails from './RecordDetails'
 
 interface MarkerElementProps extends Omit<MarkerProps, 'icon' | 'position'> {
   record: Partial<CustomRecord> & {
@@ -14,19 +21,26 @@ interface MarkerElementProps extends Omit<MarkerProps, 'icon' | 'position'> {
   }
   color?: (typeof MARKER_COLORS)[keyof typeof MARKER_COLORS] | string
   icon: Config['typeOfIcon']
+  showTooltip?: boolean
+  onSelect?: (_record: CustomRecord) => void
   onClick?: () => void
 }
 
 const MarkerElement: FunctionComponent<
   PropsWithChildren<MarkerElementProps>
 > = ({
-  record: { latitude, longitude, title },
+  record,
   color = MARKER_COLORS.blue,
   icon = 'default',
+  showTooltip = false,
+  onSelect,
   onClick,
   children,
   ...rest
 }) => {
+  const { latitude, longitude, title } = record
+  const [isTooltipOpen, setIsTooltipOpen] = useState(false)
+
   const iconEl = useMemo(() => {
     const cacheId = `${icon}-${color}-${title ?? ''}`
     const cachedIcon = iconCacheManager.get(cacheId)
@@ -42,20 +56,46 @@ const MarkerElement: FunctionComponent<
     return el
   }, [icon, color, title])
 
+  const eventHandlers = useMemo(
+    () => ({
+      click: () => {
+        onClick?.()
+        if (onSelect && title !== undefined) {
+          onSelect(record as CustomRecord)
+        }
+      },
+      tooltipopen: () => {
+        setIsTooltipOpen(true)
+      },
+      tooltipclose: () => {
+        setIsTooltipOpen(false)
+      },
+    }),
+    [onClick, onSelect, record, title],
+  )
+
   return (
     <Marker
-      eventHandlers={{
-        click: () => {
-          onClick?.()
-        },
-      }}
+      eventHandlers={eventHandlers}
       icon={iconEl}
       position={[latitude, longitude]}
       {...rest}
     >
-      {children && (
+      {(showTooltip || children) && (
         <Tooltip direction={icon === 'text' ? 'top' : 'auto'}>
-          {children}
+          {children ??
+            (isTooltipOpen && title !== undefined ? (
+              <RecordDetails
+                className="max-w-[300px]"
+                {...(record as CustomRecord)}
+                maxLines={5}
+                showImages={false}
+                showMinimap={false}
+                showActions={false}
+              />
+            ) : (
+              <span className="font-semibold text-gray-900">{title}</span>
+            ))}
         </Tooltip>
       )}
     </Marker>

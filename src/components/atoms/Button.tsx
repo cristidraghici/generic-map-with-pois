@@ -18,10 +18,12 @@ const Button: FunctionComponent<PropsWithChildren<ButtonProps>> = ({
   icon,
   className = '',
   variant = 'default',
+  type = 'button',
   ...rest
 }) => {
   return (
     <button
+      type={type}
       className={`
         flex min-h-[32px] min-w-[32px] cursor-pointer items-center justify-center
         bg-clip-padding p-[2px] text-2xl leading-5 transition-colors

@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useRef, useState } from 'react'
 import { ReactComponent as IconListSVG } from '@/assets/icons/cards.svg'
-import ButtonGroup from '../molecules/ButtonGroup'
-import ButtonWithTooltip from '../molecules/ButtonWithTooltip'
+import ButtonGroup from './ButtonGroup'
+import ButtonWithTooltip from './ButtonWithTooltip'
 
 interface HorizontalViewportSplitProps {
   mainElement: ReactNode
@@ -27,7 +27,7 @@ const HorizontalViewportSplit = ({
     if (!containerRef.current || !isSplitEnabled) return
 
     const observer = new ResizeObserver(() => {
-      !!onResize && onResize()
+      onResize?.()
     })
 
     observer.observe(containerRef.current)
@@ -36,15 +36,12 @@ const HorizontalViewportSplit = ({
   }, [onResize, isSplitEnabled])
 
   if (!isSplitEnabled) {
-    return <div style={{ height: '100vh' }}>{mainElement}</div>
+    return <div className="h-dvh">{mainElement}</div>
   }
 
   return (
     <>
-      <div
-        ref={containerRef}
-        style={{ height: isListOpen ? '50dvh' : '100dvh' }}
-      >
+      <div ref={containerRef} className={isListOpen ? 'h-[50dvh]' : 'h-dvh'}>
         {mainElement}
       </div>
 
@@ -55,7 +52,7 @@ const HorizontalViewportSplit = ({
             variant="transparent"
             onClick={() => {
               setIsListOpen((prev) => {
-                !!onClick && onClick(!prev)
+                onClick?.(!prev)
                 return !prev
               })
             }}
@@ -64,7 +61,7 @@ const HorizontalViewportSplit = ({
             }
           />
         </ButtonGroup>
-        {isListOpen && <div style={{ height: '50dvh' }}>{splitElement}</div>}
+        {isListOpen && <div className="h-[50dvh]">{splitElement}</div>}
       </div>
     </>
   )

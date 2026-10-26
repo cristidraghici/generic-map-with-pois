@@ -3,7 +3,7 @@ import {
   FunctionComponent,
   PropsWithChildren,
   useEffect,
-  useRef,
+  useId,
   useState,
 } from 'react'
 
@@ -23,86 +23,48 @@ const PlainTooltip: FunctionComponent<
   children,
   ...rest
 }) => {
-  const [isHovered, setIsHovered] = useState(false)
+  const [isActive, setIsActive] = useState(false)
   const [showTooltip, setShowTooltip] = useState(false)
-
-  const ref = useRef<HTMLDivElement>(null)
-  const lastMousePosition = useRef<{ x: number; y: number } | null>(null)
+  const tooltipId = useId()
 
   useEffect(() => {
-    if (isHovered) {
+    if (isActive) {
       const timer = setTimeout(() => {
         setShowTooltip(true)
       }, msDelay)
 
       return () => clearTimeout(timer)
-    } else {
-      setShowTooltip(false)
     }
-  }, [isHovered, msDelay])
+    setShowTooltip(false)
+  }, [isActive, msDelay])
 
-  useEffect(() => {
-    if (!isHovered) return
-
-    const updateMousePosition = (event: MouseEvent) => {
-      lastMousePosition.current = { x: event.clientX, y: event.clientY }
-    }
-
-    window.addEventListener('mousemove', updateMousePosition)
-
-    return () => {
-      window.removeEventListener('mousemove', updateMousePosition)
-    }
-  }, [isHovered])
-
-  useEffect(() => {
-    if (!showTooltip) return
-
-    const observer = new MutationObserver(() => {
-      if (!lastMousePosition.current) return
-      const { x, y } = lastMousePosition.current
-      const elementUnderMouse = document.elementFromPoint(x, y)
-      const buttonElement = ref.current
-
-      if (
-        buttonElement &&
-        elementUnderMouse &&
-        !buttonElement.contains(elementUnderMouse)
-      ) {
-        setIsHovered(false)
-        setShowTooltip(false)
-      }
-    })
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ['style', 'class'], // for overlays that change visibility or position
-    })
-
-    return () => {
-      observer.disconnect()
-    }
-  }, [showTooltip])
+  const dismiss = () => {
+    setIsActive(false)
+    setShowTooltip(false)
+  }
 
   return (
     <div
-      ref={ref}
       className="relative inline-block duration-300"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onPointerEnter={() => setIsActive(true)}
+      onPointerLeave={dismiss}
+      onFocus={() => setIsActive(true)}
+      onBlur={dismiss}
+      onClick={dismiss}
+      aria-describedby={showTooltip ? tooltipId : undefined}
     >
       {children}
       {showTooltip && (
         <div
-          className={`tooltip absolute -right-3 top-0 translate-x-full cursor-pointer rounded-md bg-gray-800 px-2.5 py-1 text-xs font-medium text-white shadow-md before:absolute before:right-[100%] before:top-1/2 before:-translate-y-1/2 before:border-8 before:border-y-transparent before:border-l-transparent before:border-r-gray-800 before:content-[''] ${className}`}
+          id={tooltipId}
+          role="tooltip"
+          className={`tooltip pointer-events-none absolute -right-3 top-0 translate-x-full rounded-md bg-gray-800 px-2.5 py-1 text-xs font-medium text-white shadow-md before:absolute before:right-[100%] before:top-1/2 before:-translate-y-1/2 before:border-8 before:border-y-transparent before:border-l-transparent before:border-r-gray-800 before:content-[''] ${className}`}
           {...rest}
         >
           {!Array.isArray(tooltip)
             ? tooltip
-            : tooltip.map((textItem, key) => (
-                <div className="mb-2" key={key}>
+            : tooltip.map((textItem) => (
+                <div className="mb-2" key={textItem}>
                   {textItem}
                 </div>
               ))}

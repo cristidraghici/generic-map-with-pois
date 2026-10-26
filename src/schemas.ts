@@ -23,8 +23,8 @@ export const filterDefinitionSchema = z.object({
 export const customRecordSchema = z
   .object({
     id: recordIdSchema.optional(),
-    latitude: z.number(),
-    longitude: z.number(),
+    latitude: z.number().min(-90).max(90),
+    longitude: z.number().min(-180).max(180),
     title: z.string(),
     description: z.union([z.string(), z.string().array()]).optional(),
     images: z.string().array().optional(),

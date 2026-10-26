@@ -12,8 +12,8 @@ export const MARKER_COLORS = {
  * Acts as a basic security measure against malicious URLs
  */
 export const ALLOWED_API_URL_PATTERNS: RegExp[] = [
-  /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/, // Matches pages URLs, e.g. Github
-  /^(https?:\/\/)?(localhost|127\.0\.0\.1)(:\d+)?([/\w .-]*)*\/?$/, // Matches localhost and IP
+  /^https?:\/\/[\da-z.-]+\.[a-z]{2,24}(?:\/[\w ./?%&=-]*)?$/i, // Matches pages URLs, e.g. Github
+  /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?(?:\/[\w ./?%&=-]*)?$/i, // Matches localhost and IP
 ]
 
 export const ROMANIAN_CITIES_MOCK_DATA_PATH = '/cities_in_romania.json'

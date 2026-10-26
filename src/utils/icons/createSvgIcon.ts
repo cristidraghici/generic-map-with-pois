@@ -2,6 +2,7 @@ import L, { IconOptions } from 'leaflet'
 
 import DefaultSVG from '@/assets/default.svg?raw'
 import DotSVG from '@/assets/dot.svg?raw'
+import { sanitizeCssColor } from './createTextIcon'
 
 const ICONS = [
   {
@@ -34,7 +35,11 @@ const createSvgIcon = (
     throw new Error(`Icon "${icon}" not found.`)
   }
 
-  const svgHtml = selectedIcon.icon.replace(/fill=".*?"/g, `fill="${color}"`)
+  const safeColor = sanitizeCssColor(color)
+  const svgHtml = selectedIcon.icon.replace(
+    /fill=".*?"/g,
+    `fill="${safeColor}"`,
+  )
 
   const svgIcon = L.divIcon({
     html: svgHtml,

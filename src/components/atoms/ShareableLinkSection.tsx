@@ -18,6 +18,7 @@ export const ShareableLinkSection: FunctionComponent<
           Share this location
         </span>
         <button
+          type="button"
           onClick={async () => {
             const shareableUrl = generateShareableUrl(id)
             try {

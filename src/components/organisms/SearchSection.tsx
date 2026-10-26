@@ -45,7 +45,7 @@ const SearchSection: FunctionComponent<SearchSectionProps> = ({
   )
 
   return (
-    <div className="absolute right-3 top-3 z-[998] flex w-96 max-w-[calc(100%-4.5rem)] flex-col gap-2">
+    <search className="absolute right-3 top-3 z-[998] flex w-96 max-w-[calc(100%-4.5rem)] flex-col gap-2">
       <SearchField onInputChange={onSearchChange} />
 
       {datasets.length > 1 && (
@@ -106,6 +106,7 @@ const SearchSection: FunctionComponent<SearchSectionProps> = ({
       <ConditionalElement
         as="div"
         rcIf={loading}
+        role="status"
         className="rounded-md border-[2px] border-gray-800 border-opacity-50 bg-white p-3 text-xs font-medium text-gray-700 shadow-md"
       >
         The data for the map is loading...
@@ -114,11 +115,12 @@ const SearchSection: FunctionComponent<SearchSectionProps> = ({
       <ConditionalElement
         as="div"
         rcIf={!loading && !!error}
+        role="alert"
         className="rounded-md border border-red-300 bg-red-50 p-3 text-xs font-medium text-red-800 shadow-md"
       >
         {error}
       </ConditionalElement>
-    </div>
+    </search>
   )
 }
 

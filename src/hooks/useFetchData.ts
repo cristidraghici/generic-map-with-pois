@@ -10,16 +10,10 @@ import {
   WORLD_CITIES_MOCK_DATA_PATH,
 } from '@/constants'
 import { toRecordId } from '@/utils/brandTypes'
-import fuzzyMatch from '@/utils/fuzzyMatch'
+import { fuzzyMatchIndexed, getMaxFuzzyDistance } from '@/utils/fuzzyMatch'
 import getDatasetLabel from '@/utils/getDatasetLabel'
 import processApiResponse from '@/utils/processApiResponse'
 import { resolveRelativePaths } from '@/utils/resolveRelativePaths'
-import mockRomanianCitiesData from '../assets/cities_in_romania.json'
-import mockParisLandmarksData from '../assets/cultural_landmarks_paris.json'
-import mockMultiLayerSampleData from '../assets/multi_layer_sample.json'
-import mockNationalParksData from '../assets/national_parks.json'
-import mockSpaceLaunchSitesData from '../assets/space_launch_sites.json'
-import mockWorldCitiesData from '../assets/world_cities.json'
 import { anySuccessfulResponseSchema } from '../schemas'
 import {
   AnySuccessfulResponse,
@@ -30,19 +24,21 @@ import {
   Metadata,
 } from '../types'
 
-const MOCK_DATASETS: Record<string, AnySuccessfulResponse> = {
-  [ROMANIAN_CITIES_MOCK_DATA_PATH]:
-    mockRomanianCitiesData as unknown as AnySuccessfulResponse,
-  [MULTI_LAYER_SAMPLE_MOCK_DATA_PATH]:
-    mockMultiLayerSampleData as unknown as AnySuccessfulResponse,
-  [WORLD_CITIES_MOCK_DATA_PATH]:
-    mockWorldCitiesData as unknown as AnySuccessfulResponse,
-  [PARIS_LANDMARKS_MOCK_DATA_PATH]:
-    mockParisLandmarksData as unknown as AnySuccessfulResponse,
-  [NATIONAL_PARKS_MOCK_DATA_PATH]:
-    mockNationalParksData as unknown as AnySuccessfulResponse,
-  [SPACE_LAUNCH_SITES_MOCK_DATA_PATH]:
-    mockSpaceLaunchSitesData as unknown as AnySuccessfulResponse,
+const MOCK_DATASET_LOADERS: Record<
+  string,
+  () => Promise<{ default: unknown }>
+> = {
+  [ROMANIAN_CITIES_MOCK_DATA_PATH]: () =>
+    import('../assets/cities_in_romania.json'),
+  [MULTI_LAYER_SAMPLE_MOCK_DATA_PATH]: () =>
+    import('../assets/multi_layer_sample.json'),
+  [WORLD_CITIES_MOCK_DATA_PATH]: () => import('../assets/world_cities.json'),
+  [PARIS_LANDMARKS_MOCK_DATA_PATH]: () =>
+    import('../assets/cultural_landmarks_paris.json'),
+  [NATIONAL_PARKS_MOCK_DATA_PATH]: () =>
+    import('../assets/national_parks.json'),
+  [SPACE_LAUNCH_SITES_MOCK_DATA_PATH]: () =>
+    import('../assets/space_launch_sites.json'),
 }
 
 /**
@@ -50,11 +46,18 @@ const MOCK_DATASETS: Record<string, AnySuccessfulResponse> = {
  */
 const URLS_KEY_SEPARATOR = '\n'
 
+interface IndexedRecord {
+  record: CustomRecord
+  normalizedText: string
+  tokens: readonly string[]
+}
+
 interface DatasetState {
   loading: boolean
   error: string | null
   title?: string
   records: CustomRecord[]
+  searchEntries: IndexedRecord[]
   metadata: Metadata
   config: Config
   layers: Layer[]
@@ -70,6 +73,7 @@ const EMPTY_DATASET: DatasetState = {
   loading: false,
   error: null,
   records: [],
+  searchEntries: [],
   metadata: '',
   config: DEFAULT_CONFIG,
   layers: [],
@@ -77,6 +81,14 @@ const EMPTY_DATASET: DatasetState = {
 }
 
 const isURLAllowed = (urlToTest: string): boolean => {
+  try {
+    const parsed = new URL(urlToTest)
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+      return false
+    }
+  } catch {
+    return false
+  }
   return ALLOWED_API_URL_PATTERNS.some((pattern) => pattern.test(urlToTest))
 }
 
@@ -97,12 +109,25 @@ const toDatasetState = (response: AnySuccessfulResponse): DatasetState => {
     }
   })
   const allRecords = normalizedLayers.flatMap((l) => l.records)
+  const searchEntries: IndexedRecord[] = allRecords.map((record) => {
+    const descriptionText = Array.isArray(record.description)
+      ? record.description.join(' ')
+      : record.description || ''
+    const normalizedText = `${record.title} ${descriptionText}`.toLowerCase()
+    const tokens = normalizedText.split(/\s+/).filter(Boolean)
+    return {
+      record,
+      normalizedText,
+      tokens,
+    }
+  })
 
   return {
     loading: false,
     error: null,
     title,
     records: allRecords,
+    searchEntries,
     metadata,
     config,
     layers: normalizedLayers,
@@ -120,7 +145,7 @@ const useFetchData = (
   search?: string,
 ) => {
   const [datasets, setDatasets] = useState<Record<string, DatasetState>>({})
-  const reloadControllerRef = useRef<AbortController | null>(null)
+  const controllersRef = useRef<Map<string, AbortController>>(new Map())
 
   // Keep a stable reference to the list of URLs, as the array identity may change on URL updates
   const urlsKey = urls.join(URLS_KEY_SEPARATOR)
@@ -145,9 +170,32 @@ const useFetchData = (
 
   const loadDataset = useCallback(
     async (url: string, signal: AbortSignal) => {
-      const mockDataset = MOCK_DATASETS[url]
-      if (mockDataset) {
-        updateDataset(url, toDatasetState(mockDataset))
+      const mockLoader = MOCK_DATASET_LOADERS[url]
+      if (mockLoader) {
+        try {
+          updateDataset(url, { loading: true, error: null })
+          const module = await mockLoader()
+          if (signal.aborted) return
+
+          const validatedResponse = anySuccessfulResponseSchema.safeParse(
+            module.default,
+          )
+          if (!validatedResponse.success) {
+            throw new Error(
+              'Invalid response format: Could not parse mock entities',
+            )
+          }
+          updateDataset(url, toDatasetState(validatedResponse.data))
+        } catch (error) {
+          if (signal.aborted) return
+          updateDataset(url, {
+            loading: false,
+            error:
+              error instanceof Error
+                ? error.message
+                : 'An unknown error occurred',
+          })
+        }
         return
       }
 
@@ -191,16 +239,34 @@ const useFetchData = (
   )
 
   useEffect(() => {
-    const controller = new AbortController()
+    const activeUrlSet = new Set(stableUrls)
+    const controllers = controllersRef.current
 
-    for (const url of new Set(stableUrls)) {
-      loadDataset(url, controller.signal)
+    for (const [trackedUrl, controller] of controllers.entries()) {
+      if (!activeUrlSet.has(trackedUrl)) {
+        controller.abort()
+        controllers.delete(trackedUrl)
+      }
     }
 
-    return () => controller.abort()
+    for (const url of activeUrlSet) {
+      if (!controllers.has(url)) {
+        const controller = new AbortController()
+        controllers.set(url, controller)
+        loadDataset(url, controller.signal)
+      }
+    }
   }, [stableUrls, loadDataset])
 
-  useEffect(() => () => reloadControllerRef.current?.abort(), [])
+  useEffect(() => {
+    const controllers = controllersRef.current
+    return () => {
+      for (const controller of controllers.values()) {
+        controller.abort()
+      }
+      controllers.clear()
+    }
+  }, [])
 
   /**
    * Manually refreshes the selected dataset only
@@ -208,25 +274,38 @@ const useFetchData = (
   const reload = useCallback(() => {
     if (!selectedUrl) return
 
-    reloadControllerRef.current?.abort()
+    const existingController = controllersRef.current.get(selectedUrl)
+    existingController?.abort()
+
     const controller = new AbortController()
-    reloadControllerRef.current = controller
+    controllersRef.current.set(selectedUrl, controller)
 
     loadDataset(selectedUrl, controller.signal)
   }, [selectedUrl, loadDataset])
 
   const filteredRecords = useMemo((): CustomRecord[] => {
-    const { records } = selectedDataset
-    if (!search) return records
+    const { records, searchEntries } = selectedDataset
+    const normalizedQuery = search?.trim().toLowerCase() ?? ''
+    if (!normalizedQuery) return records
 
-    return records.filter((record) => {
-      const descriptionText = Array.isArray(record.description)
-        ? record.description.join(' ')
-        : record.description || ''
+    const maxAllowedDistance = getMaxFuzzyDistance(normalizedQuery.length)
+    const matched: CustomRecord[] = []
 
-      const searchableText = `${record.title} ${descriptionText}`
-      return fuzzyMatch(searchableText, search)
-    })
+    for (let i = 0; i < searchEntries.length; i++) {
+      const entry = searchEntries[i]
+      if (
+        fuzzyMatchIndexed(
+          entry.normalizedText,
+          entry.tokens,
+          normalizedQuery,
+          maxAllowedDistance,
+        )
+      ) {
+        matched.push(entry.record)
+      }
+    }
+
+    return matched
   }, [selectedDataset, search])
 
   const datasetOptions = useMemo(

@@ -79,7 +79,8 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
               >
                 <img
                   src={image}
-                  alt=""
+                  alt={`Gallery preview ${index + 1}`}
+                  loading="lazy"
                   className="mx-auto h-auto max-h-[920px] w-auto max-w-full rounded shadow object-contain"
                 />
               </button>
@@ -108,7 +109,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
               >
                 <img
                   src={images[currentIndex]}
-                  alt=""
+                  alt={`Gallery view ${currentIndex + 1} of ${images.length}`}
                   className="mx-auto max-h-[80vh] w-auto rounded shadow-lg"
                 />
 

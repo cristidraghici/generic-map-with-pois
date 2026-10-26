@@ -78,57 +78,123 @@ export const getActiveFilterCount = (
   }, 0)
 }
 
+type CompiledFilter =
+  | {
+      type: 'checkbox'
+      fieldKey: string
+      selectedSet: Set<string>
+    }
+  | {
+      type: 'select'
+      fieldKey: string
+      target: string
+    }
+  | {
+      type: 'range'
+      fieldKey: string
+      min?: number
+      max?: number
+    }
+
 export const filterRecords = (
   records: CustomRecord[],
   filters: FilterDefinition[],
   activeFilters: ActiveFilters,
 ): CustomRecord[] => {
-  const activeFilterList = filters.filter((filter) =>
-    isFilterActive(filter, activeFilters[filter.id]),
-  )
+  const compiledFilters: CompiledFilter[] = []
 
-  if (activeFilterList.length === 0) {
+  for (const filter of filters) {
+    const filterVal = activeFilters[filter.id]
+    if (!isFilterActive(filter, filterVal)) continue
+
+    const fieldKey = filter.field || filter.id
+
+    if (filter.type === 'checkbox') {
+      const selected = Array.isArray(filterVal) ? filterVal : []
+      if (selected.length > 0) {
+        compiledFilters.push({
+          type: 'checkbox',
+          fieldKey,
+          selectedSet: new Set(selected.map((s) => s.toLowerCase())),
+        })
+      }
+    } else if (filter.type === 'select') {
+      const target =
+        typeof filterVal === 'string' ? filterVal.toLowerCase().trim() : ''
+      if (target && target !== 'all') {
+        compiledFilters.push({
+          type: 'select',
+          fieldKey,
+          target,
+        })
+      }
+    } else if (
+      filter.type === 'range' &&
+      filterVal &&
+      typeof filterVal === 'object' &&
+      !Array.isArray(filterVal)
+    ) {
+      const rawMin =
+        filterVal.min !== undefined &&
+        filterVal.min !== null &&
+        filterVal.min !== ''
+          ? Number(filterVal.min)
+          : undefined
+      const rawMax =
+        filterVal.max !== undefined &&
+        filterVal.max !== null &&
+        filterVal.max !== ''
+          ? Number(filterVal.max)
+          : undefined
+      const min =
+        rawMin !== undefined && !Number.isNaN(rawMin) ? rawMin : undefined
+      const max =
+        rawMax !== undefined && !Number.isNaN(rawMax) ? rawMax : undefined
+
+      if (min !== undefined || max !== undefined) {
+        compiledFilters.push({
+          type: 'range',
+          fieldKey,
+          min,
+          max,
+        })
+      }
+    }
+  }
+
+  if (compiledFilters.length === 0) {
     return records
   }
 
   return records.filter((record) => {
-    return activeFilterList.every((filter) => {
-      const filterVal = activeFilters[filter.id]
-      const fieldKey = filter.field || filter.id
-      const recordVal = getRecordFieldValue(record, fieldKey)
+    return compiledFilters.every((filter) => {
+      const recordVal = getRecordFieldValue(record, filter.fieldKey)
 
       if (filter.type === 'checkbox') {
-        const selected = Array.isArray(filterVal) ? filterVal : []
-        if (selected.length === 0) return true
+        const { selectedSet } = filter
 
-        const selectedLower = selected.map((s) => s.toLowerCase())
-
-        // Check if recordVal is an array (e.g. tags or multiple categories)
         if (Array.isArray(recordVal)) {
           return recordVal.some((item) =>
-            selectedLower.includes(String(item).toLowerCase()),
+            selectedSet.has(String(item).toLowerCase()),
           )
         }
 
-        // Check if record has tags array fallback
         if (record.tags && Array.isArray(record.tags)) {
           const hasTag = record.tags.some((tag) =>
-            selectedLower.includes(tag.toLowerCase()),
+            selectedSet.has(tag.toLowerCase()),
           )
           if (hasTag) return true
         }
 
         if (recordVal !== undefined && recordVal !== null) {
-          return selectedLower.includes(String(recordVal).toLowerCase())
+          return selectedSet.has(String(recordVal).toLowerCase())
         }
 
         return false
       }
 
       if (filter.type === 'select') {
-        const target =
-          typeof filterVal === 'string' ? filterVal.toLowerCase() : ''
-        if (!target || target === 'all') return true
+        const { target } = filter
 
         if (Array.isArray(recordVal)) {
           return recordVal.some((item) => String(item).toLowerCase() === target)
@@ -146,37 +212,15 @@ export const filterRecords = (
       }
 
       if (filter.type === 'range') {
-        if (
-          !filterVal ||
-          typeof filterVal !== 'object' ||
-          Array.isArray(filterVal)
-        ) {
-          return true
-        }
-
         const numericVal = extractNumericValue(recordVal)
         if (numericVal === null) {
           return false
         }
 
-        const min =
-          filterVal.min !== undefined &&
-          filterVal.min !== null &&
-          filterVal.min !== ''
-            ? Number(filterVal.min)
-            : undefined
-
-        const max =
-          filterVal.max !== undefined &&
-          filterVal.max !== null &&
-          filterVal.max !== ''
-            ? Number(filterVal.max)
-            : undefined
-
-        if (min !== undefined && !Number.isNaN(min) && numericVal < min) {
+        if (filter.min !== undefined && numericVal < filter.min) {
           return false
         }
-        if (max !== undefined && !Number.isNaN(max) && numericVal > max) {
+        if (filter.max !== undefined && numericVal > filter.max) {
           return false
         }
 

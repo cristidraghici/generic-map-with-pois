@@ -52,21 +52,33 @@ const RecordDetails: FunctionComponent<RecordDetailsProps> = ({
 
       {!!description &&
         (!Array.isArray(description) ? (
-          <div className="text-sm leading-relaxed text-gray-700">
+          <div
+            className="text-sm leading-relaxed text-gray-700"
+            style={
+              maxLines > 0
+                ? {
+                    display: '-webkit-box',
+                    WebkitLineClamp: maxLines,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                  }
+                : undefined
+            }
+          >
             {linkifyText(description)}
           </div>
         ) : (
           <ul className="mt-2 space-y-3 text-sm leading-relaxed text-gray-700 [&>*:last-child]:border-0">
-            {description
-              .filter((_, key) => (maxLines > 0 ? key < maxLines : true))
-              .map((item, key) => (
+            {(maxLines > 0 ? description.slice(0, maxLines) : description).map(
+              (item, key) => (
                 <li
                   className="break-words border-b border-gray-200 pb-3"
-                  key={key}
+                  key={`${key}-${item}`}
                 >
                   {linkifyText(item)}
                 </li>
-              ))}
+              ),
+            )}
           </ul>
         ))}
 
@@ -95,6 +107,7 @@ const RecordDetails: FunctionComponent<RecordDetailsProps> = ({
           <ShareableLinkSection id={id} />
 
           <DownloadPDFButton
+            targetRef={containerRef}
             selector=".RecordDetails"
             name={id}
             onBeforeGenerate={() => {

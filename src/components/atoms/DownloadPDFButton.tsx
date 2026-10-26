@@ -1,9 +1,10 @@
-import { FunctionComponent, useState } from 'react'
+import { FunctionComponent, RefObject, useId, useState } from 'react'
 import { ReactComponent as IconDownloadSVG } from '@/assets/icons/download.svg'
 import { sanitizeFileName } from '@/utils/files'
 
 interface DownloadPDFButtonProps {
-  selector: string
+  targetRef?: RefObject<HTMLElement | null>
+  selector?: string
   name?: string
   onBeforeGenerate?: () => void | Promise<void>
   onAfterGenerate?: () => void | Promise<void>
@@ -12,6 +13,7 @@ interface DownloadPDFButtonProps {
 }
 
 export const DownloadPDFButton: FunctionComponent<DownloadPDFButtonProps> = ({
+  targetRef,
   selector,
   name = 'pdf-document',
   onBeforeGenerate,
@@ -20,6 +22,7 @@ export const DownloadPDFButton: FunctionComponent<DownloadPDFButtonProps> = ({
   isPageBreakBeforeMediaInPDFEnabled = false,
 }) => {
   const [isGenerating, setIsGenerating] = useState(false)
+  const toggleId = useId()
 
   const downloadPDF = async () => {
     setIsGenerating(true)
@@ -28,9 +31,11 @@ export const DownloadPDFButton: FunctionComponent<DownloadPDFButtonProps> = ({
     let hasRunBefore = false
 
     try {
-      const element = document.querySelector(selector) as HTMLElement
+      const element =
+        targetRef?.current ??
+        (selector ? (document.querySelector(selector) as HTMLElement) : null)
       if (!element) {
-        console.error(`Element with selector '${selector}' not found`)
+        console.error('Target element for PDF export not found')
         return
       }
 
@@ -103,7 +108,7 @@ export const DownloadPDFButton: FunctionComponent<DownloadPDFButtonProps> = ({
     <>
       <div className="flex items-center justify-between gap-2 rounded-lg pt-4 transition">
         <label
-          htmlFor="page-break-before-media-toggle"
+          htmlFor={toggleId}
           className="select-none text-xs font-medium text-gray-700"
         >
           Page break before media
@@ -111,9 +116,8 @@ export const DownloadPDFButton: FunctionComponent<DownloadPDFButtonProps> = ({
 
         <input
           type="checkbox"
-          id="page-break-before-media-toggle"
-          className="h-4 w-8 cursor-pointer appearance-none rounded-full bg-gray-300 transition-colors before:absolute before:h-4 before:w-4 before:translate-x-0 before:rounded-full before:bg-white before:shadow before:transition-transform checked:bg-green-600 checked:before:translate-x-4"
-          style={{ position: 'relative' }}
+          id={toggleId}
+          className="relative h-4 w-8 cursor-pointer appearance-none rounded-full bg-gray-300 transition-colors before:absolute before:h-4 before:w-4 before:translate-x-0 before:rounded-full before:bg-white before:shadow before:transition-transform checked:bg-green-600 checked:before:translate-x-4"
           onChange={() => {
             if (typeof togglePageBreakBeforeMediaInPDF === 'function') {
               togglePageBreakBeforeMediaInPDF()
@@ -126,11 +130,13 @@ export const DownloadPDFButton: FunctionComponent<DownloadPDFButtonProps> = ({
 
       <div className="flex justify-end">
         <button
+          type="button"
           onClick={downloadPDF}
           disabled={isGenerating}
-          className={`mt-4 inline-flex items-center rounded-md bg-green-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1`}
+          className="mt-4 inline-flex items-center rounded-md bg-green-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1"
         >
-          <IconDownloadSVG className="mr-1.5 h-3.5 w-3.5" /> Download PDF
+          <IconDownloadSVG className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />{' '}
+          Download PDF
         </button>
       </div>
     </>

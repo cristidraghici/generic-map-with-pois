@@ -1,4 +1,4 @@
-import L, { LatLngTuple } from 'leaflet'
+import type { LatLngTuple } from 'leaflet'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import Drawer from '@/components/molecules/Drawer'
@@ -104,13 +104,13 @@ const Viewport = () => {
 
   // Filter records by currently active layers and active filters
   const activeLayerRecords = useMemo(() => {
-    const layerFiltered =
-      layers.length <= 1
-        ? records
-        : records.filter((r) => {
-            const visibleSet = new Set(visibleLayerIds)
-            return !r.layerId || visibleSet.has(r.layerId)
-          })
+    let layerFiltered = records
+    if (layers.length > 1) {
+      const visibleSet = new Set(visibleLayerIds)
+      layerFiltered = records.filter(
+        (r) => !r.layerId || visibleSet.has(r.layerId),
+      )
+    }
 
     return filterRecords(layerFiltered, filters, activeFilters)
   }, [records, layers.length, visibleLayerIds, filters, activeFilters])
@@ -250,6 +250,30 @@ const Viewport = () => {
     [updateParams],
   )
 
+  const handleListRecordSelect = useCallback(
+    (record: CustomRecord) => {
+      handleRecordSelect(record)
+
+      if (!config.isZoomOnSelectEnabled) {
+        map?.flyTo([record.latitude, record.longitude], 18)
+      }
+    },
+    [handleRecordSelect, config.isZoomOnSelectEnabled, map],
+  )
+
+  const handleSplitToggle = useCallback(
+    (isListOpen?: boolean) => {
+      if (!map?.attributionControl) return
+
+      if (isListOpen) {
+        map.attributionControl.remove()
+      } else {
+        map.attributionControl.addTo(map)
+      }
+    },
+    [map],
+  )
+
   return (
     <>
       <SearchSection
@@ -283,29 +307,11 @@ const Viewport = () => {
                 ? visibleRecords
                 : activeLayerRecords
             }
-            onRecordSelect={(record) => {
-              handleRecordSelect(record)
-
-              if (!config.isZoomOnSelectEnabled) {
-                map?.flyTo([record.latitude, record.longitude], 18)
-              }
-            }}
+            onRecordSelect={handleListRecordSelect}
           />
         }
-        onClick={(isListOpen) => {
-          if (!map) return
-
-          if (isListOpen && map.attributionControl) {
-            map.removeControl(map.attributionControl)
-          }
-
-          if (!isListOpen) {
-            map.addControl(L.control.attribution())
-          }
-        }}
-        onResize={() => {
-          handleMapRefresh()
-        }}
+        onClick={handleSplitToggle}
+        onResize={handleMapRefresh}
       />
 
       <MapControls

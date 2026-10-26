@@ -3,7 +3,6 @@ import { useMemo } from 'react'
 import { MapContainer as LeafletMapContainer, TileLayer } from 'react-leaflet'
 import MarkerClusterGroup from 'react-leaflet-cluster'
 import MarkerElement from '@/components/molecules/MarkerElement'
-import RecordDetails from '@/components/molecules/RecordDetails'
 import { MAP_CONFIG, MAP_TILE_LAYER, MARKER_COLORS } from '@/constants'
 import { Config, CustomRecord } from '@/types'
 import createSvgIcon from '@/utils/icons/createSvgIcon'
@@ -26,26 +25,6 @@ const MapContainer = ({
   icon,
   records,
 }: MapContainerProps) => {
-  const recordMarkers = useMemo<
-    (CustomRecord & {
-      icon: Config['typeOfIcon']
-      color: (typeof MARKER_COLORS)[keyof typeof MARKER_COLORS] | string
-    })[]
-  >(() => {
-    return records.map((record) => ({
-      ...record,
-      icon:
-        icon === 'text' && (!record.title || record.title.length === 0)
-          ? 'default'
-          : icon,
-      color:
-        record.color ||
-        (Array.isArray(record.description)
-          ? MARKER_COLORS.green
-          : MARKER_COLORS.blue),
-    }))
-  }, [records, icon])
-
   const clusterOptions = useMemo(
     () => ({
       chunkedLoading: true,
@@ -75,24 +54,28 @@ const MapContainer = ({
       <TileLayer {...MAP_TILE_LAYER} />
 
       <MarkerClusterGroup {...clusterOptions}>
-        {recordMarkers.map((record) => (
-          <MarkerElement
-            key={record.id}
-            record={record}
-            onClick={() => onRecordSelect(record)}
-            color={record.color}
-            icon={record.icon}
-          >
-            <RecordDetails
-              className="max-w-[300px]"
-              {...record}
-              maxLines={5}
-              showImages={false}
-              showMinimap={false}
-              showActions={false}
+        {records.map((record) => {
+          const resolvedIcon =
+            icon === 'text' && (!record.title || record.title.length === 0)
+              ? 'default'
+              : icon
+          const resolvedColor =
+            record.color ||
+            (Array.isArray(record.description)
+              ? MARKER_COLORS.green
+              : MARKER_COLORS.blue)
+
+          return (
+            <MarkerElement
+              key={record.id}
+              record={record}
+              onSelect={onRecordSelect}
+              color={resolvedColor}
+              icon={resolvedIcon}
+              showTooltip
             />
-          </MarkerElement>
-        ))}
+          )
+        })}
       </MarkerClusterGroup>
     </LeafletMapContainer>
   )

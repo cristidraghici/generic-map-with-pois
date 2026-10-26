@@ -24,15 +24,15 @@ export default defineConfig({
     },
   },
   build: {
-    chunkSizeWarningLimit: 1600,
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
             if (id.includes('leaflet')) return 'vendor-leaflet'
             if (id.includes('react')) return 'vendor-react'
+            if (id.includes('zod')) return 'vendor'
             if (id.includes('html2pdf.js')) return 'vendor-html2pdf'
-            return 'vendor'
           }
         },
       },
