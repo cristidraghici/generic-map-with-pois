@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   ALLOWED_API_URL_PATTERNS,
   DEFAULT_CONFIG,
+  MULTI_LAYER_SAMPLE_MOCK_DATA_PATH,
   NATIONAL_PARKS_MOCK_DATA_PATH,
   PARIS_LANDMARKS_MOCK_DATA_PATH,
   ROMANIAN_CITIES_MOCK_DATA_PATH,
@@ -15,6 +16,7 @@ import processApiResponse from '@/utils/processApiResponse'
 import { resolveRelativePaths } from '@/utils/resolveRelativePaths'
 import mockRomanianCitiesData from '../assets/cities_in_romania.json'
 import mockParisLandmarksData from '../assets/cultural_landmarks_paris.json'
+import mockMultiLayerSampleData from '../assets/multi_layer_sample.json'
 import mockNationalParksData from '../assets/national_parks.json'
 import mockSpaceLaunchSitesData from '../assets/space_launch_sites.json'
 import mockWorldCitiesData from '../assets/world_cities.json'
@@ -23,21 +25,22 @@ import {
   AnySuccessfulResponse,
   Config,
   CustomRecord,
-  CustomRecordWithMetadata,
+  Layer,
   Metadata,
 } from '../types'
 
-const MOCK_DATASETS: Record<string, CustomRecordWithMetadata> = {
+const MOCK_DATASETS: Record<string, AnySuccessfulResponse> = {
   [ROMANIAN_CITIES_MOCK_DATA_PATH]:
-    mockRomanianCitiesData as CustomRecordWithMetadata,
-  [WORLD_CITIES_MOCK_DATA_PATH]:
-    mockWorldCitiesData as CustomRecordWithMetadata,
+    mockRomanianCitiesData as AnySuccessfulResponse,
+  [MULTI_LAYER_SAMPLE_MOCK_DATA_PATH]:
+    mockMultiLayerSampleData as AnySuccessfulResponse,
+  [WORLD_CITIES_MOCK_DATA_PATH]: mockWorldCitiesData as AnySuccessfulResponse,
   [PARIS_LANDMARKS_MOCK_DATA_PATH]:
-    mockParisLandmarksData as CustomRecordWithMetadata,
+    mockParisLandmarksData as AnySuccessfulResponse,
   [NATIONAL_PARKS_MOCK_DATA_PATH]:
-    mockNationalParksData as CustomRecordWithMetadata,
+    mockNationalParksData as AnySuccessfulResponse,
   [SPACE_LAUNCH_SITES_MOCK_DATA_PATH]:
-    mockSpaceLaunchSitesData as CustomRecordWithMetadata,
+    mockSpaceLaunchSitesData as AnySuccessfulResponse,
 }
 
 /**
@@ -52,6 +55,7 @@ interface DatasetState {
   records: CustomRecord[]
   metadata: Metadata
   config: Config
+  layers: Layer[]
 }
 
 export interface DatasetOption {
@@ -65,27 +69,38 @@ const EMPTY_DATASET: DatasetState = {
   records: [],
   metadata: '',
   config: DEFAULT_CONFIG,
+  layers: [],
 }
 
 const isURLAllowed = (urlToTest: string): boolean => {
   return ALLOWED_API_URL_PATTERNS.some((pattern) => pattern.test(urlToTest))
 }
 
-const withRecordIds = (records: CustomRecord[]): CustomRecord[] =>
-  records.map((record, index) => ({
-    ...record,
-    id: toRecordId(record.id ? record.id : `id_${index.toString(36)}`),
-  }))
-
 const toDatasetState = (response: AnySuccessfulResponse): DatasetState => {
-  const { title, records, metadata, config } = processApiResponse(response)
+  const { title, metadata, config, layers } = processApiResponse(response)
+  let generatedCounter = 0
+  const normalizedLayers = layers.map((layer) => {
+    const layerRecords = layer.records.map((record) => {
+      const id = record.id
+        ? toRecordId(record.id)
+        : toRecordId(`id_${(generatedCounter++).toString(36)}`)
+      return { ...record, id, layerId: layer.id }
+    })
+    return {
+      ...layer,
+      records: layerRecords,
+    }
+  })
+  const allRecords = normalizedLayers.flatMap((l) => l.records)
+
   return {
     loading: false,
     error: null,
     title,
-    records: withRecordIds(records),
+    records: allRecords,
     metadata,
     config,
+    layers: normalizedLayers,
   }
 }
 
@@ -226,6 +241,7 @@ const useFetchData = (
     records: filteredRecords,
     metadata: selectedDataset.metadata,
     config: selectedDataset.config,
+    layers: selectedDataset.layers,
     loading: selectedDataset.loading,
     error: selectedDataset.error,
     datasets: datasetOptions,

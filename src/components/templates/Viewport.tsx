@@ -1,5 +1,5 @@
 import L, { LatLngTuple } from 'leaflet'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import Drawer from '@/components/molecules/Drawer'
 import HorizontalViewportSplit from '@/components/molecules/HorizontalViewportSplit'
@@ -42,11 +42,83 @@ const Viewport = () => {
     records,
     metadata,
     config,
+    layers,
     loading,
     error,
     datasets,
     reload,
   } = useFetchData(apiUrls, selectedDatasetIndex, search)
+
+  const [visibleLayerIds, setVisibleLayerIds] = useState<string[]>([])
+  const prevDatasetIndexRef = useRef(selectedDatasetIndex)
+
+  // Reset or initialize visible layers when dataset changes or layers load
+  useEffect(() => {
+    if (layers.length > 0) {
+      if (prevDatasetIndexRef.current !== selectedDatasetIndex) {
+        prevDatasetIndexRef.current = selectedDatasetIndex
+        setVisibleLayerIds(layers.map((l) => l.id))
+      } else {
+        setVisibleLayerIds((prev) => {
+          if (prev.length === 0) {
+            return layers.map((l) => l.id)
+          }
+          const layerIdSet = new Set(layers.map((l) => l.id))
+          const retained = prev.filter((layerId) => layerIdSet.has(layerId))
+          return retained.length > 0 ? retained : layers.map((l) => l.id)
+        })
+      }
+    } else {
+      setVisibleLayerIds([])
+    }
+  }, [layers, selectedDatasetIndex])
+
+  const handleToggleLayer = useCallback((layerId: string) => {
+    setVisibleLayerIds((prev) =>
+      prev.includes(layerId)
+        ? prev.filter((id) => id !== layerId)
+        : [...prev, layerId],
+    )
+  }, [])
+
+  // Deselect active record and close drawer if its layer is unchecked
+  useEffect(() => {
+    if (!selectedRecord) return
+    if (
+      layers.length > 1 &&
+      selectedRecord.layerId &&
+      !visibleLayerIds.includes(selectedRecord.layerId)
+    ) {
+      setSelectedRecord(null)
+    }
+  }, [selectedRecord, layers.length, visibleLayerIds])
+
+  // Filter records by currently active layers
+  const activeLayerRecords = useMemo(() => {
+    if (layers.length <= 1) return records
+    const visibleSet = new Set(visibleLayerIds)
+    return records.filter((r) => !r.layerId || visibleSet.has(r.layerId))
+  }, [records, layers.length, visibleLayerIds])
+
+  // Aggregate metadata across visible layers
+  const activeMetadata = useMemo(() => {
+    if (layers.length <= 1) return metadata
+
+    const visibleSet = new Set(visibleLayerIds)
+    const activeLayers = layers.filter((l) => visibleSet.has(l.id))
+    const items: string[] = []
+
+    for (const layer of activeLayers) {
+      if (!layer.metadata) continue
+      if (Array.isArray(layer.metadata)) {
+        items.push(...layer.metadata)
+      } else if (typeof layer.metadata === 'string' && layer.metadata.trim()) {
+        items.push(layer.metadata)
+      }
+    }
+
+    return items.length > 0 ? items : ''
+  }, [layers, visibleLayerIds, metadata])
 
   const {
     map,
@@ -89,16 +161,20 @@ const Viewport = () => {
     if (!currentMapBounds) return []
 
     if (idFromUrl && config.isShowOnlyURLRecordEnabled)
-      return records.filter((record) => record.id === idFromUrl)
+      return activeLayerRecords.filter((record) => record.id === idFromUrl)
 
     if (config.isAggressiveOptimizationEnabled) {
-      return reduceVisibleRecords(records, currentMapBounds, currentZoom)
+      return reduceVisibleRecords(
+        activeLayerRecords,
+        currentMapBounds,
+        currentZoom,
+      )
     }
 
-    return records.filter((record) =>
+    return activeLayerRecords.filter((record) =>
       currentMapBounds.contains([record.latitude, record.longitude]),
     )
-  }, [records, currentMapBounds, idFromUrl, config, currentZoom])
+  }, [activeLayerRecords, currentMapBounds, idFromUrl, config, currentZoom])
 
   const handleRecordSelect = useCallback(
     (record: CustomRecord | null) => {
@@ -131,8 +207,8 @@ const Viewport = () => {
   }, [id, records, handleRecordSelect])
 
   const isListEnabled = useMemo(
-    () => !!config.isListEnabled && records.length > 0 && !idFromUrl,
-    [config.isListEnabled, records.length, idFromUrl],
+    () => !!config.isListEnabled && activeLayerRecords.length > 0 && !idFromUrl,
+    [config.isListEnabled, activeLayerRecords.length, idFromUrl],
   )
 
   /**
@@ -171,7 +247,11 @@ const Viewport = () => {
         }
         splitElement={
           <ListView
-            records={config.isListFilteredToViewport ? visibleRecords : records}
+            records={
+              config.isListFilteredToViewport
+                ? visibleRecords
+                : activeLayerRecords
+            }
             onRecordSelect={(record) => {
               handleRecordSelect(record)
 
@@ -201,7 +281,10 @@ const Viewport = () => {
         isZoomInDisabled={isZoomInDisabled}
         isZoomOutDisabled={isZoomOutDisabled}
         loading={loading}
-        metadata={metadata}
+        metadata={activeMetadata}
+        layers={layers}
+        visibleLayerIds={visibleLayerIds}
+        onToggleLayer={handleToggleLayer}
         onRefresh={reload}
         handleZoomIn={handleZoomIn}
         handleZoomOut={handleZoomOut}

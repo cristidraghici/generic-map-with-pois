@@ -1,71 +1,197 @@
 # Generic map with POIs
 
-> This the a generic leaflet map with points of interest
+> This is a generic Leaflet map with points of interest (POIs)
 
 ## Demo
 
-[https://cristidraghici.github.io/generic-map-with-pois/?api=/cities_in_romania.json&api=/world_cities.json&api=/cultural_landmarks_paris.json&api=/national_parks.json&api=/space_launch_sites.json&selected=0](https://cristidraghici.github.io/generic-map-with-pois/?api=/cities_in_romania.json&api=/world_cities.json&api=/cultural_landmarks_paris.json&api=/national_parks.json&api=/space_launch_sites.json&selected=0)
+[https://cristidraghici.github.io/generic-map-with-pois/?api=/cities_in_romania.json&api=/multi_layer_sample.json&api=/world_cities.json&api=/cultural_landmarks_paris.json&api=/national_parks.json&api=/space_launch_sites.json&selected=0](https://cristidraghici.github.io/generic-map-with-pois/?api=/cities_in_romania.json&api=/multi_layer_sample.json&api=/world_cities.json&api=/cultural_landmarks_paris.json&api=/national_parks.json&api=/space_launch_sites.json&selected=0)
 
 ## About
 
-This project uses React, Typescript, Leaflet and OpenStreetMap to show points of interest (POIs). It will automatically set bounds and zoom to the loaded POIs. By default, it will show a few cities of Romania. The format for the POI is:
+This project uses React, TypeScript, Leaflet, and OpenStreetMap to display points of interest (POIs). It automatically fits bounds and zooms to the loaded POIs.
+
+---
+
+## Data Structures & Source File Formats
+
+When you specify an address in the `?api=` URL parameter (or repeat `?api=` for multiple datasets), the application validates and parses the JSON response. The root of the JSON file supports **three flexible formats**:
+
+1. **Multi-Layer Array** (multiple layers with toggleable visibility)
+2. **Single Enveloped Dataset** (single layer with title, metadata, and config)
+3. **Flat POI Array** (simple list of POIs)
+
+---
+
+### 1. Point of Interest (`PointOfInterest` / `CustomRecord`)
+
+The individual record representation:
 
 ```typescript
 type PointOfInterest = {
+  /**
+   * Unique identifier for the POI.
+   * If omitted, a deterministic ID (id_0, id_1, etc.) is automatically generated.
+   */
   id?: string;
+
+  /** Latitude coordinate (-90 to 90) */
   latitude: number;
+
+  /** Longitude coordinate (-180 to 180) */
   longitude: number;
+
+  /** Primary title of the location */
   title: string;
+
+  /**
+   * Detailed description of the point.
+   * Can be a single string or an array of paragraphs.
+   * URLs inside descriptions are automatically rendered as clickable links.
+   */
   description?: string | string[];
+
+  /** Optional array of image URLs to display in the image gallery */
   images?: string[];
+
+  /**
+   * Optional custom hex or CSS color for the map pin / marker (e.g. "#DC2626").
+   * Defaults to green if description is an array, blue otherwise.
+   */
+  color?: string;
+
+  /** Optional internal layer identifier associating this record with a specific layer */
+  layerId?: string;
 };
 ```
 
-### Response types
+---
 
-If you specify an address in the `?api=` url param, then it will try to use that as a source for the points. Please remember to have the following format in your response:
+### 2. Configuration (`Config`)
+
+Controls map behavior, list visibility, and marker appearance:
 
 ```typescript
-interface Response extends Array<PointOfInterest> {}
+type Config = {
+  /**
+   * Marker rendering style:
+   * - "default": Standard SVG pin marker with drop pin graphic
+   * - "dot": Compact dot marker
+   * - "text": Displays the POI title directly as the marker icon
+   */
+  typeOfIcon: "default" | "dot" | "text";
+
+  /** Show the bottom drawer button to toggle the list view (default: true) */
+  isListEnabled?: boolean;
+
+  /** Zoom into the POI when clicked on the map or selected from the list (default: false) */
+  isZoomOnSelectEnabled?: boolean;
+
+  /** Filter the list view items strictly to POIs currently visible in the map viewport (default: false) */
+  isListFilteredToViewport?: boolean;
+
+  /** When ?id= is present in the URL, display only that specific record on the map (default: true) */
+  isShowOnlyURLRecordEnabled?: boolean;
+
+  /** Aggressively thin markers at lower zooms to boost performance with large datasets (default: false) */
+  isAggressiveOptimizationEnabled?: boolean;
+};
 ```
 
-There is also an option to use an enveloped structure:
+---
+
+### 3. Metadata (`Metadata`)
+
+Dataset context, provenance, or attribution rendered in the information modal:
 
 ```typescript
-interface APIEnvelope {
-  title?: string; // optional, label of the dataset in the dataset selector
-  metadata: string | string[];
-  config: {
-    typeOfIcon: "text" | "default" | "dot"; // default, the icon to use in the data
-    isListEnabled: boolean | undefined; // true, show the toggler to view a list
-    isListFilteredToViewport: boolean | undefined; // false, show only the POIs in the viewport
-    isZoomOnSelectEnabled: boolean | undefined; // false, zoom to a POI when clicked
-    isShowOnlyURLRecordEnabled: boolean | undefined; // true, show only the record specified in the url
-    isAggressiveOptimizationEnabled: boolean | undefined; // false, aggressively limit the number of records shown on the map to improve performance
-  };
+type Metadata = string | string[];
+```
+
+---
+
+### 4. Root Source File Structures
+
+#### A. Multi-Layer Dataset (`MultiLayerResponse`)
+
+If the root of the JSON file is an array where elements are layer envelopes or nested record arrays, each item represents an independent layer:
+
+```typescript
+type LayerEnvelope = {
+  /** Name of the layer displayed in the layers modal (defaults to "Layer {index + 1}") */
+  title?: string;
+
+  /** Layer-specific metadata, aggregated in the data source information modal */
+  metadata?: string | string[];
+
+  /** Records belonging to this layer */
   records: PointOfInterest[];
-}
+
+  /** Optional layer-specific configuration */
+  config?: Config;
+};
+
+// Root structure for multi-layer data:
+type MultiLayerResponse = Array<LayerEnvelope | PointOfInterest[]>;
 ```
 
-### URL Parameters
+**Features when multiple layers are present:**
+- A dedicated **Layers** button (stacked-sheets icon) appears directly below the zoom controls.
+- Clicking the button opens a modal with checkboxes showing each layer title and record count.
+- Toggling a layer immediately updates the map markers, bottom list view, and fuzzy search results.
+- Unchecking all layers is supported (clears the map view).
+- The information modal aggregates metadata across all currently active layers.
+- Current zoom and pan are preserved when toggling layers.
 
-- `?api=` - Specifies the API endpoint or JSON file to load POI data from. Can be repeated to provide multiple datasets (e.g. `?api=...&api=...`), selectable from a dropdown below the search input. The dropdown label is the dataset `title`, then the first `metadata` entry, then the URL itself
+#### B. Single Enveloped Dataset (`CustomRecordWithMetadata`)
+
+```typescript
+type SingleEnvelopedDataset = {
+  /** Dataset label in the dataset switcher dropdown (when multiple ?api= params exist) */
+  title?: string;
+
+  /** Information displayed in the info button modal */
+  metadata?: string | string[];
+
+  /** Map configuration options */
+  config?: Config;
+
+  /** Array of POIs */
+  records: PointOfInterest[];
+};
+```
+
+#### C. Flat POI Array
+
+A direct array of POIs with default settings:
+
+```typescript
+type FlatResponse = PointOfInterest[];
+```
+
+---
+
+## URL Parameters
+
+- `?api=` - Specifies the API endpoint or JSON file to load POI data from. Can be repeated to provide multiple datasets (e.g. `?api=...&api=...`), selectable from a dropdown below the search input. The dropdown label is resolved from the dataset `title`, then the first `metadata` entry, then the URL itself
 - `?selected=` - Zero-based index of the selected dataset when multiple `api` values are provided (defaults to `0`)
 - `?id=` - Focuses on a specific record by its ID and opens its details panel
 
 **Example URLs:**
 
-- `/?api=/cities_in_romania.json` - Load Romanian cities (default icon, list enabled, zoom on select)
+- `/?api=/cities_in_romania.json` - Romanian cities (default icon, list enabled, zoom on select)
+- `/?api=/multi_layer_sample.json` - Multi-layer sample demonstrating multiple layers with custom marker colors (`Romanian Landmarks`, `Space & Science Centers`, and `Nature & Parks`) and the layer selector modal
 - `/?api=/cities_in_romania.json&id=id_1` - Load demo data and focus on Cluj-Napoca (second record)
 - `/?api=/cultural_landmarks_paris.json` - Paris landmarks demonstrating `typeOfIcon: "text"`, custom `color` hexes, `images` galleries, and `isZoomOnSelectEnabled: true`
 - `/?api=/national_parks.json` - Iconic world national parks demonstrating `isListFilteredToViewport: true`, `isShowOnlyURLRecordEnabled: false`, and `typeOfIcon: "dot"`
 - `/?api=/space_launch_sites.json` - Global spaceports demonstrating `isListEnabled: false` (clean map view without bottom drawer) and `isAggressiveOptimizationEnabled: true`
-- `/?api=/cities_in_romania.json&api=/world_cities.json&api=/cultural_landmarks_paris.json&api=/national_parks.json&api=/space_launch_sites.json` - Load all demo datasets and switch between them from the dropdown
+- `/?api=/cities_in_romania.json&api=/multi_layer_sample.json&api=/world_cities.json&api=/cultural_landmarks_paris.json&api=/national_parks.json&api=/space_launch_sites.json` - Load all demo datasets and switch between them from the dropdown
 - `/?api=https://your-api.com/pois.json&id=custom-poi-123` - Load from API and focus on specific record
 
-**Note:** If your data doesn't include `id` fields, the system will automatically generate them using the pattern `id_0`, `id_1`, `id_2`, etc., based on the array index.
+**Note:** If your data doesn't include `id` fields, the system will automatically generate them using the pattern `id_0`, `id_1`, `id_2`, etc., ensuring unique IDs across records and layers.
 
-## Install and first run
+---
+
+## Install and First Run
 
 - `npm i`
 - `npm run dev`
@@ -74,13 +200,15 @@ interface APIEnvelope {
 
 ### Code Formatting and Linting
 
-This project uses [Biome](https://biomejs.dev/) for code formatting and linting.
+This project uses [Biome](https://biomejs.dev/) as the sole tool for code formatting and linting.
 
 **Available commands:**
 
 - `npm run lint` - Check for linting errors
 - `npm run format` - Format code
-- `npm run check` - Run both linting and formatting (recommended)
+- `npm run check:biome` - Check formatting and linting with autofix
+- `npm run check:tsc` - Strict TypeScript type checking (`tsc --noEmit`)
+- `npm run check` - Run both Biome check and TypeScript type checking (recommended)
 
 **VS Code Setup:**
 
@@ -98,22 +226,16 @@ This project uses [Biome](https://biomejs.dev/) for code formatting and linting.
 }
 ```
 
-This will automatically format your code and organize imports on save.
+### Devcontainer
 
-### devcontainer
-
-You can now open this project in a devcontainer by:
+You can open this project in a devcontainer by:
 
 - Opening VS Code Command Palette (Cmd+Shift+P)
 - Running "Dev Containers: Reopen in Container"
 
-## Notes
-
-If you intend to use this project as a base for a new one, please remember to update the `base` url in `vite.config.js`. It is currently used for publishing the project to Github Pages. You can also completely remove it.
-
 ## Icons
 
-We are using FontAwesome svg icons: [https://fontawesome.com/search](https://fontawesome.com/search)
+We are using FontAwesome SVG icons: [https://fontawesome.com/search](https://fontawesome.com/search)
 
 ## Data Sources
 

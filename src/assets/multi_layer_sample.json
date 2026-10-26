@@ -1,0 +1,74 @@
+[
+  {
+    "title": "Romanian Landmarks",
+    "metadata": "Key historical and cultural sites across Romania.",
+    "config": {
+      "typeOfIcon": "default",
+      "isListEnabled": true,
+      "isZoomOnSelectEnabled": true
+    },
+    "records": [
+      {
+        "title": "Bran Castle",
+        "latitude": 45.5149,
+        "longitude": 25.3672,
+        "description": "Historic fortress famously associated with the Dracula legend.",
+        "color": "#DC2626"
+      },
+      {
+        "title": "Peles Castle",
+        "latitude": 45.3599,
+        "longitude": 25.5426,
+        "description": "Neo-Renaissance castle in the Carpathian Mountains.",
+        "color": "#DC2626"
+      },
+      {
+        "title": "Palace of the Parliament",
+        "latitude": 44.4275,
+        "longitude": 26.0873,
+        "description": "Colossal parliament building in Bucharest.",
+        "color": "#DC2626"
+      }
+    ]
+  },
+  {
+    "title": "Space & Science Centers",
+    "metadata": "Scientific observatories and research stations.",
+    "records": [
+      {
+        "title": "Bucharest Astronomical Observatory",
+        "latitude": 44.4485,
+        "longitude": 26.0858,
+        "description": "Public astronomical observatory in Bucharest.",
+        "color": "#3B82F6"
+      },
+      {
+        "title": "Cluj Observatory",
+        "latitude": 46.7583,
+        "longitude": 23.5917,
+        "description": "Astronomical observatory in Cluj-Napoca.",
+        "color": "#3B82F6"
+      }
+    ]
+  },
+  {
+    "title": "Nature & Parks",
+    "metadata": "Protected national parks and nature reserves.",
+    "records": [
+      {
+        "title": "Retezat National Park",
+        "latitude": 45.3667,
+        "longitude": 22.8667,
+        "description": "Pristine national park with over 80 glacial lakes.",
+        "color": "#10B981"
+      },
+      {
+        "title": "Danube Delta Biosphere",
+        "latitude": 45.1667,
+        "longitude": 29.5833,
+        "description": "Europe's best preserved delta and UNESCO World Heritage site.",
+        "color": "#10B981"
+      }
+    ]
+  }
+]

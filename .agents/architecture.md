@@ -67,6 +67,7 @@ customRecordSchema = z.object({
   description: z.union([z.string(), z.string().array()]).optional(),
   images: z.string().array().optional(),
   color: z.string().optional(),
+  layerId: z.string().optional(),
 })
 
 // Optional Envelope Config Schema
@@ -79,14 +80,32 @@ configSchema = z.object({
   isAggressiveOptimizationEnabled: z.boolean().optional(),
 })
 
-// Top-level payload accepted: array of records OR enveloped object
-anySuccessfulResponseSchema = z.union([
-  customRecordSchema.array(),
+// Normalized Layer Schema
+layerSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  metadata: metadataSchema.optional(),
+  records: customRecordSchema.array(),
+  config: configSchema.optional(),
+})
+
+// Multi-layer response schema
+layerResponseSchema = z.union([
   customRecordWithMetadataSchema,
+  customRecordSchema.array(),
+])
+multiLayerResponseSchema = z.array(layerResponseSchema)
+
+// Top-level payload accepted: multi-layer array, enveloped object, OR flat array of records
+anySuccessfulResponseSchema = z.union([
+  multiLayerResponseSchema,
+  customRecordWithMetadataSchema,
+  customRecordSchema.array(),
 ])
 ```
 
-- When `id` is omitted in source data, `src/utils/processApiResponse.ts` generates deterministic fallback identifiers: `id_0`, `id_1`, etc.
+- When `id` is omitted in source data, `src/utils/processApiResponse.ts` and `src/hooks/useFetchData.ts` generate deterministic fallback identifiers (`id_0`, `id_1`, etc.), ensuring ID uniqueness across multiple layers.
+- For multi-layer responses, `src/utils/processApiResponse.ts` normalizes layers, associates each record with its `layerId`, inherits the global map config from the first layer (falling back to `DEFAULT_CONFIG`), and `src/components/organisms/MapControls.tsx` renders a layer selection modal. Visible layers are managed in React state, synchronizing the map, search, and list view without re-fitting bounds.
 
 ### 3.2 URL Parameters & Routing
 - `?api=<url>`: Target data source (validated against `ALLOWED_API_URL_PATTERNS`).

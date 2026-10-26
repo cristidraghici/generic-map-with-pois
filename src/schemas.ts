@@ -10,6 +10,7 @@ export const customRecordSchema = z.object({
   description: z.union([z.string(), z.string().array()]).optional(),
   images: z.string().array().optional(),
   color: z.string().optional(),
+  layerId: z.string().optional(),
 })
 
 export const metadataSchema = z.union([z.string(), z.string().array()])
@@ -25,12 +26,28 @@ export const configSchema = z.object({
 
 export const customRecordWithMetadataSchema = z.object({
   title: z.string().optional(),
-  metadata: metadataSchema,
+  metadata: metadataSchema.optional(),
   records: customRecordSchema.array(),
   config: configSchema.optional(),
 })
 
-export const anySuccessfulResponseSchema = z.union([
-  customRecordSchema.array(),
+export const layerSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  metadata: metadataSchema.optional(),
+  records: customRecordSchema.array(),
+  config: configSchema.optional(),
+})
+
+export const layerResponseSchema = z.union([
   customRecordWithMetadataSchema,
+  customRecordSchema.array(),
+])
+
+export const multiLayerResponseSchema = z.array(layerResponseSchema)
+
+export const anySuccessfulResponseSchema = z.union([
+  multiLayerResponseSchema,
+  customRecordWithMetadataSchema,
+  customRecordSchema.array(),
 ])

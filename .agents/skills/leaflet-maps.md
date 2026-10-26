@@ -55,6 +55,7 @@ const {
 
 - When new records arrive or active filters change, call `setMapBounds()` to smoothly fit the viewport to marker coordinates using `bounds.pad(MAP_CONFIG.BOUNDS_PADDING)`.
 - Always check if `records.length > 0` before fitting bounds. If records are empty, fall back to `MAP_CONFIG.CENTER` and `MAP_CONFIG.ZOOM`.
+- When layers are toggled on/off in multi-layer datasets, bounds are intentionally preserved rather than re-fit, ensuring smooth panning/zooming without jarring viewport jumps.
 
 ### 3.2 Marker Rendering & Clustering
 Render markers inside `<MarkerClusterGroup>` within [`MapContainer.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/components/organisms/MapContainer.tsx):

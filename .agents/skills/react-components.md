@@ -48,7 +48,7 @@ interface ButtonProps extends React.ComponentProps<'button'> {
 - Connect hooks, state management, and lifecycle events.
 - Handle data states: loading, error, empty, and populated.
 - Examples:
-  - [`MapControls.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/components/organisms/MapControls.tsx): Zooms, refresh, layer resets.
+  - [`MapControls.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/components/organisms/MapControls.tsx): Zoom buttons, refresh, conditional layers button and checkbox modal (when 2+ layers exist), and metadata modal.
   - [`SearchSection.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/components/organisms/SearchSection.tsx): Fuzzy search input and dataset selector.
   - [`ListView.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/components/organisms/ListView.tsx): Viewport-filtered POI drawer list.
 

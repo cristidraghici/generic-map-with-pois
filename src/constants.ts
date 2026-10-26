@@ -26,10 +26,16 @@ export const NATIONAL_PARKS_MOCK_DATA_PATH = '/national_parks.json'
 
 export const SPACE_LAUNCH_SITES_MOCK_DATA_PATH = '/space_launch_sites.json'
 
+export const MULTI_LAYER_SAMPLE_MOCK_DATA_PATH = '/multi_layer_sample.json'
+
 export const AVAILABLE_DATASETS = [
   {
     label: 'Romanian Cities',
     value: ROMANIAN_CITIES_MOCK_DATA_PATH,
+  },
+  {
+    label: 'Multi-Layer Sample (Landmarks, Science, Parks)',
+    value: MULTI_LAYER_SAMPLE_MOCK_DATA_PATH,
   },
   {
     label: 'World Cities (Top 5000)',

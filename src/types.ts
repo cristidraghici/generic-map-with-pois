@@ -4,7 +4,10 @@ import {
   configSchema,
   customRecordSchema,
   customRecordWithMetadataSchema,
+  layerResponseSchema,
+  layerSchema,
   metadataSchema,
+  multiLayerResponseSchema,
   recordIdSchema,
 } from './schemas'
 
@@ -15,5 +18,7 @@ export type Config = z.infer<typeof configSchema>
 export type CustomRecordWithMetadata = z.infer<
   typeof customRecordWithMetadataSchema
 >
-
+export type Layer = z.infer<typeof layerSchema>
+export type LayerResponse = z.infer<typeof layerResponseSchema>
+export type MultiLayerResponse = z.infer<typeof multiLayerResponseSchema>
 export type AnySuccessfulResponse = z.infer<typeof anySuccessfulResponseSchema>

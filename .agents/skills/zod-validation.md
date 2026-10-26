@@ -17,6 +17,9 @@ export type RecordId = z.infer<typeof recordIdSchema>
 export type CustomRecord = z.infer<typeof customRecordSchema>
 export type Config = z.infer<typeof configSchema>
 export type CustomRecordWithMetadata = z.infer<typeof customRecordWithMetadataSchema>
+export type Layer = z.infer<typeof layerSchema>
+export type LayerResponse = z.infer<typeof layerResponseSchema>
+export type MultiLayerResponse = z.infer<typeof multiLayerResponseSchema>
 export type AnySuccessfulResponse = z.infer<typeof anySuccessfulResponseSchema>
 ```
 
@@ -36,6 +39,7 @@ export const customRecordSchema = z.object({
   description: z.union([z.string(), z.string().array()]).optional(),
   images: z.string().array().optional(),
   color: z.string().optional(),
+  layerId: z.string().optional(),
 })
 ```
 
@@ -51,12 +55,28 @@ export const configSchema = z.object({
 })
 ```
 
-### 2.3 Response Payloads (`anySuccessfulResponseSchema`)
-Supports both flat POI arrays and enveloped datasets with metadata and configs:
+### 2.3 Layers & Response Payloads (`anySuccessfulResponseSchema`)
+Supports multi-layer arrays, enveloped single datasets, and flat POI arrays:
 ```typescript
-export const anySuccessfulResponseSchema = z.union([
-  customRecordSchema.array(),
+export const layerSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  metadata: metadataSchema.optional(),
+  records: customRecordSchema.array(),
+  config: configSchema.optional(),
+})
+
+export const layerResponseSchema = z.union([
   customRecordWithMetadataSchema,
+  customRecordSchema.array(),
+])
+
+export const multiLayerResponseSchema = z.array(layerResponseSchema)
+
+export const anySuccessfulResponseSchema = z.union([
+  multiLayerResponseSchema,
+  customRecordWithMetadataSchema,
+  customRecordSchema.array(),
 ])
 ```
 
