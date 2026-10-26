@@ -14,6 +14,7 @@ Project: **generic-map-with-pois** (React 18 + TypeScript 5 + Vite + Leaflet + T
 - **Component Architecture**: Atomic design under `src/components/` (`atoms` -> `molecules` -> `organisms` -> `templates`). Strict unidirectional dependency.
 - **Data Models**: Defined via Zod in `src/schemas.ts`; inferred in `src/types.ts`. Do not write duplicate manual interfaces.
 - **URL Security**: Check API endpoints against `ALLOWED_API_URL_PATTERNS` in `src/constants.ts`.
+- **Self-Updating Documentation**: Agents must self-update project documentation and skills (`.agents/architecture.md`, `.agents/skills/*.md`, `README.md`, `AGENTS.md`, `GEMINI.md`, and `.github/copilot-instructions.md`) whenever adding or modifying features that affect architecture, data contracts, UI components, URL parameters, or developer workflows.
 
 ## Skills & Architecture Index (Progressive Disclosure)
 Consult detailed skill guides only when addressing relevant tasks:

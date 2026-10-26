@@ -137,6 +137,8 @@ anySuccessfulResponseSchema = z.union([
    - Biome is the sole linter and formatter. Always run `npm run check` to verify changes.
 5. **Autocommit Restriction**:
    - AI assistants must never execute `git commit` automatically; leave git commits to the developer.
+6. **Documentation & Agent Skill Synchronization (Self-Updating)**:
+   - When introducing or altering features (such as data schemas, components, geospatial algorithms, URL parameters, configuration options, or developer commands), agents must self-update `.agents/architecture.md`, relevant `.agents/skills/*.md` guides, `README.md`, and agent instruction sets (`AGENTS.md`, `GEMINI.md`, `.github/copilot-instructions.md`). Never allow agent knowledge bases to become stale or drift from actual codebase implementation.
 
 ---
 

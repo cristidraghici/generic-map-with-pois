@@ -36,6 +36,9 @@ Interactive Points of Interest (POI) map application built with React 18, TypeSc
 - External URLs must validate against `ALLOWED_API_URL_PATTERNS` in `src/constants.ts`.
 - No `dangerouslySetInnerHTML`. Safe text linkification is handled via `linkifyText.tsx`.
 
+### 5. Self-Updating Documentation & Agent Invariants
+- Whenever creating or modifying features (e.g. schemas, components, URL parameters, map behaviors, or build scripts), agents and assistants must self-update related documentation and skills in `.agents/architecture.md`, `.agents/skills/`, `README.md`, `AGENTS.md`, `GEMINI.md`, and this file.
+
 ## Key Commands
 - Verification: `npm run check` (Biome check + `tsc --noEmit`)
 - Formatting: `npm run check:biome`
