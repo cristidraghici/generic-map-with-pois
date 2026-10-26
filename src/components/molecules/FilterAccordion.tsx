@@ -24,8 +24,30 @@ const FilterAccordion: FunctionComponent<FilterAccordionProps> = ({
   className = '',
 }) => {
   const [isOpen, setIsOpen] = useState(false)
+  const [maxContentHeight, setMaxContentHeight] = useState<number | undefined>(
+    undefined,
+  )
   const containerRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
   const activeCount = getActiveFilterCount(filters, activeFilters)
+
+  useEffect(() => {
+    if (!isOpen) return
+
+    const updateMaxHeight = () => {
+      if (!triggerRef.current) return
+      const rect = triggerRef.current.getBoundingClientRect()
+      const remainingHeight = window.innerHeight - rect.bottom - 16
+      setMaxContentHeight(Math.max(120, Math.floor(remainingHeight)))
+    }
+
+    updateMaxHeight()
+    window.addEventListener('resize', updateMaxHeight)
+
+    return () => {
+      window.removeEventListener('resize', updateMaxHeight)
+    }
+  }, [isOpen])
 
   useEffect(() => {
     if (!isOpen) return
@@ -78,6 +100,7 @@ const FilterAccordion: FunctionComponent<FilterAccordionProps> = ({
   return (
     <div ref={containerRef} className={`w-full ${className}`}>
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         aria-expanded={isOpen}
@@ -110,84 +133,94 @@ const FilterAccordion: FunctionComponent<FilterAccordionProps> = ({
       </button>
 
       {isOpen && (
-        <div className="mt-1 max-h-80 space-y-3 overflow-y-auto rounded-md border-[2px] border-gray-800 border-opacity-50 bg-white bg-clip-padding p-3 shadow-md">
-          {filters.map((filter) => {
-            const filterVal = activeFilters[filter.id]
+        <div
+          style={{
+            maxHeight:
+              maxContentHeight !== undefined
+                ? `${maxContentHeight}px`
+                : undefined,
+          }}
+          className="mt-1 flex max-h-[calc(100dvh-11rem)] flex-col overflow-hidden rounded-md border-[2px] border-gray-800 border-opacity-50 bg-white bg-clip-padding shadow-md"
+        >
+          <div className="flex-1 space-y-3 overflow-y-auto p-3">
+            {filters.map((filter) => {
+              const filterVal = activeFilters[filter.id]
 
-            if (filter.type === 'checkbox') {
-              const selectedValues = Array.isArray(filterVal) ? filterVal : []
-              return (
-                <div key={filter.id} className="space-y-1.5">
-                  <div className="text-xs font-semibold text-gray-800">
-                    {filter.label}
+              if (filter.type === 'checkbox') {
+                const selectedValues = Array.isArray(filterVal) ? filterVal : []
+                return (
+                  <div key={filter.id} className="space-y-1.5">
+                    <div className="text-xs font-semibold text-gray-800">
+                      {filter.label}
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {filter.options?.map((option) => (
+                        <PillButton
+                          key={option.value}
+                          label={option.label}
+                          active={selectedValues.includes(option.value)}
+                          onClick={() =>
+                            handleCheckboxToggle(filter.id, option.value)
+                          }
+                        />
+                      ))}
+                    </div>
                   </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {filter.options?.map((option) => (
+                )
+              }
+
+              if (filter.type === 'select') {
+                const selectedValue =
+                  typeof filterVal === 'string' ? filterVal : ''
+                return (
+                  <div key={filter.id} className="space-y-1.5">
+                    <div className="text-xs font-semibold text-gray-800">
+                      {filter.label}
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
                       <PillButton
-                        key={option.value}
-                        label={option.label}
-                        active={selectedValues.includes(option.value)}
-                        onClick={() =>
-                          handleCheckboxToggle(filter.id, option.value)
-                        }
+                        label="All"
+                        active={!selectedValue}
+                        onClick={() => onFilterChange(filter.id, undefined)}
                       />
-                    ))}
+                      {filter.options?.map((option) => (
+                        <PillButton
+                          key={option.value}
+                          label={option.label}
+                          active={selectedValue === option.value}
+                          onClick={() =>
+                            handleSelectToggle(filter.id, option.value)
+                          }
+                        />
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )
-            }
+                )
+              }
 
-            if (filter.type === 'select') {
-              const selectedValue =
-                typeof filterVal === 'string' ? filterVal : ''
-              return (
-                <div key={filter.id} className="space-y-1.5">
-                  <div className="text-xs font-semibold text-gray-800">
-                    {filter.label}
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    <PillButton
-                      label="All"
-                      active={!selectedValue}
-                      onClick={() => onFilterChange(filter.id, undefined)}
-                    />
-                    {filter.options?.map((option) => (
-                      <PillButton
-                        key={option.value}
-                        label={option.label}
-                        active={selectedValue === option.value}
-                        onClick={() =>
-                          handleSelectToggle(filter.id, option.value)
-                        }
-                      />
-                    ))}
-                  </div>
-                </div>
-              )
-            }
+              if (filter.type === 'range') {
+                const rangeVal =
+                  typeof filterVal === 'object' && !Array.isArray(filterVal)
+                    ? filterVal
+                    : {}
+                return (
+                  <NumericRangeFilter
+                    key={filter.id}
+                    id={filter.id}
+                    label={filter.label}
+                    unit={filter.unit}
+                    minVal={rangeVal?.min}
+                    maxVal={rangeVal?.max}
+                    onChange={(range) => onFilterChange(filter.id, range)}
+                  />
+                )
+              }
 
-            if (filter.type === 'range') {
-              const rangeVal =
-                typeof filterVal === 'object' && !Array.isArray(filterVal)
-                  ? filterVal
-                  : {}
-              return (
-                <NumericRangeFilter
-                  key={filter.id}
-                  id={filter.id}
-                  label={filter.label}
-                  unit={filter.unit}
-                  minVal={rangeVal?.min}
-                  maxVal={rangeVal?.max}
-                  onChange={(range) => onFilterChange(filter.id, range)}
-                />
-              )
-            }
+              return null
+            })}
+          </div>
 
-            return null
-          })}
-
-          <div className="border-t border-gray-200 pt-2">
+          <div className="shrink-0 border-t border-gray-200 bg-white p-2">
             <button
               type="button"
               disabled={activeCount === 0}
