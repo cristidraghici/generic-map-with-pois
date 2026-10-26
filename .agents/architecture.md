@@ -33,12 +33,12 @@ generic-map-with-pois/
 ├── src/                        # Application source code
 │   ├── assets/                 # Icons (SVGs) and local JSON mock datasets
 │   ├── components/             # Atomic Design component hierarchy
-│   │   ├── atoms/              # Base primitives (Button, Modal, SearchField, etc.)
-│   │   ├── molecules/          # Composite controls (ButtonGroup, MarkerElement, MiniMap, RecordDetails, Drawer, etc.)
+│   │   ├── atoms/              # Base primitives (Button, Modal, PillButton, SearchField, Select, etc.)
+│   │   ├── molecules/          # Composite controls (ButtonGroup, FilterAccordion, NumericRangeFilter, MarkerElement, MiniMap, RecordDetails, Drawer, etc.)
 │   │   ├── organisms/          # Complex feature blocks (MapContainer, MapControls, ListView, SearchSection)
 │   │   └── templates/          # Layout assembly (Viewport.tsx)
 │   ├── hooks/                  # Reusable hooks (useMap, useFetchData, useURLParams, useKeyPress)
-│   ├── utils/                  # Pure utility helpers (fuzzyMatch, brandTypes, processApiResponse, etc.)
+│   ├── utils/                  # Pure utility helpers (filterRecords, fuzzyMatch, brandTypes, processApiResponse, etc.)
 │   ├── constants.ts            # Map config, allowed URL patterns, marker colors, defaults
 │   ├── schemas.ts              # Zod runtime data validation schemas
 │   ├── types.ts                # TypeScript types inferred from Zod schemas
@@ -58,6 +58,23 @@ generic-map-with-pois/
 All external data (API or local JSON) is validated at runtime using Zod before entering application state:
 
 ```typescript
+// Filter Definition Schemas
+filterOptionSchema = z.object({
+  label: z.string(),
+  value: z.string(),
+})
+filterTypeSchema = z.enum(['checkbox', 'select', 'range'])
+filterDefinitionSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  type: filterTypeSchema,
+  field: z.string().optional(),
+  options: filterOptionSchema.array().optional(),
+  min: z.number().optional(),
+  max: z.number().optional(),
+  unit: z.string().optional(),
+})
+
 // Custom Record Schema
 customRecordSchema = z.object({
   id: z.string().brand('recordId').optional(),
@@ -68,7 +85,9 @@ customRecordSchema = z.object({
   images: z.string().array().optional(),
   color: z.string().optional(),
   layerId: z.string().optional(),
-})
+  tags: z.string().array().optional(),
+  properties: z.record(z.unknown()).optional(),
+}).passthrough()
 
 // Optional Envelope Config Schema
 configSchema = z.object({
@@ -87,6 +106,16 @@ layerSchema = z.object({
   metadata: metadataSchema.optional(),
   records: customRecordSchema.array(),
   config: configSchema.optional(),
+  filters: filterDefinitionSchema.array().optional(),
+})
+
+// Custom Record with Metadata Envelope
+customRecordWithMetadataSchema = z.object({
+  title: z.string().optional(),
+  metadata: metadataSchema.optional(),
+  records: customRecordSchema.array(),
+  config: configSchema.optional(),
+  filters: filterDefinitionSchema.array().optional(),
 })
 
 // Multi-layer response schema
@@ -117,6 +146,11 @@ anySuccessfulResponseSchema = z.union([
 ### 3.3 Security & Safe Fetching
 - URLs passed to `?api=` are strictly tested against `ALLOWED_API_URL_PATTERNS` in [`constants.ts`](file:///Users/cristi/Code/generic-map-with-pois/src/constants.ts). Only approved domains (e.g. GitHub Pages) and localhost/127.0.0.1 for local development are accepted.
 - No `dangerouslySetInnerHTML`. User strings and descriptions are safely sanitized and converted to active links via [`linkifyText.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/utils/linkifyText.tsx).
+
+### 3.4 Source-Defined Interactive Filters
+- Sources can declare a `filters` array in their envelope or layers. Supported types: `checkbox` (multi-select pill toggles), `select` (single-select options), and `range` (min/max numeric inputs that convert string numbers).
+- In [`SearchSection.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/components/organisms/SearchSection.tsx), if filters are defined for the active source, a dropdown-styled collapsible accordion panel ([`FilterAccordion.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/components/molecules/FilterAccordion.tsx)) renders directly below the dataset selector (or directly below the search input when only one dataset is loaded).
+- Filter state is managed in local React state, updating map markers and list view live, with active badge counts and a clear-all button. Switching datasets resets active filters.
 
 ---
 

@@ -25,22 +25,24 @@ import {
   AnySuccessfulResponse,
   Config,
   CustomRecord,
+  FilterDefinition,
   Layer,
   Metadata,
 } from '../types'
 
 const MOCK_DATASETS: Record<string, AnySuccessfulResponse> = {
   [ROMANIAN_CITIES_MOCK_DATA_PATH]:
-    mockRomanianCitiesData as AnySuccessfulResponse,
+    mockRomanianCitiesData as unknown as AnySuccessfulResponse,
   [MULTI_LAYER_SAMPLE_MOCK_DATA_PATH]:
-    mockMultiLayerSampleData as AnySuccessfulResponse,
-  [WORLD_CITIES_MOCK_DATA_PATH]: mockWorldCitiesData as AnySuccessfulResponse,
+    mockMultiLayerSampleData as unknown as AnySuccessfulResponse,
+  [WORLD_CITIES_MOCK_DATA_PATH]:
+    mockWorldCitiesData as unknown as AnySuccessfulResponse,
   [PARIS_LANDMARKS_MOCK_DATA_PATH]:
-    mockParisLandmarksData as AnySuccessfulResponse,
+    mockParisLandmarksData as unknown as AnySuccessfulResponse,
   [NATIONAL_PARKS_MOCK_DATA_PATH]:
-    mockNationalParksData as AnySuccessfulResponse,
+    mockNationalParksData as unknown as AnySuccessfulResponse,
   [SPACE_LAUNCH_SITES_MOCK_DATA_PATH]:
-    mockSpaceLaunchSitesData as AnySuccessfulResponse,
+    mockSpaceLaunchSitesData as unknown as AnySuccessfulResponse,
 }
 
 /**
@@ -56,6 +58,7 @@ interface DatasetState {
   metadata: Metadata
   config: Config
   layers: Layer[]
+  filters: FilterDefinition[]
 }
 
 export interface DatasetOption {
@@ -70,6 +73,7 @@ const EMPTY_DATASET: DatasetState = {
   metadata: '',
   config: DEFAULT_CONFIG,
   layers: [],
+  filters: [],
 }
 
 const isURLAllowed = (urlToTest: string): boolean => {
@@ -77,7 +81,8 @@ const isURLAllowed = (urlToTest: string): boolean => {
 }
 
 const toDatasetState = (response: AnySuccessfulResponse): DatasetState => {
-  const { title, metadata, config, layers } = processApiResponse(response)
+  const { title, metadata, config, layers, filters } =
+    processApiResponse(response)
   let generatedCounter = 0
   const normalizedLayers = layers.map((layer) => {
     const layerRecords = layer.records.map((record) => {
@@ -101,6 +106,7 @@ const toDatasetState = (response: AnySuccessfulResponse): DatasetState => {
     metadata,
     config,
     layers: normalizedLayers,
+    filters,
   }
 }
 
@@ -245,6 +251,7 @@ const useFetchData = (
     loading: selectedDataset.loading,
     error: selectedDataset.error,
     datasets: datasetOptions,
+    filters: selectedDataset.filters || [],
     reload,
   }
 }

@@ -13,6 +13,11 @@ import useFetchData from '@/hooks/useFetchData'
 import useMap from '@/hooks/useMap'
 import useURLParams from '@/hooks/useURLParams'
 import { CustomRecord } from '@/types'
+import {
+  ActiveFilters,
+  FilterValue,
+  filterRecords,
+} from '@/utils/filterRecords'
 import { reduceVisibleRecords } from '@/utils/performance'
 
 const Viewport = () => {
@@ -20,6 +25,7 @@ const Viewport = () => {
   const [selectedRecord, setSelectedRecord] = useState<CustomRecord | null>(
     null,
   )
+  const [activeFilters, setActiveFilters] = useState<ActiveFilters>({})
 
   const {
     params: { id, selected },
@@ -43,11 +49,26 @@ const Viewport = () => {
     metadata,
     config,
     layers,
+    filters,
     loading,
     error,
     datasets,
     reload,
   } = useFetchData(apiUrls, selectedDatasetIndex, search)
+
+  const handleFilterChange = useCallback(
+    (filterId: string, value: FilterValue) => {
+      setActiveFilters((prev) => ({
+        ...prev,
+        [filterId]: value,
+      }))
+    },
+    [],
+  )
+
+  const handleClearFilters = useCallback(() => {
+    setActiveFilters({})
+  }, [])
 
   const [visibleLayerIds, setVisibleLayerIds] = useState<string[]>([])
   const prevDatasetIndexRef = useRef(selectedDatasetIndex)
@@ -81,24 +102,29 @@ const Viewport = () => {
     )
   }, [])
 
-  // Deselect active record and close drawer if its layer is unchecked
+  // Filter records by currently active layers and active filters
+  const activeLayerRecords = useMemo(() => {
+    const layerFiltered =
+      layers.length <= 1
+        ? records
+        : records.filter((r) => {
+            const visibleSet = new Set(visibleLayerIds)
+            return !r.layerId || visibleSet.has(r.layerId)
+          })
+
+    return filterRecords(layerFiltered, filters, activeFilters)
+  }, [records, layers.length, visibleLayerIds, filters, activeFilters])
+
+  // Deselect active record and close drawer if its layer is unchecked or filtered out
   useEffect(() => {
     if (!selectedRecord) return
-    if (
-      layers.length > 1 &&
-      selectedRecord.layerId &&
-      !visibleLayerIds.includes(selectedRecord.layerId)
-    ) {
+    const isRecordActive = activeLayerRecords.some(
+      (r) => r.id === selectedRecord.id,
+    )
+    if (!isRecordActive) {
       setSelectedRecord(null)
     }
-  }, [selectedRecord, layers.length, visibleLayerIds])
-
-  // Filter records by currently active layers
-  const activeLayerRecords = useMemo(() => {
-    if (layers.length <= 1) return records
-    const visibleSet = new Set(visibleLayerIds)
-    return records.filter((r) => !r.layerId || visibleSet.has(r.layerId))
-  }, [records, layers.length, visibleLayerIds])
+  }, [selectedRecord, activeLayerRecords])
 
   // Aggregate metadata across visible layers
   const activeMetadata = useMemo(() => {
@@ -218,6 +244,7 @@ const Viewport = () => {
   const handleDatasetChange = useCallback(
     (index: number) => {
       setSelectedRecord(null)
+      setActiveFilters({})
       updateParams({ selected: index.toString(), id: null })
     },
     [updateParams],
@@ -231,8 +258,12 @@ const Viewport = () => {
         hasUrl={apiUrls.length > 0}
         datasets={datasets}
         selectedDatasetIndex={selectedDatasetIndex}
+        filters={filters}
+        activeFilters={activeFilters}
         onSearchChange={setSearch}
         onDatasetChange={handleDatasetChange}
+        onFilterChange={handleFilterChange}
+        onClearFilters={handleClearFilters}
       />
 
       <HorizontalViewportSplit

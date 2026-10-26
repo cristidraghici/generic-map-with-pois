@@ -12,6 +12,27 @@
     "isShowOnlyURLRecordEnabled": false,
     "isAggressiveOptimizationEnabled": false
   },
+  "filters": [
+    {
+      "id": "continent",
+      "label": "Continent",
+      "type": "checkbox",
+      "options": [
+        { "label": "North America", "value": "North America" },
+        { "label": "South America", "value": "South America" },
+        { "label": "Europe", "value": "Europe" },
+        { "label": "Africa", "value": "Africa" },
+        { "label": "Oceania", "value": "Oceania" },
+        { "label": "Asia", "value": "Asia" }
+      ]
+    },
+    {
+      "id": "establishedYear",
+      "label": "Established Year",
+      "type": "range",
+      "unit": "year"
+    }
+  ],
   "records": [
     {
       "id": "yellowstone",
@@ -19,6 +40,8 @@
       "latitude": 44.428,
       "longitude": -110.5885,
       "color": "#D97706",
+      "continent": "North America",
+      "establishedYear": 1872,
       "description": [
         "Country: United States (Wyoming, Montana, Idaho)",
         "Established: March 1, 1872 (World's first national park)",
@@ -35,6 +58,8 @@
       "latitude": 37.8651,
       "longitude": -119.5383,
       "color": "#059669",
+      "continent": "North America",
+      "establishedYear": 1890,
       "description": [
         "Country: United States (California)",
         "Established: October 1, 1890",
@@ -51,6 +76,8 @@
       "latitude": 51.4968,
       "longitude": -115.9281,
       "color": "#0284C7",
+      "continent": "North America",
+      "establishedYear": 1885,
       "description": [
         "Country: Canada (Alberta)",
         "Established: 1885 (Canada's oldest national park)",
@@ -67,6 +94,8 @@
       "latitude": -51.2532,
       "longitude": -72.8814,
       "color": "#0D9488",
+      "continent": "South America",
+      "establishedYear": 1959,
       "description": [
         "Country: Chile (Patagonia)",
         "Established: May 13, 1959",
@@ -83,6 +112,8 @@
       "latitude": 44.8654,
       "longitude": 15.582,
       "color": "#10B981",
+      "continent": "Europe",
+      "establishedYear": 1949,
       "description": [
         "Country: Croatia",
         "Established: April 8, 1949",
@@ -99,6 +130,8 @@
       "latitude": -2.3333,
       "longitude": 34.8333,
       "color": "#EA580C",
+      "continent": "Africa",
+      "establishedYear": 1951,
       "description": [
         "Country: Tanzania",
         "Established: 1951",
@@ -115,6 +148,8 @@
       "latitude": -23.9884,
       "longitude": 31.5547,
       "color": "#65A30D",
+      "continent": "Africa",
+      "establishedYear": 1926,
       "description": [
         "Country: South Africa",
         "Established: May 31, 1926",
@@ -128,6 +163,8 @@
       "latitude": -45.4145,
       "longitude": 167.7181,
       "color": "#14B8A6",
+      "continent": "Oceania",
+      "establishedYear": 1952,
       "description": [
         "Country: New Zealand (South Island)",
         "Established: 1952",
@@ -144,6 +181,8 @@
       "latitude": 35.3606,
       "longitude": 138.7274,
       "color": "#8B5CF6",
+      "continent": "Asia",
+      "establishedYear": 1936,
       "description": [
         "Country: Japan (Honshu)",
         "Established: February 1, 1936",

@@ -4,7 +4,13 @@
 
 ## Demo
 
+### Remote
+
 [https://cristidraghici.github.io/generic-map-with-pois/?api=/cities_in_romania.json&api=/multi_layer_sample.json&api=/world_cities.json&api=/cultural_landmarks_paris.json&api=/national_parks.json&api=/space_launch_sites.json&selected=0](https://cristidraghici.github.io/generic-map-with-pois/?api=/cities_in_romania.json&api=/multi_layer_sample.json&api=/world_cities.json&api=/cultural_landmarks_paris.json&api=/national_parks.json&api=/space_launch_sites.json&selected=0)
+
+### Local development
+
+[http://localhost:5173/?api=/cities_in_romania.json&api=/multi_layer_sample.json&api=/world_cities.json&api=/cultural_landmarks_paris.json&api=/national_parks.json&api=/space_launch_sites.json&selected=0](http://localhost:5173/?api=/cities_in_romania.json&api=/multi_layer_sample.json&api=/world_cities.json&api=/cultural_landmarks_paris.json&api=/national_parks.json&api=/space_launch_sites.json&selected=0)
 
 ## About
 
@@ -109,7 +115,50 @@ type Metadata = string | string[];
 
 ---
 
-### 4. Root Source File Structures
+### 4. Source-Defined Filters (`FilterDefinition`)
+
+Sources can declare a `filters` array in envelopes or layers. If specified, a collapsible accordion panel styled after the source selector appears directly below it (or below the search input when only one source is loaded):
+
+```typescript
+type FilterOption = {
+  label: string;
+  value: string;
+};
+
+type FilterDefinition = {
+  /** Unique filter identifier */
+  id: string;
+
+  /** Display label for the filter section */
+  label: string;
+
+  /**
+   * Filter control type:
+   * - "checkbox": Multi-select pill toggle buttons (OR matching within filter)
+   * - "select": Single-choice pill options
+   * - "range": Numeric min/max inputs (automatically converts text to numbers)
+   */
+  type: "checkbox" | "select" | "range";
+
+  /** Record property key or property within record.properties to evaluate (defaults to id) */
+  field?: string;
+
+  /** Selectable choices for checkbox and select filter types */
+  options?: FilterOption[];
+
+  /** Optional unit label displayed for range filters (e.g. "people", "meters", "year") */
+  unit?: string;
+};
+```
+
+**Features of the Filter Panel:**
+- **Matching Dropdown Aesthetic**: Styled identically to the native dropdown controls with border, rounded styling, and smooth toggle animations.
+- **Collapsible Accordion**: Collapsed by default, displaying an active filter count badge and a "Clear filters" button.
+- **Live Filtering**: Map markers and list view update live as filters change, with active records deselected gracefully when filtered out.
+
+---
+
+### 5. Root Source File Structures
 
 #### A. Multi-Layer Dataset (`MultiLayerResponse`)
 
@@ -128,6 +177,9 @@ type LayerEnvelope = {
 
   /** Optional layer-specific configuration */
   config?: Config;
+
+  /** Optional layer-specific filter definitions */
+  filters?: FilterDefinition[];
 };
 
 // Root structure for multi-layer data:
@@ -135,6 +187,7 @@ type MultiLayerResponse = Array<LayerEnvelope | PointOfInterest[]>;
 ```
 
 **Features when multiple layers are present:**
+
 - A dedicated **Layers** button (stacked-sheets icon) appears directly below the zoom controls.
 - Clicking the button opens a modal with checkboxes showing each layer title and record count.
 - Toggling a layer immediately updates the map markers, bottom list view, and fuzzy search results.
@@ -154,6 +207,9 @@ type SingleEnvelopedDataset = {
 
   /** Map configuration options */
   config?: Config;
+
+  /** Optional filter definitions for this dataset */
+  filters?: FilterDefinition[];
 
   /** Array of POIs */
   records: PointOfInterest[];

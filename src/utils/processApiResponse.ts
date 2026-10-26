@@ -3,6 +3,7 @@ import {
   AnySuccessfulResponse,
   Config,
   CustomRecord,
+  FilterDefinition,
   Layer,
   LayerResponse,
   Metadata,
@@ -14,6 +15,7 @@ export interface ProcessedApiResponse {
   config: Config
   records: CustomRecord[]
   layers: Layer[]
+  filters: FilterDefinition[]
 }
 
 const isLayerItem = (item: unknown): boolean => {
@@ -34,6 +36,7 @@ const processApiResponse = (
         config: DEFAULT_CONFIG,
         records: [],
         layers: [],
+        filters: [],
       }
     }
 
@@ -64,6 +67,7 @@ const processApiResponse = (
             metadata: item.metadata || '',
             records,
             config: item.config,
+            filters: item.filters,
           }
         },
       )
@@ -87,6 +91,17 @@ const processApiResponse = (
         }
       }
 
+      const aggregatedFilters: FilterDefinition[] = []
+      const seenFilterIds = new Set<string>()
+      for (const layer of layers) {
+        for (const filter of layer.filters || []) {
+          if (!seenFilterIds.has(filter.id)) {
+            seenFilterIds.add(filter.id)
+            aggregatedFilters.push(filter)
+          }
+        }
+      }
+
       const allRecords = layers.flatMap((layer) => layer.records)
 
       return {
@@ -95,6 +110,7 @@ const processApiResponse = (
         config: mergedConfig,
         records: allRecords,
         layers,
+        filters: aggregatedFilters,
       }
     }
 
@@ -116,6 +132,7 @@ const processApiResponse = (
       config: DEFAULT_CONFIG,
       records,
       layers: [singleLayer],
+      filters: [],
     }
   }
 
@@ -136,6 +153,7 @@ const processApiResponse = (
       metadata: response.metadata || '',
       records,
       config: response.config,
+      filters: response.filters,
     }
 
     return {
@@ -144,6 +162,7 @@ const processApiResponse = (
       config: { ...DEFAULT_CONFIG, ...response.config },
       records,
       layers: [singleLayer],
+      filters: response.filters || [],
     }
   }
 
@@ -153,6 +172,7 @@ const processApiResponse = (
     config: DEFAULT_CONFIG,
     records: [],
     layers: [],
+    filters: [],
   }
 }
 

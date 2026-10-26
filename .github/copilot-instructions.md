@@ -15,14 +15,14 @@ Interactive Points of Interest (POI) map application built with React 18, TypeSc
 ## Architecture & Conventions
 
 ### 1. Atomic Design (`src/components/`)
-- `atoms/`: Base primitives (Button, Modal, MiniMap, SearchField, etc.). No domain logic.
-- `molecules/`: Composed atoms (ButtonGroup, MarkerElement, RecordDetails, Drawer, etc.).
+- `atoms/`: Base primitives (Button, Modal, PillButton, SearchField, Select, etc.). No domain logic.
+- `molecules/`: Composed atoms (ButtonGroup, FilterAccordion, NumericRangeFilter, MarkerElement, RecordDetails, Drawer, etc.).
 - `organisms/`: Complex units managing state and hooks (MapContainer, MapControls, ListView, SearchSection).
 - `templates/`: Full-page layouts (`Viewport.tsx`).
 - **Rule**: Lower tiers never import higher tiers.
 
 ### 2. Runtime Validation & Types
-- All POI data models originate as Zod schemas in `src/schemas.ts` (`customRecordSchema`, `configSchema`, etc.).
+- All POI data models originate as Zod schemas in `src/schemas.ts` (`customRecordSchema`, `configSchema`, `filterDefinitionSchema`, etc.).
 - Types in `src/types.ts` are strictly inferred using `z.infer<typeof schema>`. Never create disconnected TypeScript interfaces.
 - Incoming API data must be validated with `anySuccessfulResponseSchema.safeParse()`.
 

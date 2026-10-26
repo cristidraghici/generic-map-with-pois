@@ -12,6 +12,25 @@
     "isShowOnlyURLRecordEnabled": true,
     "isAggressiveOptimizationEnabled": false
   },
+  "filters": [
+    {
+      "id": "category",
+      "label": "Category",
+      "type": "checkbox",
+      "options": [
+        { "label": "Monument", "value": "Monument" },
+        { "label": "Museum", "value": "Museum" },
+        { "label": "Church", "value": "Church" },
+        { "label": "Mausoleum", "value": "Mausoleum" }
+      ]
+    },
+    {
+      "id": "height",
+      "label": "Height",
+      "type": "range",
+      "unit": "meters"
+    }
+  ],
   "records": [
     {
       "id": "eiffel-tower",
@@ -19,6 +38,8 @@
       "latitude": 48.8584,
       "longitude": 2.2945,
       "color": "#D97706",
+      "category": "Monument",
+      "height": 330,
       "description": "Constructed from 1887 to 1889 as the centerpiece of the 1889 World's Fair, the Eiffel Tower stands 330 meters tall on the Champ de Mars.",
       "images": [
         "https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?auto=format&fit=crop&w=800&q=80",
@@ -31,6 +52,8 @@
       "latitude": 48.8606,
       "longitude": 2.3376,
       "color": "#2563EB",
+      "category": "Museum",
+      "height": 21,
       "description": "The world's most-visited museum and a historic landmark housed in the Louvre Palace, celebrated for the Mona Lisa and Venus de Milo.",
       "images": [
         "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=800&q=80",
@@ -43,6 +66,8 @@
       "latitude": 48.853,
       "longitude": 2.3499,
       "color": "#DC2626",
+      "category": "Church",
+      "height": 69,
       "description": "A masterpiece of French Gothic architecture located on the Île de la Cité, renowned for its pioneering rib vaulting and flying buttresses.",
       "images": [
         "https://images.unsplash.com/photo-1478359844494-1092259077e4?auto=format&fit=crop&w=800&q=80"
@@ -54,6 +79,8 @@
       "latitude": 48.8738,
       "longitude": 2.295,
       "color": "#7C3AED",
+      "category": "Monument",
+      "height": 50,
       "description": "Standing at the western end of the Champs-Élysées, honoring those who fought and died for France in the French Revolutionary and Napoleonic Wars.",
       "images": [
         "https://images.unsplash.com/photo-1509356843151-3e7d96241e11?auto=format&fit=crop&w=800&q=80"
@@ -65,6 +92,8 @@
       "latitude": 48.8867,
       "longitude": 2.3431,
       "color": "#059669",
+      "category": "Church",
+      "height": 83,
       "description": "Perched at the summit of the butte Montmartre, this Roman Catholic basilica offers panoramic vistas overlooking the Parisian basin.",
       "images": [
         "https://images.unsplash.com/photo-1549144511-f099e773c147?auto=format&fit=crop&w=800&q=80"
@@ -76,6 +105,8 @@
       "latitude": 48.86,
       "longitude": 2.3266,
       "color": "#DB2777",
+      "category": "Museum",
+      "height": 32,
       "description": "Installed in the former Gare d'Orsay railway station, holding the largest collection of Impressionist and Post-Impressionist masterpieces worldwide.",
       "images": [
         "https://images.unsplash.com/photo-1582560475093-ba66accbc424?auto=format&fit=crop&w=800&q=80"
@@ -87,6 +118,8 @@
       "latitude": 48.8462,
       "longitude": 2.3464,
       "color": "#4B5563",
+      "category": "Mausoleum",
+      "height": 83,
       "description": "Located in the Latin Quarter, built originally as a church dedicated to Saint Genevieve and now serving as a secular mausoleum.",
       "images": [
         "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80"

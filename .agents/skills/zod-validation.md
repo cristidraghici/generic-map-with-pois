@@ -16,6 +16,9 @@ In this codebase, **runtime schemas in [`src/schemas.ts`](file:///Users/cristi/C
 export type RecordId = z.infer<typeof recordIdSchema>
 export type CustomRecord = z.infer<typeof customRecordSchema>
 export type Config = z.infer<typeof configSchema>
+export type FilterOption = z.infer<typeof filterOptionSchema>
+export type FilterType = z.infer<typeof filterTypeSchema>
+export type FilterDefinition = z.infer<typeof filterDefinitionSchema>
 export type CustomRecordWithMetadata = z.infer<typeof customRecordWithMetadataSchema>
 export type Layer = z.infer<typeof layerSchema>
 export type LayerResponse = z.infer<typeof layerResponseSchema>
@@ -27,23 +30,48 @@ export type AnySuccessfulResponse = z.infer<typeof anySuccessfulResponseSchema>
 
 ## 2. Core Schemas Reference
 
-### 2.1 POI Record (`customRecordSchema`)
+### 2.1 Filter Schemas (`filterDefinitionSchema`)
 ```typescript
-export const recordIdSchema = z.string().brand('recordId')
+export const filterOptionSchema = z.object({
+  label: z.string(),
+  value: z.string(),
+})
 
-export const customRecordSchema = z.object({
-  id: recordIdSchema.optional(),
-  latitude: z.number(),
-  longitude: z.number(),
-  title: z.string(),
-  description: z.union([z.string(), z.string().array()]).optional(),
-  images: z.string().array().optional(),
-  color: z.string().optional(),
-  layerId: z.string().optional(),
+export const filterTypeSchema = z.enum(['checkbox', 'select', 'range'])
+
+export const filterDefinitionSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  type: filterTypeSchema,
+  field: z.string().optional(),
+  options: filterOptionSchema.array().optional(),
+  min: z.number().optional(),
+  max: z.number().optional(),
+  unit: z.string().optional(),
 })
 ```
 
-### 2.2 Envelope & Application Config (`configSchema`)
+### 2.2 POI Record (`customRecordSchema`)
+```typescript
+export const recordIdSchema = z.string().brand('recordId')
+
+export const customRecordSchema = z
+  .object({
+    id: recordIdSchema.optional(),
+    latitude: z.number(),
+    longitude: z.number(),
+    title: z.string(),
+    description: z.union([z.string(), z.string().array()]).optional(),
+    images: z.string().array().optional(),
+    color: z.string().optional(),
+    layerId: z.string().optional(),
+    tags: z.string().array().optional(),
+    properties: z.record(z.unknown()).optional(),
+  })
+  .passthrough()
+```
+
+### 2.3 Envelope & Application Config (`configSchema`)
 ```typescript
 export const configSchema = z.object({
   typeOfIcon: z.enum(['default', 'dot', 'text']),
@@ -55,7 +83,7 @@ export const configSchema = z.object({
 })
 ```
 
-### 2.3 Layers & Response Payloads (`anySuccessfulResponseSchema`)
+### 2.4 Layers & Response Payloads (`anySuccessfulResponseSchema`)
 Supports multi-layer arrays, enveloped single datasets, and flat POI arrays:
 ```typescript
 export const layerSchema = z.object({

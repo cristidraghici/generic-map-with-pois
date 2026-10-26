@@ -1,9 +1,12 @@
 import { FunctionComponent, useMemo } from 'react'
 import { AVAILABLE_DATASETS, WORLD_CITIES_MOCK_DATA_PATH } from '@/constants'
 import { DatasetOption } from '@/hooks/useFetchData'
+import { FilterDefinition } from '@/types'
+import { ActiveFilters, FilterValue } from '@/utils/filterRecords'
 import ConditionalElement from '../atoms/ConditionalElement'
 import SearchField from '../atoms/SearchField'
 import Select from '../atoms/Select'
+import FilterAccordion from '../molecules/FilterAccordion'
 
 interface SearchSectionProps {
   loading: boolean
@@ -11,8 +14,12 @@ interface SearchSectionProps {
   hasUrl: boolean
   datasets: DatasetOption[]
   selectedDatasetIndex: number
+  filters?: FilterDefinition[]
+  activeFilters?: ActiveFilters
   onSearchChange: (_value: string) => void
   onDatasetChange: (_index: number) => void
+  onFilterChange?: (_filterId: string, _value: FilterValue) => void
+  onClearFilters?: () => void
 }
 
 const SearchSection: FunctionComponent<SearchSectionProps> = ({
@@ -21,8 +28,12 @@ const SearchSection: FunctionComponent<SearchSectionProps> = ({
   hasUrl,
   datasets,
   selectedDatasetIndex,
+  filters = [],
+  activeFilters = {},
   onSearchChange,
   onDatasetChange,
+  onFilterChange,
+  onClearFilters,
 }) => {
   const datasetSelectOptions = useMemo(
     () =>
@@ -45,6 +56,16 @@ const SearchSection: FunctionComponent<SearchSectionProps> = ({
           options={datasetSelectOptions}
           value={selectedDatasetIndex.toString()}
           onChange={(e) => onDatasetChange(Number(e.target.value))}
+        />
+      )}
+
+      {filters.length > 0 && onFilterChange && onClearFilters && (
+        <FilterAccordion
+          className="mb-2"
+          filters={filters}
+          activeFilters={activeFilters}
+          onFilterChange={onFilterChange}
+          onClearFilters={onClearFilters}
         />
       )}
 

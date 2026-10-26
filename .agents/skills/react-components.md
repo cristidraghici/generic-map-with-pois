@@ -41,15 +41,15 @@ interface ButtonProps extends React.ComponentProps<'button'> {
 
 ### 2.2 Molecules
 - Combine atoms for a unified interaction.
-- Example: [`RecordDetails.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/components/molecules/RecordDetails.tsx), [`ButtonWithTooltip.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/components/molecules/ButtonWithTooltip.tsx).
-- Pass callbacks (`onClose`, `onSelect`, `onClick`) up rather than coupling to global stores or network fetchers.
+- Example: [`RecordDetails.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/components/molecules/RecordDetails.tsx), [`ButtonWithTooltip.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/components/molecules/ButtonWithTooltip.tsx), [`FilterAccordion.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/components/molecules/FilterAccordion.tsx), [`NumericRangeFilter.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/components/molecules/NumericRangeFilter.tsx).
+- Pass callbacks (`onClose`, `onSelect`, `onClick`, `onFilterChange`) up rather than coupling to global stores or network fetchers.
 
 ### 2.3 Organisms
 - Connect hooks, state management, and lifecycle events.
 - Handle data states: loading, error, empty, and populated.
 - Examples:
   - [`MapControls.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/components/organisms/MapControls.tsx): Zoom buttons, refresh, conditional layers button and checkbox modal (when 2+ layers exist), and metadata modal.
-  - [`SearchSection.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/components/organisms/SearchSection.tsx): Fuzzy search input and dataset selector.
+  - [`SearchSection.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/components/organisms/SearchSection.tsx): Fuzzy search input, dataset selector, and source-defined filter panel accordion.
   - [`ListView.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/components/organisms/ListView.tsx): Viewport-filtered POI drawer list.
 
 ---

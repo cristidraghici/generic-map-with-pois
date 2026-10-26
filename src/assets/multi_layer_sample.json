@@ -7,11 +7,23 @@
       "isListEnabled": true,
       "isZoomOnSelectEnabled": true
     },
+    "filters": [
+      {
+        "id": "type",
+        "label": "Landmark Type",
+        "type": "select",
+        "options": [
+          { "label": "Castle", "value": "Castle" },
+          { "label": "Palace", "value": "Palace" }
+        ]
+      }
+    ],
     "records": [
       {
         "title": "Bran Castle",
         "latitude": 45.5149,
         "longitude": 25.3672,
+        "type": "Castle",
         "description": "Historic fortress famously associated with the Dracula legend.",
         "color": "#DC2626"
       },
@@ -19,6 +31,7 @@
         "title": "Peles Castle",
         "latitude": 45.3599,
         "longitude": 25.5426,
+        "type": "Castle",
         "description": "Neo-Renaissance castle in the Carpathian Mountains.",
         "color": "#DC2626"
       },
@@ -26,6 +39,7 @@
         "title": "Palace of the Parliament",
         "latitude": 44.4275,
         "longitude": 26.0873,
+        "type": "Palace",
         "description": "Colossal parliament building in Bucharest.",
         "color": "#DC2626"
       }
@@ -34,11 +48,23 @@
   {
     "title": "Space & Science Centers",
     "metadata": "Scientific observatories and research stations.",
+    "filters": [
+      {
+        "id": "facility",
+        "label": "Facility Type",
+        "type": "checkbox",
+        "options": [
+          { "label": "Public", "value": "Public" },
+          { "label": "University", "value": "University" }
+        ]
+      }
+    ],
     "records": [
       {
         "title": "Bucharest Astronomical Observatory",
         "latitude": 44.4485,
         "longitude": 26.0858,
+        "facility": "Public",
         "description": "Public astronomical observatory in Bucharest.",
         "color": "#3B82F6"
       },
@@ -46,6 +72,7 @@
         "title": "Cluj Observatory",
         "latitude": 46.7583,
         "longitude": 23.5917,
+        "facility": "University",
         "description": "Astronomical observatory in Cluj-Napoca.",
         "color": "#3B82F6"
       }
@@ -54,11 +81,23 @@
   {
     "title": "Nature & Parks",
     "metadata": "Protected national parks and nature reserves.",
+    "filters": [
+      {
+        "id": "designation",
+        "label": "Designation",
+        "type": "checkbox",
+        "options": [
+          { "label": "National Park", "value": "National Park" },
+          { "label": "UNESCO Biosphere", "value": "UNESCO Biosphere" }
+        ]
+      }
+    ],
     "records": [
       {
         "title": "Retezat National Park",
         "latitude": 45.3667,
         "longitude": 22.8667,
+        "designation": "National Park",
         "description": "Pristine national park with over 80 glacial lakes.",
         "color": "#10B981"
       },
@@ -66,6 +105,7 @@
         "title": "Danube Delta Biosphere",
         "latitude": 45.1667,
         "longitude": 29.5833,
+        "designation": "UNESCO Biosphere",
         "description": "Europe's best preserved delta and UNESCO World Heritage site.",
         "color": "#10B981"
       }
