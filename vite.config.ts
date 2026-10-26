@@ -1,12 +1,35 @@
+import { copyFileSync, existsSync, writeFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import { defineConfig, Plugin } from 'vite'
 import svgr from 'vite-plugin-svgr'
+
+const ensureRuntimeConfigPlugin = (): Plugin => ({
+  name: 'ensure-runtime-config',
+  configResolved(config) {
+    const configPath = resolve(config.root, 'public/config.json')
+    const examplePath = resolve(config.root, 'public/config.example.json')
+
+    if (!existsSync(configPath)) {
+      if (existsSync(examplePath)) {
+        copyFileSync(examplePath, configPath)
+      } else {
+        writeFileSync(
+          configPath,
+          `${JSON.stringify({ allowedApiOrigins: [], allowedApiPatterns: [] }, null, 2)}\n`,
+          'utf-8',
+        )
+      }
+    }
+  },
+})
 
 // https://vitejs.dev/config/
 export default defineConfig({
   base:
     process.env.VITE_IS_GH_PAGES === 'true' ? '/generic-map-with-pois/' : '/',
   plugins: [
+    ensureRuntimeConfigPlugin(),
     react(),
     svgr({
       svgrOptions: {

@@ -75,3 +75,8 @@ export const anySuccessfulResponseSchema = z.union([
   customRecordWithMetadataSchema,
   customRecordSchema.array(),
 ])
+
+export const runtimeConfigSchema = z.object({
+  allowedApiOrigins: z.string().array().optional(),
+  allowedApiPatterns: z.string().array().optional(),
+})

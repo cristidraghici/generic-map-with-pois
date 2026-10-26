@@ -131,6 +131,12 @@ anySuccessfulResponseSchema = z.union([
   customRecordWithMetadataSchema,
   customRecordSchema.array(),
 ])
+
+// Optional Runtime Config Schema (public/config.json)
+runtimeConfigSchema = z.object({
+  allowedApiOrigins: z.string().array().optional(),
+  allowedApiPatterns: z.string().array().optional(),
+})
 ```
 
 - When `id` is omitted in source data, `src/utils/processApiResponse.ts` and `src/hooks/useFetchData.ts` generate deterministic fallback identifiers (`id_0`, `id_1`, etc.), ensuring ID uniqueness across multiple layers.
@@ -144,7 +150,10 @@ anySuccessfulResponseSchema = z.union([
 - Sync mechanism: Managed via [`useURLParams`](file:///Users/cristi/Code/generic-map-with-pois/src/hooks/useURLParams.ts) (`params`, `listParams`, `updateParams`), updating query strings via `history.replaceState` without page reloads.
 
 ### 3.3 Security & Safe Fetching
-- URLs passed to `?api=` are parsed with `new URL()` and strictly tested against linear-time `ALLOWED_API_URL_PATTERNS` in [`constants.ts`](file:///Users/cristi/Code/generic-map-with-pois/src/constants.ts). Only approved domains (e.g. GitHub Pages) and localhost/127.0.0.1 for local development are accepted.
+- URLs passed to `?api=` are validated by [`validateApiUrl.ts`](file:///Users/cristi/Code/generic-map-with-pois/src/utils/validateApiUrl.ts):
+  1. Relative and same-origin URLs (e.g. `?api=all.json`, `?api=/data/pois.json`) resolved against `window.location.href` are automatically allowed on the deployment origin (`Origin.from().isSameOrigin()` with `URL.origin` fallback).
+  2. External URLs are checked against `ALLOWED_API_URL_PATTERNS` in [`constants.ts`](file:///Users/cristi/Code/generic-map-with-pois/src/constants.ts).
+  3. Additional origins (`allowedApiOrigins`) and regex patterns (`allowedApiPatterns`) can be configured per deployment via an untracked `public/config.json` (auto-created from [`public/config.example.json`](file:///Users/cristi/Code/generic-map-with-pois/public/config.example.json) during dev/build and silently ignored at runtime if absent).
 - No `dangerouslySetInnerHTML`. User strings and descriptions are safely sanitized and converted to active links via [`linkifyText.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/utils/linkifyText.tsx), and Leaflet `divIcon` HTML templates escape titles and sanitize CSS colors in [`createTextIcon.ts`](file:///Users/cristi/Code/generic-map-with-pois/src/utils/icons/createTextIcon.ts) and [`createSvgIcon.ts`](file:///Users/cristi/Code/generic-map-with-pois/src/utils/icons/createSvgIcon.ts).
 
 ### 3.4 Source-Defined Interactive Filters

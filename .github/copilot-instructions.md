@@ -33,7 +33,7 @@ Interactive Points of Interest (POI) map application built with React 18, TypeSc
 - Default coordinates: `MAP_CONFIG.CENTER` ([44.4268, 26.1025] - Bucharest) and `ZOOM: 3`.
 
 ### 4. Security
-- External URLs must validate against `ALLOWED_API_URL_PATTERNS` in `src/constants.ts`.
+- External URLs must validate via `src/utils/validateApiUrl.ts` (same-origin auto-allow, `ALLOWED_API_URL_PATTERNS` in `src/constants.ts`, and optional runtime `public/config.json`).
 - No `dangerouslySetInnerHTML`. Safe text linkification is handled via `linkifyText.tsx`.
 
 ### 5. Self-Updating Documentation & Agent Invariants

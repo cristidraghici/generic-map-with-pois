@@ -12,6 +12,7 @@ import {
   metadataSchema,
   multiLayerResponseSchema,
   recordIdSchema,
+  runtimeConfigSchema,
 } from './schemas'
 
 export type RecordId = z.infer<typeof recordIdSchema>
@@ -28,3 +29,4 @@ export type Layer = z.infer<typeof layerSchema>
 export type LayerResponse = z.infer<typeof layerResponseSchema>
 export type MultiLayerResponse = z.infer<typeof multiLayerResponseSchema>
 export type AnySuccessfulResponse = z.infer<typeof anySuccessfulResponseSchema>
+export type RuntimeConfig = z.infer<typeof runtimeConfigSchema>

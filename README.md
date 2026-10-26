@@ -245,6 +245,18 @@ type FlatResponse = PointOfInterest[];
 
 **Note:** If your data doesn't include `id` fields, the system will automatically generate them using the pattern `id_0`, `id_1`, `id_2`, etc., ensuring unique IDs across records and layers.
 
+### Allowing Custom API URLs (`config.json`)
+
+- **Same-origin files** (such as `?api=all.json` or `?api=/data/pois.json` hosted on the same domain as the app) are **allowed automatically**.
+- **External URLs** are checked against `ALLOWED_API_URL_PATTERNS` in [`src/constants.ts`](src/constants.ts) and an optional, git-ignored `public/config.json` file (automatically generated from [`public/config.example.json`](public/config.example.json) during `npm run dev` / `npm run build`, and silently ignored if missing at runtime):
+
+```json
+{
+  "allowedApiOrigins": ["https://api.example.com"],
+  "allowedApiPatterns": ["^https://.*\\.example\\.com/.*$"]
+}
+```
+
 ---
 
 ## Install and First Run

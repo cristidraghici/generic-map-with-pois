@@ -114,8 +114,9 @@ export const anySuccessfulResponseSchema = z.union([
 
 When fetching data from an external API or static JSON:
 
-1. **URL Allowlist Check**:
-   Validate API endpoints with `new URL()` (`http:` / `https:`) and against [`ALLOWED_API_URL_PATTERNS`](file:///Users/cristi/Code/generic-map-with-pois/src/constants.ts):
+1. **URL Allowlist & Same-Origin Check ([`src/utils/validateApiUrl.ts`](file:///Users/cristi/Code/generic-map-with-pois/src/utils/validateApiUrl.ts))**:
+   - Relative and same-origin URLs (e.g. `?api=all.json`) resolved against `window.location.href` are automatically allowed on the deployment origin.
+   - Cross-origin API endpoints are validated against [`ALLOWED_API_URL_PATTERNS`](file:///Users/cristi/Code/generic-map-with-pois/src/constants.ts) and optional runtime [`public/config.json`](file:///Users/cristi/Code/generic-map-with-pois/public/config.example.json) (`runtimeConfigSchema`: `allowedApiOrigins` and `allowedApiPatterns`, silently ignored if absent):
    ```typescript
    export const ALLOWED_API_URL_PATTERNS: RegExp[] = [
      /^https?:\/\/[\da-z.-]+\.[a-z]{2,24}(?:\/[\w ./?%&=-]*)?$/i,

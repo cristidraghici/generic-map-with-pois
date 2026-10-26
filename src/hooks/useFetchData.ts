@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
-  ALLOWED_API_URL_PATTERNS,
   DEFAULT_CONFIG,
   MULTI_LAYER_SAMPLE_MOCK_DATA_PATH,
   NATIONAL_PARKS_MOCK_DATA_PATH,
@@ -14,6 +13,7 @@ import { fuzzyMatchIndexed, getMaxFuzzyDistance } from '@/utils/fuzzyMatch'
 import getDatasetLabel from '@/utils/getDatasetLabel'
 import processApiResponse from '@/utils/processApiResponse'
 import { resolveRelativePaths } from '@/utils/resolveRelativePaths'
+import { isApiUrlAllowed, loadRuntimeConfig } from '@/utils/validateApiUrl'
 import { anySuccessfulResponseSchema } from '../schemas'
 import {
   AnySuccessfulResponse,
@@ -78,18 +78,6 @@ const EMPTY_DATASET: DatasetState = {
   config: DEFAULT_CONFIG,
   layers: [],
   filters: [],
-}
-
-const isURLAllowed = (urlToTest: string): boolean => {
-  try {
-    const parsed = new URL(urlToTest)
-    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
-      return false
-    }
-  } catch {
-    return false
-  }
-  return ALLOWED_API_URL_PATTERNS.some((pattern) => pattern.test(urlToTest))
 }
 
 const toDatasetState = (response: AnySuccessfulResponse): DatasetState => {
@@ -199,16 +187,19 @@ const useFetchData = (
         return
       }
 
-      if (!isURLAllowed(url)) {
-        updateDataset(url, {
-          loading: false,
-          error: 'Invalid API URL: URL does not match security requirements',
-        })
-        return
-      }
-
       try {
         updateDataset(url, { loading: true, error: null })
+
+        const runtimeConfig = await loadRuntimeConfig()
+        if (signal.aborted) return
+
+        if (!isApiUrlAllowed(url, runtimeConfig)) {
+          updateDataset(url, {
+            loading: false,
+            error: 'Invalid API URL: URL does not match security requirements',
+          })
+          return
+        }
 
         const response = await fetch(url, { signal })
         if (!response.ok) {

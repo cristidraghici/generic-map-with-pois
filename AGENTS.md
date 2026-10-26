@@ -18,7 +18,7 @@ Interactive POI mapping web application built with React 18, TypeScript, Vite, L
 3. **Atomic Design Discipline**: Follow `src/components/{atoms,molecules,organisms,templates}`. Downward dependencies only (Atoms never import higher tiers).
 4. **Schema-Driven Typing**: All POI types derive from Zod schemas in `src/schemas.ts` (`z.infer`). No parallel or untyped data contracts.
 5. **Geospatial Best Practices**: Keep Leaflet coordinates (`[lat, lng]`) separate from record models (`{ latitude, longitude }`). Use `MAP_CONFIG.BOUNDS_PADDING` (0.6) on viewport adjustments.
-6. **Safe URL & Data Ingestion**: All user-provided API URLs must match `ALLOWED_API_URL_PATTERNS`.
+6. **Safe URL & Data Ingestion**: User-provided API URLs are validated via `src/utils/validateApiUrl.ts` (allowing same-origin relative/absolute URLs, `ALLOWED_API_URL_PATTERNS` in `src/constants.ts`, and optional untracked `public/config.json` rules).
 7. **Documentation & Skill Self-Update**: Whenever building, modifying, or extending features, agents must self-update relevant documentation and skills if the changes affect architecture, schemas, components, URL parameters, configurations, or workflow conventions. Specifically update `.agents/architecture.md`, relevant guides in `.agents/skills/*.md`, `README.md`, `AGENTS.md`, `GEMINI.md`, and `.github/copilot-instructions.md`. Never leave agent instructions or skill guides out of sync with code changes.
 
 ## Reference Documentation & Skills (Progressive Disclosure)
