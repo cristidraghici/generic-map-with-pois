@@ -29,7 +29,7 @@ src/components/
 
 ### 2.1 Atoms
 - Extend native HTML element attributes using `React.ComponentProps<'element'>` or `React.ButtonHTMLAttributes`.
-- Keep them stateless or limited to minimal internal UI state (e.g. tooltip visibility).
+- Keep them stateless or limited to minimal internal UI state (e.g. tooltip visibility, keyboard event listener bindings like `Escape` in [`Modal.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/components/atoms/Modal.tsx)).
 - Example: [`Button.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/components/atoms/Button.tsx):
 
 ```tsx

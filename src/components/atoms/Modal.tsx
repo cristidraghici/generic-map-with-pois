@@ -3,8 +3,10 @@ import {
   FunctionComponent,
   MouseEvent,
   PropsWithChildren,
+  useMemo,
 } from 'react'
 import { ReactComponent as IconCloseSVG } from '@/assets/icons/close.svg'
+import useKeyPress from '@/hooks/useKeyPress'
 import Backdrop from './Backdrop'
 import Button from './Button'
 
@@ -20,6 +22,13 @@ const Modal: FunctionComponent<PropsWithChildren<ModalProps>> = ({
   className = '',
   ...rest
 }) => {
+  const keyActions = useMemo(
+    () => [{ key: 'Escape', action: onClose }],
+    [onClose],
+  )
+
+  useKeyPress(keyActions, isOpen)
+
   const handleContainerClick = (e: MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose()
