@@ -157,7 +157,8 @@ type FilterDefinition = {
 **Features of the Filter Panel:**
 - **Matching Dropdown Aesthetic**: Styled identically to the native dropdown controls with border, rounded styling, and smooth toggle animations.
 - **Collapsible Accordion**: Collapsed by default, displaying an active filter count badge and side-by-side "Clear filters" and "Save filters" buttons.
-- **Per-Source Persistence**: Clicking "Save filters" stores the active filters for the currently selected source in browser `localStorage` (automatically restored when reloading or switching back to that source), while "Clear filters" resets both the UI filters and the saved `localStorage` state for that source.
+- **Per-Filter "Include missing" Toggle**: Each filter header includes a compact `"Include missing"` checkbox (off by default). When checked, any active selection or range bound on that filter also includes records where the field value is missing (`undefined`, `null`, empty string/array, or non-numeric strings for range filters).
+- **Per-Source Persistence**: Clicking "Save filters" stores the active filters (including `"Include missing"` preferences) for the currently selected source in browser `localStorage` (automatically restored when reloading or switching back to that source), while "Clear filters" resets both the UI filters and the saved `localStorage` state for that source.
 - **Live Filtering**: Map markers and list view update live as filters change, with active records deselected gracefully when filtered out. When `isZoomOnFilterEnabled` is enabled in `config`, the map viewport also automatically fits bounds to wrap the filtered records on load/switch and when filters change.
 
 ---

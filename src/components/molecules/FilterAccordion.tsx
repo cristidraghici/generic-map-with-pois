@@ -5,6 +5,11 @@ import {
   areFiltersEqual,
   FilterValue,
   getActiveFilterCount,
+  getCheckboxValues,
+  getIncludeMissing,
+  getRangeValue,
+  getSelectValue,
+  hasAnyFilterState,
 } from '@/utils/filterRecords'
 import PillButton from '../atoms/PillButton'
 import NumericRangeFilter from './NumericRangeFilter'
@@ -38,7 +43,7 @@ const FilterAccordion: FunctionComponent<FilterAccordionProps> = ({
   const savedCount = getActiveFilterCount(filters, savedFilters)
   const isSaved =
     activeCount > 0 && areFiltersEqual(filters, activeFilters, savedFilters)
-  const canClear = activeCount > 0 || savedCount > 0
+  const canClear = hasAnyFilterState(filters, activeFilters) || savedCount > 0
   const canSave = activeCount > 0 && !isSaved
 
   useEffect(() => {
@@ -93,18 +98,74 @@ const FilterAccordion: FunctionComponent<FilterAccordionProps> = ({
   }
 
   const handleCheckboxToggle = (filterId: string, optionValue: string) => {
-    const current = (activeFilters[filterId] as string[]) || []
+    const currentVal = activeFilters[filterId]
+    const current = getCheckboxValues(currentVal)
+    const includeMissing = getIncludeMissing(currentVal)
     const next = current.includes(optionValue)
       ? current.filter((val) => val !== optionValue)
       : [...current, optionValue]
 
-    onFilterChange(filterId, next.length > 0 ? next : undefined)
+    if (includeMissing) {
+      onFilterChange(filterId, {
+        ...(next.length > 0 ? { values: next } : {}),
+        includeMissing: true,
+      })
+    } else {
+      onFilterChange(filterId, next.length > 0 ? next : undefined)
+    }
   }
 
   const handleSelectToggle = (filterId: string, optionValue: string) => {
-    const current = (activeFilters[filterId] as string) || ''
+    const currentVal = activeFilters[filterId]
+    const current = getSelectValue(currentVal)
+    const includeMissing = getIncludeMissing(currentVal)
     const next = current === optionValue ? '' : optionValue
-    onFilterChange(filterId, next || undefined)
+
+    if (includeMissing) {
+      onFilterChange(filterId, {
+        ...(next ? { value: next } : {}),
+        includeMissing: true,
+      })
+    } else {
+      onFilterChange(filterId, next || undefined)
+    }
+  }
+
+  const handleSelectAll = (filterId: string) => {
+    const includeMissing = getIncludeMissing(activeFilters[filterId])
+    onFilterChange(
+      filterId,
+      includeMissing ? { includeMissing: true } : undefined,
+    )
+  }
+
+  const handleIncludeMissingToggle = (
+    filter: FilterDefinition,
+    nextIncludeMissing: boolean,
+  ) => {
+    const currentVal = activeFilters[filter.id]
+
+    if (filter.type === 'checkbox') {
+      const values = getCheckboxValues(currentVal)
+      if (nextIncludeMissing) {
+        onFilterChange(filter.id, {
+          ...(values.length > 0 ? { values } : {}),
+          includeMissing: true,
+        })
+      } else {
+        onFilterChange(filter.id, values.length > 0 ? values : undefined)
+      }
+    } else if (filter.type === 'select') {
+      const value = getSelectValue(currentVal)
+      if (nextIncludeMissing) {
+        onFilterChange(filter.id, {
+          ...(value ? { value } : {}),
+          includeMissing: true,
+        })
+      } else {
+        onFilterChange(filter.id, value || undefined)
+      }
+    }
   }
 
   return (
@@ -155,13 +216,29 @@ const FilterAccordion: FunctionComponent<FilterAccordionProps> = ({
           <div className="flex-1 space-y-3 overflow-y-auto p-3">
             {filters.map((filter) => {
               const filterVal = activeFilters[filter.id]
+              const includeMissing = getIncludeMissing(filterVal)
 
               if (filter.type === 'checkbox') {
-                const selectedValues = Array.isArray(filterVal) ? filterVal : []
+                const selectedValues = getCheckboxValues(filterVal)
                 return (
                   <div key={filter.id} className="space-y-1.5">
-                    <div className="text-xs font-semibold text-gray-800">
-                      {filter.label}
+                    <div className="flex items-center justify-between gap-2 text-xs font-semibold text-gray-800">
+                      <span>{filter.label}</span>
+                      <label
+                        htmlFor={`${filter.id}-include-missing`}
+                        className="inline-flex cursor-pointer items-center gap-1.5 text-xs font-normal text-gray-600 select-none hover:text-gray-800"
+                      >
+                        <input
+                          id={`${filter.id}-include-missing`}
+                          type="checkbox"
+                          checked={includeMissing}
+                          onChange={(e) =>
+                            handleIncludeMissingToggle(filter, e.target.checked)
+                          }
+                          className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-gray-800 accent-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-800 focus-visible:ring-offset-1"
+                        />
+                        <span>Include missing</span>
+                      </label>
                     </div>
                     <div className="flex flex-wrap gap-1.5">
                       {filter.options?.map((option) => (
@@ -180,18 +257,32 @@ const FilterAccordion: FunctionComponent<FilterAccordionProps> = ({
               }
 
               if (filter.type === 'select') {
-                const selectedValue =
-                  typeof filterVal === 'string' ? filterVal : ''
+                const selectedValue = getSelectValue(filterVal)
                 return (
                   <div key={filter.id} className="space-y-1.5">
-                    <div className="text-xs font-semibold text-gray-800">
-                      {filter.label}
+                    <div className="flex items-center justify-between gap-2 text-xs font-semibold text-gray-800">
+                      <span>{filter.label}</span>
+                      <label
+                        htmlFor={`${filter.id}-include-missing`}
+                        className="inline-flex cursor-pointer items-center gap-1.5 text-xs font-normal text-gray-600 select-none hover:text-gray-800"
+                      >
+                        <input
+                          id={`${filter.id}-include-missing`}
+                          type="checkbox"
+                          checked={includeMissing}
+                          onChange={(e) =>
+                            handleIncludeMissingToggle(filter, e.target.checked)
+                          }
+                          className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-gray-800 accent-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-800 focus-visible:ring-offset-1"
+                        />
+                        <span>Include missing</span>
+                      </label>
                     </div>
                     <div className="flex flex-wrap gap-1.5">
                       <PillButton
                         label="All"
                         active={!selectedValue}
-                        onClick={() => onFilterChange(filter.id, undefined)}
+                        onClick={() => handleSelectAll(filter.id)}
                       />
                       {filter.options?.map((option) => (
                         <PillButton
@@ -209,19 +300,22 @@ const FilterAccordion: FunctionComponent<FilterAccordionProps> = ({
               }
 
               if (filter.type === 'range') {
-                const rangeVal =
-                  typeof filterVal === 'object' && !Array.isArray(filterVal)
-                    ? filterVal
-                    : {}
+                const rangeVal = getRangeValue(filterVal)
                 return (
                   <NumericRangeFilter
                     key={filter.id}
                     id={filter.id}
                     label={filter.label}
                     unit={filter.unit}
-                    minVal={rangeVal?.min}
-                    maxVal={rangeVal?.max}
-                    onChange={(range) => onFilterChange(filter.id, range)}
+                    minVal={rangeVal.min}
+                    maxVal={rangeVal.max}
+                    includeMissing={includeMissing}
+                    onChange={(range) =>
+                      onFilterChange(
+                        filter.id,
+                        Object.keys(range).length > 0 ? range : undefined,
+                      )
+                    }
                   />
                 )
               }

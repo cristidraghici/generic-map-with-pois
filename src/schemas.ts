@@ -20,13 +20,36 @@ export const filterDefinitionSchema = z.object({
   unit: z.string().optional(),
 })
 
-export const filterRangeValueSchema = z.object({
-  min: z.union([z.number(), z.string()]).optional(),
-  max: z.union([z.number(), z.string()]).optional(),
-})
+export const filterRangeValueSchema = z
+  .object({
+    min: z.union([z.number(), z.string()]).optional(),
+    max: z.union([z.number(), z.string()]).optional(),
+    includeMissing: z.boolean().optional(),
+  })
+  .strict()
+
+export const filterCheckboxValueSchema = z
+  .object({
+    values: z.string().array().optional(),
+    includeMissing: z.boolean().optional(),
+  })
+  .strict()
+
+export const filterSelectValueSchema = z
+  .object({
+    value: z.string().optional(),
+    includeMissing: z.boolean().optional(),
+  })
+  .strict()
 
 export const filterValueSchema = z
-  .union([z.string().array(), z.string(), filterRangeValueSchema])
+  .union([
+    z.string().array(),
+    z.string(),
+    filterRangeValueSchema,
+    filterCheckboxValueSchema,
+    filterSelectValueSchema,
+  ])
   .optional()
 
 export const activeFiltersSchema = z.record(z.string(), filterValueSchema)

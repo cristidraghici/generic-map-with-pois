@@ -4,6 +4,7 @@ import {
   ActiveFilters,
   CustomRecord,
   FilterDefinition,
+  FilterRangeValue,
   FilterValue,
 } from '@/types'
 
@@ -24,6 +25,21 @@ const extractNumericValue = (val: unknown): number | null => {
   return null
 }
 
+const isFieldValueMissing = (val: unknown): boolean => {
+  if (val === undefined || val === null) return true
+  if (typeof val === 'string') return val.trim() === ''
+  if (Array.isArray(val)) {
+    return (
+      val.length === 0 ||
+      val.every(
+        (item) =>
+          item === undefined || item === null || String(item).trim() === '',
+      )
+    )
+  }
+  return false
+}
+
 const getRecordFieldValue = (
   record: CustomRecord,
   fieldKey: string,
@@ -38,6 +54,51 @@ const getRecordFieldValue = (
   return undefined
 }
 
+export const getCheckboxValues = (value: FilterValue): string[] => {
+  if (Array.isArray(value)) return value
+  if (
+    value &&
+    typeof value === 'object' &&
+    'values' in value &&
+    Array.isArray(value.values)
+  ) {
+    return value.values
+  }
+  return []
+}
+
+export const getSelectValue = (value: FilterValue): string => {
+  if (typeof value === 'string') return value
+  if (
+    value &&
+    typeof value === 'object' &&
+    !Array.isArray(value) &&
+    'value' in value &&
+    typeof value.value === 'string'
+  ) {
+    return value.value
+  }
+  return ''
+}
+
+export const getRangeValue = (value: FilterValue): FilterRangeValue => {
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
+    return {
+      min: 'min' in value ? value.min : undefined,
+      max: 'max' in value ? value.max : undefined,
+      includeMissing: value.includeMissing,
+    }
+  }
+  return {}
+}
+
+export const getIncludeMissing = (value: FilterValue): boolean => {
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
+    return value.includeMissing === true
+  }
+  return false
+}
+
 export const isFilterActive = (
   filter: FilterDefinition,
   value: FilterValue,
@@ -45,25 +106,26 @@ export const isFilterActive = (
   if (value === undefined || value === null) return false
 
   if (filter.type === 'checkbox') {
-    return Array.isArray(value) && value.length > 0
+    return getCheckboxValues(value).length > 0
   }
 
   if (filter.type === 'select') {
-    return typeof value === 'string' && value.trim() !== '' && value !== 'all'
+    const selected = getSelectValue(value).trim()
+    return selected !== '' && selected !== 'all'
   }
 
   if (filter.type === 'range') {
-    if (typeof value !== 'object' || Array.isArray(value)) return false
+    const range = getRangeValue(value)
     const minSet =
-      value.min !== undefined &&
-      value.min !== null &&
-      value.min !== '' &&
-      !Number.isNaN(Number(value.min))
+      range.min !== undefined &&
+      range.min !== null &&
+      range.min !== '' &&
+      !Number.isNaN(Number(range.min))
     const maxSet =
-      value.max !== undefined &&
-      value.max !== null &&
-      value.max !== '' &&
-      !Number.isNaN(Number(value.max))
+      range.max !== undefined &&
+      range.max !== null &&
+      range.max !== '' &&
+      !Number.isNaN(Number(range.max))
     return minSet || maxSet
   }
 
@@ -77,6 +139,16 @@ export const getActiveFilterCount = (
   return filters.reduce((count, filter) => {
     return count + (isFilterActive(filter, activeFilters[filter.id]) ? 1 : 0)
   }, 0)
+}
+
+export const hasAnyFilterState = (
+  filters: FilterDefinition[],
+  activeFilters: ActiveFilters,
+): boolean => {
+  return filters.some((filter) => {
+    const val = activeFilters[filter.id]
+    return isFilterActive(filter, val) || getIncludeMissing(val)
+  })
 }
 
 const getRangeBound = (
@@ -100,27 +172,26 @@ export const areFiltersEqual = (
 
     if (!aActive && !bActive) continue
     if (aActive !== bActive) return false
+    if (getIncludeMissing(aVal) !== getIncludeMissing(bVal)) return false
 
     if (filter.type === 'checkbox') {
-      const aList = Array.isArray(aVal)
-        ? Array.from(new Set(aVal.map((v) => v.trim().toLowerCase()))).sort()
-        : []
-      const bList = Array.isArray(bVal)
-        ? Array.from(new Set(bVal.map((v) => v.trim().toLowerCase()))).sort()
-        : []
+      const aList = Array.from(
+        new Set(getCheckboxValues(aVal).map((v) => v.trim().toLowerCase())),
+      ).sort()
+      const bList = Array.from(
+        new Set(getCheckboxValues(bVal).map((v) => v.trim().toLowerCase())),
+      ).sort()
       if (aList.length !== bList.length) return false
       for (let i = 0; i < aList.length; i++) {
         if (aList[i] !== bList[i]) return false
       }
     } else if (filter.type === 'select') {
-      const aTarget = typeof aVal === 'string' ? aVal.trim().toLowerCase() : ''
-      const bTarget = typeof bVal === 'string' ? bVal.trim().toLowerCase() : ''
+      const aTarget = getSelectValue(aVal).trim().toLowerCase()
+      const bTarget = getSelectValue(bVal).trim().toLowerCase()
       if (aTarget !== bTarget) return false
     } else if (filter.type === 'range') {
-      const aRange =
-        aVal && typeof aVal === 'object' && !Array.isArray(aVal) ? aVal : {}
-      const bRange =
-        bVal && typeof bVal === 'object' && !Array.isArray(bVal) ? bVal : {}
+      const aRange = getRangeValue(aVal)
+      const bRange = getRangeValue(bVal)
       if (
         getRangeBound(aRange.min) !== getRangeBound(bRange.min) ||
         getRangeBound(aRange.max) !== getRangeBound(bRange.max)
@@ -196,17 +267,20 @@ type CompiledFilter =
       type: 'checkbox'
       fieldKey: string
       selectedSet: Set<string>
+      includeMissing: boolean
     }
   | {
       type: 'select'
       fieldKey: string
       target: string
+      includeMissing: boolean
     }
   | {
       type: 'range'
       fieldKey: string
       min?: number
       max?: number
+      includeMissing: boolean
     }
 
 export const filterRecords = (
@@ -221,43 +295,41 @@ export const filterRecords = (
     if (!isFilterActive(filter, filterVal)) continue
 
     const fieldKey = filter.field || filter.id
+    const includeMissing = getIncludeMissing(filterVal)
 
     if (filter.type === 'checkbox') {
-      const selected = Array.isArray(filterVal) ? filterVal : []
+      const selected = getCheckboxValues(filterVal)
       if (selected.length > 0) {
         compiledFilters.push({
           type: 'checkbox',
           fieldKey,
           selectedSet: new Set(selected.map((s) => s.toLowerCase())),
+          includeMissing,
         })
       }
     } else if (filter.type === 'select') {
-      const target =
-        typeof filterVal === 'string' ? filterVal.toLowerCase().trim() : ''
+      const target = getSelectValue(filterVal).toLowerCase().trim()
       if (target && target !== 'all') {
         compiledFilters.push({
           type: 'select',
           fieldKey,
           target,
+          includeMissing,
         })
       }
-    } else if (
-      filter.type === 'range' &&
-      filterVal &&
-      typeof filterVal === 'object' &&
-      !Array.isArray(filterVal)
-    ) {
+    } else if (filter.type === 'range') {
+      const rangeVal = getRangeValue(filterVal)
       const rawMin =
-        filterVal.min !== undefined &&
-        filterVal.min !== null &&
-        filterVal.min !== ''
-          ? Number(filterVal.min)
+        rangeVal.min !== undefined &&
+        rangeVal.min !== null &&
+        rangeVal.min !== ''
+          ? Number(rangeVal.min)
           : undefined
       const rawMax =
-        filterVal.max !== undefined &&
-        filterVal.max !== null &&
-        filterVal.max !== ''
-          ? Number(filterVal.max)
+        rangeVal.max !== undefined &&
+        rangeVal.max !== null &&
+        rangeVal.max !== ''
+          ? Number(rangeVal.max)
           : undefined
       const min =
         rawMin !== undefined && !Number.isNaN(rawMin) ? rawMin : undefined
@@ -270,6 +342,7 @@ export const filterRecords = (
           fieldKey,
           min,
           max,
+          includeMissing,
         })
       }
     }
@@ -284,11 +357,11 @@ export const filterRecords = (
       const recordVal = getRecordFieldValue(record, filter.fieldKey)
 
       if (filter.type === 'checkbox') {
-        const { selectedSet } = filter
+        const { selectedSet, includeMissing } = filter
 
-        if (Array.isArray(recordVal)) {
+        if (Array.isArray(recordVal) && !isFieldValueMissing(recordVal)) {
           return recordVal.some((item) =>
-            selectedSet.has(String(item).toLowerCase()),
+            selectedSet.has(String(item).trim().toLowerCase()),
           )
         }
 
@@ -299,35 +372,37 @@ export const filterRecords = (
           if (hasTag) return true
         }
 
-        if (recordVal !== undefined && recordVal !== null) {
-          return selectedSet.has(String(recordVal).toLowerCase())
+        if (!isFieldValueMissing(recordVal)) {
+          return selectedSet.has(String(recordVal).trim().toLowerCase())
         }
 
-        return false
+        return includeMissing
       }
 
       if (filter.type === 'select') {
-        const { target } = filter
+        const { target, includeMissing } = filter
 
-        if (Array.isArray(recordVal)) {
-          return recordVal.some((item) => String(item).toLowerCase() === target)
+        if (Array.isArray(recordVal) && !isFieldValueMissing(recordVal)) {
+          return recordVal.some(
+            (item) => String(item).trim().toLowerCase() === target,
+          )
         }
 
         if (record.tags && Array.isArray(record.tags)) {
           if (record.tags.some((t) => t.toLowerCase() === target)) return true
         }
 
-        if (recordVal !== undefined && recordVal !== null) {
-          return String(recordVal).toLowerCase() === target
+        if (!isFieldValueMissing(recordVal)) {
+          return String(recordVal).trim().toLowerCase() === target
         }
 
-        return false
+        return includeMissing
       }
 
       if (filter.type === 'range') {
         const numericVal = extractNumericValue(recordVal)
         if (numericVal === null) {
-          return false
+          return filter.includeMissing
         }
 
         if (filter.min !== undefined && numericVal < filter.min) {

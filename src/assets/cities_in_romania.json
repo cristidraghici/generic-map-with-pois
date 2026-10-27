@@ -55,7 +55,6 @@
       "latitude": 47.1585,
       "longitude": 27.6014,
       "region": "Moldova",
-      "population": 318000,
       "description": [
         "Region: Moldova",
         "Population: unknown",
@@ -263,7 +262,6 @@
       "title": "Giurgiu",
       "latitude": 43.9037,
       "longitude": 25.9699,
-      "region": "Muntenia",
       "population": 61000,
       "description": "Port city on the Danube, near Bulgaria."
     }
