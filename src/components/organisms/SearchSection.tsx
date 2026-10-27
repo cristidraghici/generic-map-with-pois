@@ -16,10 +16,12 @@ interface SearchSectionProps {
   selectedDatasetIndex: number
   filters?: FilterDefinition[]
   activeFilters?: ActiveFilters
+  savedFilters?: ActiveFilters
   onSearchChange: (_value: string) => void
   onDatasetChange: (_index: number) => void
   onFilterChange?: (_filterId: string, _value: FilterValue) => void
   onClearFilters?: () => void
+  onSaveFilters?: () => void
 }
 
 const SearchSection: FunctionComponent<SearchSectionProps> = ({
@@ -30,10 +32,12 @@ const SearchSection: FunctionComponent<SearchSectionProps> = ({
   selectedDatasetIndex,
   filters = [],
   activeFilters = {},
+  savedFilters = {},
   onSearchChange,
   onDatasetChange,
   onFilterChange,
   onClearFilters,
+  onSaveFilters,
 }) => {
   const datasetSelectOptions = useMemo(
     () =>
@@ -62,8 +66,10 @@ const SearchSection: FunctionComponent<SearchSectionProps> = ({
         <FilterAccordion
           filters={filters}
           activeFilters={activeFilters}
+          savedFilters={savedFilters}
           onFilterChange={onFilterChange}
           onClearFilters={onClearFilters}
+          onSaveFilters={onSaveFilters}
         />
       )}
 

@@ -15,8 +15,11 @@ import useURLParams from '@/hooks/useURLParams'
 import { CustomRecord } from '@/types'
 import {
   ActiveFilters,
+  clearSavedFiltersForSource,
   FilterValue,
   filterRecords,
+  getSavedFiltersForSource,
+  saveFiltersForSource,
 } from '@/utils/filterRecords'
 import { reduceVisibleRecords } from '@/utils/performance'
 
@@ -25,7 +28,6 @@ const Viewport = () => {
   const [selectedRecord, setSelectedRecord] = useState<CustomRecord | null>(
     null,
   )
-  const [activeFilters, setActiveFilters] = useState<ActiveFilters>({})
 
   const {
     params: { id, selected },
@@ -42,6 +44,26 @@ const Viewport = () => {
       ? index
       : 0
   }, [selected, apiUrls.length])
+
+  const selectedSourceUrl = apiUrls[selectedDatasetIndex]
+
+  const [activeFilters, setActiveFilters] = useState<ActiveFilters>(() =>
+    selectedSourceUrl ? getSavedFiltersForSource(selectedSourceUrl) : {},
+  )
+  const [savedFilters, setSavedFilters] = useState<ActiveFilters>(() =>
+    selectedSourceUrl ? getSavedFiltersForSource(selectedSourceUrl) : {},
+  )
+  const prevSourceUrlRef = useRef<string | undefined>(selectedSourceUrl)
+
+  useEffect(() => {
+    if (prevSourceUrlRef.current === selectedSourceUrl) return
+    prevSourceUrlRef.current = selectedSourceUrl
+    const restored = selectedSourceUrl
+      ? getSavedFiltersForSource(selectedSourceUrl)
+      : {}
+    setActiveFilters(restored)
+    setSavedFilters(restored)
+  }, [selectedSourceUrl])
 
   const {
     allRecords,
@@ -66,9 +88,23 @@ const Viewport = () => {
     [],
   )
 
+  const handleSaveFilters = useCallback(() => {
+    if (!selectedSourceUrl) return
+    const cleaned = saveFiltersForSource(
+      selectedSourceUrl,
+      filters,
+      activeFilters,
+    )
+    setSavedFilters(cleaned)
+  }, [selectedSourceUrl, filters, activeFilters])
+
   const handleClearFilters = useCallback(() => {
+    if (selectedSourceUrl) {
+      clearSavedFiltersForSource(selectedSourceUrl)
+    }
     setActiveFilters({})
-  }, [])
+    setSavedFilters({})
+  }, [selectedSourceUrl])
 
   const [visibleLayerIds, setVisibleLayerIds] = useState<string[]>([])
   const prevDatasetIndexRef = useRef(selectedDatasetIndex)
@@ -243,11 +279,17 @@ const Viewport = () => {
    */
   const handleDatasetChange = useCallback(
     (index: number) => {
+      const nextSourceUrl = apiUrls[index]
+      const restored = nextSourceUrl
+        ? getSavedFiltersForSource(nextSourceUrl)
+        : {}
+      prevSourceUrlRef.current = nextSourceUrl
       setSelectedRecord(null)
-      setActiveFilters({})
+      setActiveFilters(restored)
+      setSavedFilters(restored)
       updateParams({ selected: index.toString(), id: null })
     },
-    [updateParams],
+    [apiUrls, updateParams],
   )
 
   const handleListRecordSelect = useCallback(
@@ -284,10 +326,12 @@ const Viewport = () => {
         selectedDatasetIndex={selectedDatasetIndex}
         filters={filters}
         activeFilters={activeFilters}
+        savedFilters={savedFilters}
         onSearchChange={setSearch}
         onDatasetChange={handleDatasetChange}
         onFilterChange={handleFilterChange}
         onClearFilters={handleClearFilters}
+        onSaveFilters={handleSaveFilters}
       />
 
       <HorizontalViewportSplit

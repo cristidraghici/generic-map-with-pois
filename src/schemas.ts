@@ -20,6 +20,17 @@ export const filterDefinitionSchema = z.object({
   unit: z.string().optional(),
 })
 
+export const filterRangeValueSchema = z.object({
+  min: z.union([z.number(), z.string()]).optional(),
+  max: z.union([z.number(), z.string()]).optional(),
+})
+
+export const filterValueSchema = z
+  .union([z.string().array(), z.string(), filterRangeValueSchema])
+  .optional()
+
+export const activeFiltersSchema = z.record(z.string(), filterValueSchema)
+
 export const customRecordSchema = z
   .object({
     id: recordIdSchema.optional(),

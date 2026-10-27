@@ -2,6 +2,7 @@ import { FunctionComponent, useEffect, useRef, useState } from 'react'
 import { FilterDefinition } from '@/types'
 import {
   ActiveFilters,
+  areFiltersEqual,
   FilterValue,
   getActiveFilterCount,
 } from '@/utils/filterRecords'
@@ -11,16 +12,20 @@ import NumericRangeFilter from './NumericRangeFilter'
 interface FilterAccordionProps {
   filters: FilterDefinition[]
   activeFilters: ActiveFilters
+  savedFilters?: ActiveFilters
   onFilterChange: (_filterId: string, _value: FilterValue) => void
   onClearFilters: () => void
+  onSaveFilters?: () => void
   className?: string
 }
 
 const FilterAccordion: FunctionComponent<FilterAccordionProps> = ({
   filters,
   activeFilters,
+  savedFilters = {},
   onFilterChange,
   onClearFilters,
+  onSaveFilters,
   className = '',
 }) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -30,6 +35,11 @@ const FilterAccordion: FunctionComponent<FilterAccordionProps> = ({
   const containerRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const activeCount = getActiveFilterCount(filters, activeFilters)
+  const savedCount = getActiveFilterCount(filters, savedFilters)
+  const isSaved =
+    activeCount > 0 && areFiltersEqual(filters, activeFilters, savedFilters)
+  const canClear = activeCount > 0 || savedCount > 0
+  const canSave = activeCount > 0 && !isSaved
 
   useEffect(() => {
     if (!isOpen) return
@@ -221,18 +231,32 @@ const FilterAccordion: FunctionComponent<FilterAccordionProps> = ({
           </div>
 
           <div className="shrink-0 border-t border-gray-200 bg-white p-2">
-            <button
-              type="button"
-              disabled={activeCount === 0}
-              onClick={onClearFilters}
-              className={`w-full rounded-md border border-gray-300 px-3 py-1.5 text-center text-xs font-medium transition-colors ${
-                activeCount > 0
-                  ? 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                  : 'cursor-not-allowed text-gray-400 opacity-50'
-              }`}
-            >
-              Clear filters
-            </button>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                disabled={!canClear}
+                onClick={onClearFilters}
+                className={`flex-1 rounded-md border border-gray-300 bg-clip-padding px-3 py-1.5 text-center text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-gray-800 focus:ring-offset-1 ${
+                  canClear
+                    ? 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                    : 'cursor-not-allowed text-gray-400 opacity-50'
+                }`}
+              >
+                Clear filters
+              </button>
+              <button
+                type="button"
+                disabled={!canSave}
+                onClick={onSaveFilters}
+                className={`flex-1 rounded-md border bg-clip-padding px-3 py-1.5 text-center text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-gray-800 focus:ring-offset-1 ${
+                  canSave
+                    ? 'border-gray-800 bg-gray-800 text-white hover:bg-gray-700'
+                    : 'cursor-not-allowed border-gray-300 text-gray-400 opacity-50'
+                }`}
+              >
+                {isSaved ? 'Saved' : 'Save filters'}
+              </button>
+            </div>
           </div>
         </div>
       )}

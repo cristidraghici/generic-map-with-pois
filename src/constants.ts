@@ -96,3 +96,5 @@ export const FUZZY_SEARCH_CONFIG = {
   useRelative: true, // whether to compute a relative threshold based on query length
   maxRelativeDistance: 0.25, // maximum fraction (0-1) of query length allowed as distance
 } as const
+
+export const SAVED_FILTERS_STORAGE_PREFIX = 'generic-map-with-pois:filters:'

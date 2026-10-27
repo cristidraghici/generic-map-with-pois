@@ -1,12 +1,13 @@
-import { CustomRecord, FilterDefinition } from '@/types'
+import { SAVED_FILTERS_STORAGE_PREFIX } from '@/constants'
+import { activeFiltersSchema } from '@/schemas'
+import {
+  ActiveFilters,
+  CustomRecord,
+  FilterDefinition,
+  FilterValue,
+} from '@/types'
 
-export type FilterValue =
-  | string[]
-  | string
-  | { min?: number | string; max?: number | string }
-  | undefined
-
-export type ActiveFilters = Record<string, FilterValue>
+export type { ActiveFilters, FilterValue }
 
 const extractNumericValue = (val: unknown): number | null => {
   if (typeof val === 'number') {
@@ -76,6 +77,118 @@ export const getActiveFilterCount = (
   return filters.reduce((count, filter) => {
     return count + (isFilterActive(filter, activeFilters[filter.id]) ? 1 : 0)
   }, 0)
+}
+
+const getRangeBound = (
+  bound: number | string | undefined,
+): number | undefined => {
+  if (bound === undefined || bound === null || bound === '') return undefined
+  const parsed = Number(bound)
+  return Number.isNaN(parsed) ? undefined : parsed
+}
+
+export const areFiltersEqual = (
+  filters: FilterDefinition[],
+  a: ActiveFilters,
+  b: ActiveFilters,
+): boolean => {
+  for (const filter of filters) {
+    const aVal = a[filter.id]
+    const bVal = b[filter.id]
+    const aActive = isFilterActive(filter, aVal)
+    const bActive = isFilterActive(filter, bVal)
+
+    if (!aActive && !bActive) continue
+    if (aActive !== bActive) return false
+
+    if (filter.type === 'checkbox') {
+      const aList = Array.isArray(aVal)
+        ? Array.from(new Set(aVal.map((v) => v.trim().toLowerCase()))).sort()
+        : []
+      const bList = Array.isArray(bVal)
+        ? Array.from(new Set(bVal.map((v) => v.trim().toLowerCase()))).sort()
+        : []
+      if (aList.length !== bList.length) return false
+      for (let i = 0; i < aList.length; i++) {
+        if (aList[i] !== bList[i]) return false
+      }
+    } else if (filter.type === 'select') {
+      const aTarget = typeof aVal === 'string' ? aVal.trim().toLowerCase() : ''
+      const bTarget = typeof bVal === 'string' ? bVal.trim().toLowerCase() : ''
+      if (aTarget !== bTarget) return false
+    } else if (filter.type === 'range') {
+      const aRange =
+        aVal && typeof aVal === 'object' && !Array.isArray(aVal) ? aVal : {}
+      const bRange =
+        bVal && typeof bVal === 'object' && !Array.isArray(bVal) ? bVal : {}
+      if (
+        getRangeBound(aRange.min) !== getRangeBound(bRange.min) ||
+        getRangeBound(aRange.max) !== getRangeBound(bRange.max)
+      ) {
+        return false
+      }
+    }
+  }
+
+  return true
+}
+
+export const getSavedFiltersForSource = (sourceUrl: string): ActiveFilters => {
+  if (!sourceUrl || typeof window === 'undefined') return {}
+
+  try {
+    const raw = window.localStorage.getItem(
+      `${SAVED_FILTERS_STORAGE_PREFIX}${sourceUrl}`,
+    )
+    if (!raw) return {}
+    const parsed: unknown = JSON.parse(raw)
+    const validated = activeFiltersSchema.safeParse(parsed)
+    return validated.success ? validated.data : {}
+  } catch {
+    return {}
+  }
+}
+
+export const saveFiltersForSource = (
+  sourceUrl: string,
+  filters: FilterDefinition[],
+  activeFilters: ActiveFilters,
+): ActiveFilters => {
+  const cleaned: ActiveFilters = {}
+
+  for (const filter of filters) {
+    const val = activeFilters[filter.id]
+    if (isFilterActive(filter, val)) {
+      cleaned[filter.id] = val
+    }
+  }
+
+  if (!sourceUrl || typeof window === 'undefined') return cleaned
+
+  try {
+    const key = `${SAVED_FILTERS_STORAGE_PREFIX}${sourceUrl}`
+    if (Object.keys(cleaned).length > 0) {
+      window.localStorage.setItem(key, JSON.stringify(cleaned))
+    } else {
+      window.localStorage.removeItem(key)
+    }
+  } catch {
+    // Ignore storage quota or private mode restrictions
+  }
+
+  return cleaned
+}
+
+export const clearSavedFiltersForSource = (sourceUrl: string): void => {
+  if (!sourceUrl || typeof window === 'undefined') return
+
+  try {
+    window.localStorage.removeItem(
+      `${SAVED_FILTERS_STORAGE_PREFIX}${sourceUrl}`,
+    )
+  } catch {
+    // Ignore storage restrictions
+  }
 }
 
 type CompiledFilter =

@@ -92,7 +92,7 @@ Floating UI elements situated over the map must share uniform coordinate offsets
 To maintain horizontal and vertical alignment when controls are stacked in `SearchSection`:
 - **Search Field (`SearchField.tsx`)**: `py-1.5 pl-8 pr-8 text-sm leading-5` (Search icon `pl-2.5`, clear icon `pr-2.5`).
 - **Select Dropdown (`Select.tsx`)**: Trigger `py-1.5 pl-3 pr-3 text-sm leading-5`. Options `px-2 py-1.5 text-xs`.
-- **Filter Accordion (`FilterAccordion.tsx`)**: Trigger `py-1.5 pl-3 pr-3 text-sm leading-5`. Body `p-3 space-y-3`. Clear button `px-3 py-1.5 text-xs rounded-md`.
+- **Filter Accordion (`FilterAccordion.tsx`)**: Trigger `py-1.5 pl-3 pr-3 text-sm leading-5`. Body `p-3 space-y-3`. Footer action buttons (`Clear filters` and `Save filters`) side-by-side (`flex gap-2`) with `flex-1 px-3 py-1.5 text-xs rounded-md`.
 - **Range Inputs (`NumericRangeFilter.tsx`)**: Inputs `px-2 py-1 text-xs`, gap `gap-2`.
 - **Semantic Action Buttons**: `px-3 py-1.5 text-xs font-medium` (Download PDF, Copy Link).
 - **Category Filter Pills (`PillButton.tsx`)**: `px-2.5 py-1 text-xs font-medium`.

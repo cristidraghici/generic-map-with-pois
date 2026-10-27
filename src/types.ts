@@ -1,12 +1,15 @@
 import { z } from 'zod'
 import {
+  activeFiltersSchema,
   anySuccessfulResponseSchema,
   configSchema,
   customRecordSchema,
   customRecordWithMetadataSchema,
   filterDefinitionSchema,
   filterOptionSchema,
+  filterRangeValueSchema,
   filterTypeSchema,
+  filterValueSchema,
   layerResponseSchema,
   layerSchema,
   metadataSchema,
@@ -22,6 +25,9 @@ export type Config = z.infer<typeof configSchema>
 export type FilterOption = z.infer<typeof filterOptionSchema>
 export type FilterType = z.infer<typeof filterTypeSchema>
 export type FilterDefinition = z.infer<typeof filterDefinitionSchema>
+export type FilterRangeValue = z.infer<typeof filterRangeValueSchema>
+export type FilterValue = z.infer<typeof filterValueSchema>
+export type ActiveFilters = z.infer<typeof activeFiltersSchema>
 export type CustomRecordWithMetadata = z.infer<
   typeof customRecordWithMetadataSchema
 >
