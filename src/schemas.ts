@@ -52,6 +52,7 @@ export const configSchema = z.object({
   typeOfIcon: z.enum(['default', 'dot', 'text']),
   isListEnabled: z.boolean().optional(),
   isZoomOnSelectEnabled: z.boolean().optional(),
+  isZoomOnFilterEnabled: z.boolean().optional(),
   isListFilteredToViewport: z.boolean().optional(),
   isShowOnlyURLRecordEnabled: z.boolean().optional(),
   isAggressiveOptimizationEnabled: z.boolean().optional(),

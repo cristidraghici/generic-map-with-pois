@@ -94,6 +94,7 @@ configSchema = z.object({
   typeOfIcon: z.enum(['default', 'dot', 'text']),
   isListEnabled: z.boolean().optional(),
   isZoomOnSelectEnabled: z.boolean().optional(),
+  isZoomOnFilterEnabled: z.boolean().optional(),
   isListFilteredToViewport: z.boolean().optional(),
   isShowOnlyURLRecordEnabled: z.boolean().optional(),
   isAggressiveOptimizationEnabled: z.boolean().optional(),
@@ -162,6 +163,7 @@ runtimeConfigSchema = z.object({
 - In [`SearchSection.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/components/organisms/SearchSection.tsx), if filters are defined for the active source, a dropdown-styled collapsible accordion panel ([`FilterAccordion.tsx`](file:///Users/cristi/Code/generic-map-with-pois/src/components/molecules/FilterAccordion.tsx)) renders directly below the dataset selector (or directly below the search input when only one dataset is loaded).
 - Filter state is managed in React state, updating map markers and list view live, with active badge counts and side-by-side "Clear filters" and "Save filters" buttons.
 - Clicking "Save filters" persists the active filters for the selected source URL in browser `localStorage` (`generic-map-with-pois:filters:<sourceUrl>`, validated via `activeFiltersSchema`), showing `"Saved"` while current filters match `localStorage`. Saved filters are automatically restored on initial load and when switching back to that source; clicking "Clear filters" clears both the active UI filters and the saved `localStorage` entry for the current source.
+- When `config.isZoomOnFilterEnabled` is `true` (default: `false`), the map automatically fits its viewport bounds (`handleFitBounds`) to wrap the records matching the active filters both on dataset load/switch (with restored saved filters) and whenever filters are changed or cleared in the UI, while keeping `maxBounds` (`handleSetMaxBounds`) locked to all records in the dataset.
 
 ---
 

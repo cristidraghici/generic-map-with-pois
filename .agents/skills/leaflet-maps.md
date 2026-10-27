@@ -47,13 +47,15 @@ The [`useMap`](file:///Users/cristi/Code/generic-map-with-pois/src/hooks/useMap.
 const {
   map,
   setMap,
-  setMapBounds,
+  handleSetMaxBounds,
+  handleFitBounds,
+  handleSetBounds,
   isZoomInDisabled,
   isZoomOutDisabled,
-} = useMap(records)
+} = useMap()
 ```
 
-- When new records arrive or active filters change, call `setMapBounds()` to smoothly fit the viewport to marker coordinates using `bounds.pad(MAP_CONFIG.BOUNDS_PADDING)`.
+- When new records arrive, call `handleSetMaxBounds()` on all dataset coordinates so panning stays bounded to the full dataset, and call `handleFitBounds()` to smoothly fit the viewport to marker coordinates using `bounds.pad(MAP_CONFIG.BOUNDS_PADDING)`. When `config.isZoomOnFilterEnabled` is enabled, `handleFitBounds()` is called with the coordinates matching `activeFilters` both on dataset load/switch (using saved filters) and whenever filters are modified in the UI.
 - Always check if `records.length > 0` before fitting bounds. If records are empty, fall back to `MAP_CONFIG.CENTER` and `MAP_CONFIG.ZOOM`.
 - When layers are toggled on/off in multi-layer datasets, bounds are intentionally preserved rather than re-fit, ensuring smooth panning/zooming without jarring viewport jumps.
 

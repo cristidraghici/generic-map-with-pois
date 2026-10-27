@@ -190,10 +190,18 @@ const Viewport = () => {
     isZoomOutDisabled,
     handleZoomIn,
     handleZoomOut,
-    handleSetBounds,
+    handleSetMaxBounds,
+    handleFitBounds,
     currentMapBounds,
     currentZoom,
   } = useMap()
+
+  const boundsTargetRecords = useMemo(() => {
+    if (!config.isZoomOnFilterEnabled) {
+      return allRecords
+    }
+    return filterRecords(allRecords, filters, activeFilters)
+  }, [allRecords, config.isZoomOnFilterEnabled, filters, activeFilters])
 
   useEffect(() => {
     if (!map || !allRecords || allRecords.length === 0) return
@@ -205,8 +213,21 @@ const Viewport = () => {
       )
       .map(({ latitude, longitude }) => [latitude, longitude] as LatLngTuple)
 
-    handleSetBounds(coords)
-  }, [map, allRecords, handleSetBounds])
+    handleSetMaxBounds(coords)
+  }, [map, allRecords, handleSetMaxBounds])
+
+  useEffect(() => {
+    if (!map || !boundsTargetRecords || boundsTargetRecords.length === 0) return
+
+    const coords = boundsTargetRecords
+      .filter(
+        ({ latitude, longitude }) =>
+          Number.isFinite(latitude) && Number.isFinite(longitude),
+      )
+      .map(({ latitude, longitude }) => [latitude, longitude] as LatLngTuple)
+
+    handleFitBounds(coords)
+  }, [map, boundsTargetRecords, handleFitBounds])
 
   /**
    * Get ID from URL parameter (if exists)

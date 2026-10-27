@@ -8,6 +8,7 @@
     "typeOfIcon": "text",
     "isListEnabled": true,
     "isZoomOnSelectEnabled": true,
+    "isZoomOnFilterEnabled": true,
     "isListFilteredToViewport": false,
     "isShowOnlyURLRecordEnabled": true,
     "isAggressiveOptimizationEnabled": false

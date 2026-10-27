@@ -59,6 +59,7 @@ export const DEFAULT_CONFIG: Config = {
   typeOfIcon: 'default',
   isListEnabled: true,
   isZoomOnSelectEnabled: false,
+  isZoomOnFilterEnabled: true,
   isListFilteredToViewport: false,
   isShowOnlyURLRecordEnabled: true,
   isAggressiveOptimizationEnabled: false,

@@ -73,6 +73,28 @@ const useMap = () => {
     map.zoomOut()
   }, [map])
 
+  const handleSetMaxBounds = useCallback(
+    (coords: LatLngTuple[]) => {
+      if (!map || !coords || coords.length === 0) return
+
+      const bounds = L.latLngBounds(coords).pad(MAP_CONFIG.BOUNDS_PADDING)
+
+      map.setMaxBounds(bounds)
+    },
+    [map],
+  )
+
+  const handleFitBounds = useCallback(
+    (coords: LatLngTuple[]) => {
+      if (!map || !coords || coords.length === 0) return
+
+      const bounds = L.latLngBounds(coords).pad(MAP_CONFIG.BOUNDS_PADDING)
+
+      map.fitBounds(bounds)
+    },
+    [map],
+  )
+
   const handleSetBounds = useCallback(
     (coords: LatLngTuple[]) => {
       if (!map || !coords || coords.length === 0) return
@@ -93,6 +115,8 @@ const useMap = () => {
     isZoomOutDisabled,
     handleZoomIn,
     handleZoomOut,
+    handleSetMaxBounds,
+    handleFitBounds,
     handleSetBounds,
     currentMapBounds,
     currentZoom,
